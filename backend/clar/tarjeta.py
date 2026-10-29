@@ -68,7 +68,7 @@ def generar_tarjeta(
     d.text((232, 86), "Piletazo", font=_fuente(66, True), fill=TEXTO)
     d.text((234, 166), "Tu camino al cierre de pensum", font=_fuente(28), fill=(125, 211, 252))
 
-    y = 248
+    y = 248 if nombre else 300  # sin nombre, la carrera baja para no dejar un hueco
     if nombre:
         d.text((80, y), nombre, font=_ajustar(d, nombre, ANCHO - 160, 44), fill=TEXTO)
         y += 64
