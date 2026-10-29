@@ -2,6 +2,8 @@
 
 **Tu camino al cierre de pensum en Ingeniería en Ciencias y Sistemas (FIUSAC, USAC).**
 
+### 🌊 Úsalo en línea: **[piletazogt.vercel.app](https://piletazogt.vercel.app)**
+
 En la Facultad de Ingeniería, cerrar pensum se celebra con el *piletazo*. Piletazo es una app web que te ayuda a llegar ahí: cargas tus cursos aprobados y ves cuánto llevas, qué te conviene asignarte el próximo semestre y en qué semestre cerrarías.
 
 > Herramienta **no oficial**. Confirma siempre tu situación con Control Académico de la Facultad de Ingeniería.
@@ -74,6 +76,7 @@ La documentación interactiva de la API queda en `/docs` cuando el servidor est�
 - Los cursos se envían al servidor solo para calcular; no se almacenan.
 - El nombre y el carné nunca salen del navegador, salvo en el PDF que tú pides.
 - El guardado local requiere tu permiso explícito y se borra con *Borrar mis datos*.
+- El sitio cuenta visitas con Vercel Web Analytics: sin cookies y sin datos personales, solo páginas vistas, país y tipo de dispositivo.
 
 ## Correr en local
 
