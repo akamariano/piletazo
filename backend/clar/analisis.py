@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 from typing import Dict, Iterable, List, Literal, Optional, Set
 
 from .entrada import CursoAprobado
-from .pensums import Curso, Modalidad, Pensum, RequisitoArea, catalogo, pensum
+from .pensums import Curso, Modalidad, Pensum, Plan, RequisitoArea, catalogo, pensum
 
 EstadoCurso = Literal["aprobado", "disponible", "bloqueado"]
 CREDITOS = re.compile(r"^(\d+)CR$")
@@ -94,6 +94,7 @@ class ProgresoPensum:
 @dataclass
 class Analisis:
     modalidad: Modalidad
+    plan: Plan
     aprobados: List[CursoAprobado]
     equivalencias: List[Equivalencia]
     creditos2021: int
@@ -104,11 +105,11 @@ class Analisis:
     ganan_disponibilidad: List[CursoRed]
     cambios_prerrequisitos: List[CursoRed]
     pensum2021: ProgresoPensum
-    pensum2022: ProgresoPensum
+    clar: ProgresoPensum
 
     @property
     def red(self) -> List[CursoRed]:
-        return self.pensum2022.red
+        return self.clar.red
 
 
 def cumple(prerrequisito: str, aprobados: Set[str], creditos: int) -> bool:
@@ -126,16 +127,17 @@ def describir_prerrequisito(prerrequisito: str) -> str:
     return " ó ".join(f"{c} {nombres[c]}" if c in nombres else c for c in prerrequisito.split("|"))
 
 
-def analizar(aprobados: List[CursoAprobado], modalidad: Modalidad = "eps") -> Analisis:
+def analizar(aprobados: List[CursoAprobado], modalidad: Modalidad = "eps", plan: Plan = "2022") -> Analisis:
+    """`clar` es el pensum CLAR del estudiante (2022 o 2025); `pensum2021`, el anterior, para el traslado."""
     anterior = pensum("2021", modalidad)
-    clar = pensum("2022", modalidad)
+    clar = pensum(plan, modalidad)
     por2021 = anterior.por_codigo
-    por2022 = clar.por_codigo
+    por_clar = clar.por_codigo
     codigos = {a.codigo for a in aprobados}
 
     equivalencias: List[Equivalencia] = []
     for a in aprobados:
-        nuevo = por2022.get(a.codigo)
+        nuevo = por_clar.get(a.codigo)
         creditos2022 = nuevo.creditos if nuevo else None
         nombre = nuevo.nombre if nuevo else (por2021[a.codigo].nombre if a.codigo in por2021 else a.nombre)
         equivalencias.append(
@@ -192,6 +194,7 @@ def analizar(aprobados: List[CursoAprobado], modalidad: Modalidad = "eps") -> An
     pendientes = [r for r in red if r.estado != "aprobado"]
     return Analisis(
         modalidad=modalidad,
+        plan=plan,
         aprobados=aprobados,
         equivalencias=equivalencias,
         creditos2021=creditos2021,
@@ -206,7 +209,7 @@ def analizar(aprobados: List[CursoAprobado], modalidad: Modalidad = "eps") -> An
             if not r.pierde_disponibilidad and not r.gana_disponibilidad and (r.agregados or r.quitados)
         ],
         pensum2021=_progreso(red2021, creditos2021, anterior, codigos),
-        pensum2022=_progreso(red, creditos2022, clar, codigos),
+        clar=_progreso(red, creditos2022, clar, codigos),
     )
 
 

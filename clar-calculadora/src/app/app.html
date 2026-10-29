@@ -119,7 +119,7 @@
           <p class="presentacion-lema">Tu camino al cierre de pensum en Ingeniería en Ciencias y Sistemas de la USAC.</p>
           <p>
             En la Facultad de Ingeniería, cerrar pensum se celebra con el piletazo. Esta app te ayuda a llegar ahí:
-            carga tus cursos aprobados y mira cuánto llevas en el pensum CLAR 2022 y en la red de pensum, qué te conviene asignarte y en qué semestre cerrarías.
+            carga tus cursos aprobados y mira cuánto llevas en tu pensum CLAR 2022 o CLAR 2025 y en la red de pensum, qué te conviene asignarte y en qué semestre cerrarías.
           </p>
           <p class="presentacion-origen">
             Piletazo nació como un proyecto personal: lo hice para calcular y verificar mi propio futuro en la facultad
@@ -135,9 +135,9 @@
             <app-icono nombre="pipeline" />
             <div><strong>Si empezaste en CLAR 2022</strong><span>Tu avance por semestre, áreas, próximos cursos y rutas para cerrar.</span></div>
           </li>
-          <li class="pronto">
+          <li class="nuevo">
             <app-icono nombre="calendario" />
-            <div><strong>CLAR 2025 <span class="estado tenue">Próximamente</span></strong><span>Estamos preparando la red del pensum 2025.</span></div>
+            <div><strong>Si empezaste en CLAR 2025 <span class="estado nuevo">Nuevo</span></strong><span>La red vigente desde 2025, con sus cursos nuevos como Ciencia de Datos y Seguridad Informática.</span></div>
           </li>
           <li class="pronto">
             <app-icono nombre="libro" />
@@ -160,7 +160,7 @@
           <legend>¿Con qué pensum empezaste?</legend>
           <label><input type="radio" name="origen" [checked]="origen() === 'traslado'" (change)="origen.set('traslado')" /><span>Pensum anterior · me trasladaron al CLAR</span></label>
           <label><input type="radio" name="origen" [checked]="origen() === 'clar2022'" (change)="origen.set('clar2022')" /><span>CLAR 2022 desde el inicio</span></label>
-          <label class="deshabilitado" title="Próximamente"><input type="radio" name="origen" disabled /><span>CLAR 2025 · próximamente</span></label>
+          <label><input type="radio" name="origen" [checked]="origen() === 'clar2025'" (change)="origen.set('clar2025')" /><span>CLAR 2025 desde el inicio</span></label>
         </fieldset>
         <div class="pestanas" role="tablist">
           <button role="tab" [class.activa]="modo() === 'pegar'" [attr.aria-selected]="modo() === 'pegar'" (click)="modo.set('pegar')">
@@ -200,7 +200,7 @@
         <div class="probar">
           <div>
             <strong>¿Solo quieres ver cómo funciona?</strong>
-            <span>Carga un estudiante de {{ origen() === 'clar2022' ? 'CLAR 2022' : 'pensum anterior trasladado al CLAR' }} que terminó 5.º semestre y está cursando 6.º.</span>
+            <span>Carga un estudiante de {{ descripcionOrigen() }} que terminó 5.º semestre y está cursando 6.º.</span>
           </div>
           <button type="button" class="boton" (click)="probarEjemplo()" [disabled]="leyendo()">
             <app-icono nombre="pipeline" />Probar con un ejemplo
@@ -222,7 +222,7 @@
             <div>
               <strong>Estás viendo un ejemplo</strong>
               <p>
-                Estudiante de {{ origen() === 'clar2022' ? 'CLAR 2022' : 'pensum anterior trasladado al CLAR 2022' }} que acaba de terminar 5.º semestre:
+                Estudiante de {{ descripcionOrigen() }} que acaba de terminar 5.º semestre:
                 todos los obligatorios del 1.º al 5.º, Idioma Técnico 1 y 2 y Deportes 1. Este semestre lleva los obligatorios de 6.º,
                 marcados como <span class="etiqueta-cursando">CURSANDO</span> en la red. Toca otros cursos para probar. No se guarda nada.
               </p>
@@ -325,7 +325,7 @@
 
         <section id="resumen" class="panel">
           <header class="panel-cabecera fila">
-            <h2>Créditos {{ unidad() === 'CLAR' ? 'CLAR 2022' : 'del pensum anterior' }}</h2>
+            <h2>Créditos {{ unidad() === 'CLAR' ? nombreClar() : 'del pensum anterior' }}</h2>
             <label class="interruptor">
               <input type="checkbox" role="switch" [checked]="proyectar()" (change)="proyectar.set($any($event.target).checked)" />
               <span class="pista" aria-hidden="true"></span>
@@ -390,7 +390,7 @@
                 <dt>{{ vista() === '2022' ? 'Pensum anterior' : 'CLAR 2022' }}</dt>
                 <dd>
                   <span class="num">{{ vista() === '2022' ? a.creditos2021 : a.creditos2022 }}</span>
-                  <small>/ {{ vista() === '2022' ? a.pensum2021.cierre : a.pensum2022.cierre }}</small>
+                  <small>/ {{ vista() === '2022' ? a.pensum2021.cierre : a.clar.cierre }}</small>
                 </dd>
               </div>
               <div>
@@ -499,7 +499,7 @@
                 </label>
               </header>
               <p class="ayuda">
-                Según el pensum CLAR 2022, entre los cursos que ya puedes asignarte. Primero los obligatorios que abren más camino.
+                Según el pensum {{ nombreClar() }}, entre los cursos que ya puedes asignarte. Primero los obligatorios que abren más camino.
               </p>
               <p class="instruccion-cursando">
                 <app-icono nombre="calendario" />
@@ -658,7 +658,7 @@
               <h2>Rutas posibles para cerrar</h2>
               <p>
                 Simula cada periodo llevando los cursos recomendados, con carga máxima de {{ cargaMaxima() }} CLAR por semestre,
-                hasta completar los obligatorios y los {{ a.pensum2022.cierre }} CLAR. Toma tus cursos cargados como lo aprobado hasta el periodo en curso.
+                hasta completar los obligatorios y los {{ a.clar.cierre }} CLAR. Toma tus cursos cargados como lo aprobado hasta el periodo en curso.
               </p>
             </header>
 
@@ -846,17 +846,17 @@
 
         <section id="red" class="panel">
           <header class="panel-cabecera fila">
-            <h2>Red curricular {{ vista() === '2022' ? 'CLAR 2022' : 'anterior' }}</h2>
+            <h2>Red curricular {{ vista() === '2022' || soloClar() ? nombreClar() : 'anterior' }}</h2>
             <p class="leyenda">
               <span class="ok"><i class="muestra aprobado"></i>Aprobado</span>
               <span class="info"><i class="muestra disponible"></i>Puedes asignarlo</span>
               <span class="tenue"><i class="muestra bloqueado"></i>Bloqueado</span>
               <span class="cursando-leyenda"><i class="muestra cursando"></i>Cursando</span>
-              @if (vista() === '2022' || origen() === 'clar2022') {
+              @if (vista() === '2022' || soloClar()) {
                 <span><span class="placa-critica" aria-hidden="true">CRÍTICO</span>Ruta crítica</span>
               }
               <span><span class="ob" aria-hidden="true">OB</span>Obligatorio</span>
-              @if (vista() === '2022') {
+              @if (vista() === '2022' && !soloClar()) {
                 <span class="aviso"><app-icono nombre="alerta" />Afectado por el cambio</span>
               }
             </p>
@@ -903,12 +903,12 @@
                       @if (r.curso.obligatorio) {<span class="ob" title="Curso obligatorio">OB<span class="solo-lector"> obligatorio</span></span>}
                       <span class="curso-cred num">{{ r.curso.creditos }}</span>
                     </span>
-                    @if (r.pierdeDisponibilidad) {
+                    @if (r.pierdeDisponibilidad && !soloClar()) {
                       <span class="marca-aviso" aria-label="Afectado por el cambio"><app-icono nombre="alerta" /></span>
                     }
                     @if (conjuntoCursando().has(r.curso.codigo)) {
                       <span class="placa-cursando">CURSANDO</span>
-                    } @else if (r.estado !== 'aprobado' && criticos().has(r.curso.codigo) && (vista() === '2022' || origen() === 'clar2022')) {
+                    } @else if (r.estado !== 'aprobado' && criticos().has(r.curso.codigo) && (vista() === '2022' || soloClar())) {
                       <span class="placa-critica" title="Si lo atrasas, atrasas tu cierre">CRÍTICO</span>
                     }
                     @if (r.faltantes.length && r.estado === 'bloqueado') {
@@ -1012,13 +1012,13 @@
           <h2>Sobre Piletazo</h2>
           <p>
             Nació como un proyecto personal para calcular y verificar mi futuro en la facultad. Hoy te acompaña hasta el cierre de pensum en Ciencias y Sistemas:
-            traslado del pensum anterior al CLAR 2022 y avance de quienes ya estudian en CLAR 2022. Próximamente: las demás carreras de Ingeniería, CLAR 2025 y un plan manual con arrastrar y soltar.
+            traslado del pensum anterior al CLAR 2022 y avance de quienes estudian en CLAR 2022 o CLAR 2025. Próximamente: las demás carreras de Ingeniería y un plan manual con arrastrar y soltar.
           </p>
         </div>
         <div>
           <h2>Sobre los datos</h2>
           <p>
-            La red anterior se tomó de la red curricular del portal y la red CLAR 2022 se transcribió de la red publicada por la Facultad.
+            La red anterior se tomó de la red curricular del portal; las redes CLAR 2022 y CLAR 2025 se transcribieron de las redes publicadas por la Facultad.
             Si encuentras un error, escríbeme.
           </p>
         </div>
@@ -1097,7 +1097,7 @@
   <article class="reporte">
     <header class="rep-cabecera">
       <div>
-        <h1>Piletazo · {{ origen() === 'traslado' ? 'Reporte de traslado al pensum CLAR 2022' : 'Reporte de avance en el pensum CLAR 2022' }}</h1>
+        <h1>Piletazo · {{ origen() === 'traslado' ? 'Reporte de traslado al pensum CLAR 2022' : 'Reporte de avance en el pensum ' + nombreClar() }}</h1>
         <p>Ingeniería en Ciencias y Sistemas · generado el {{ fecha }}</p>
       </div>
       <dl>
@@ -1109,13 +1109,13 @@
 
     <section>
       <h2>Créditos</h2>
-      <table [class.solo-clar]="origen() === 'clar2022'">
+      <table [class.solo-clar]="soloClar()">
         <thead><tr><th>Pensum</th><th class="der">Aprobados</th><th class="der">Cierre</th><th class="der">Obligatorios pendientes</th><th class="der">Con obligatorios aprobados</th></tr></thead>
         <tbody>
           <tr>
-            <td>CLAR 2022</td><td class="der">{{ a.pensum2022.creditos }}</td><td class="der">{{ a.pensum2022.cierre }}</td>
-            <td class="der">{{ a.pensum2022.obligatoriosPendientes.length }} ({{ a.pensum2022.creditosObligatoriosPendientes }} CLAR)</td>
-            <td class="der">{{ a.pensum2022.creditos + a.pensum2022.creditosObligatoriosPendientes }}</td>
+            <td>{{ nombreClar() }}</td><td class="der">{{ a.clar.creditos }}</td><td class="der">{{ a.clar.cierre }}</td>
+            <td class="der">{{ a.clar.obligatoriosPendientes.length }} ({{ a.clar.creditosObligatoriosPendientes }} CLAR)</td>
+            <td class="der">{{ a.clar.creditos + a.clar.creditosObligatoriosPendientes }}</td>
           </tr>
           @if (origen() === 'traslado') {
           <tr>
@@ -1180,9 +1180,9 @@
     <section>
       <h2>Áreas con requisito</h2>
       <table>
-        <thead><tr><th>Área</th>@if (origen() === 'traslado') {<th>Pensum anterior</th>}<th>CLAR 2022</th></tr></thead>
+        <thead><tr><th>Área</th>@if (origen() === 'traslado') {<th>Pensum anterior</th>}<th>{{ nombreClar() }}</th></tr></thead>
         <tbody>
-          @for (ar of a.pensum2022.areas; track ar.area.nombre; let i = $index) {
+          @for (ar of a.clar.areas; track ar.area.nombre; let i = $index) {
             <tr>
               <td>{{ ar.area.nombre }}</td>
               @if (origen() === 'traslado') {

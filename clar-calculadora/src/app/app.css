@@ -3162,3 +3162,19 @@ tr.sin-equivalencia td {
   max-height: 46vh;
   margin: 0 auto;
 }
+
+/* ---------- CLAR 2025 ---------- */
+.estado.nuevo {
+  color: #04202a;
+  background: linear-gradient(135deg, #5eead4, #38bdf8);
+  border-color: transparent;
+  font-weight: 700;
+}
+
+.para-quien li.nuevo {
+  border-color: rgb(45 212 191 / 0.45);
+}
+
+.para-quien li.nuevo > app-icono {
+  color: var(--aqua);
+}

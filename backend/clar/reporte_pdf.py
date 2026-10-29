@@ -77,10 +77,11 @@ def generar_pdf(
     )
     ancho = doc.width
     traslado = origen == "traslado"
-    p22, p21 = analisis.pensum2022, analisis.pensum2021
+    p22, p21 = analisis.clar, analisis.pensum2021
     partes: list = []
 
-    titulo = "Reporte de traslado al pensum CLAR 2022" if traslado else "Reporte de avance en el pensum CLAR 2022"
+    nombre_clar = f"CLAR {analisis.plan}"
+    titulo = "Reporte de traslado al pensum CLAR 2022" if traslado else f"Reporte de avance en el pensum {nombre_clar}"
     cabecera = Table(
         [[
             Image(str(DATOS / "logo.png"), width=15 * mm, height=15 * mm),
@@ -99,7 +100,7 @@ def generar_pdf(
     # Créditos
     partes.append(Paragraph("Créditos", H2))
     filas = [["Pensum", "Aprobados", "Cierre", "Obligatorios pendientes", "Con obligatorios aprobados"],
-             ["CLAR 2022", p22.creditos, p22.cierre, f"{len(p22.obligatorios_pendientes)} ({p22.creditos_obligatorios_pendientes} CLAR)",
+             [nombre_clar, p22.creditos, p22.cierre, f"{len(p22.obligatorios_pendientes)} ({p22.creditos_obligatorios_pendientes} CLAR)",
               p22.creditos + p22.creditos_obligatorios_pendientes]]
     if traslado:
         filas.append(["Anterior al CLAR", p21.creditos, p21.cierre,
@@ -149,7 +150,7 @@ def generar_pdf(
         partes.append(_tabla(filas, [ancho * x for x in (0.2, 0.58, 0.09, 0.13)]))
 
     # Áreas
-    filas = [["Área"] + (["Pensum anterior"] if traslado else []) + ["CLAR 2022"]]
+    filas = [["Área"] + (["Pensum anterior"] if traslado else []) + [nombre_clar]]
     for i, a in enumerate(p22.areas):
         fila = [a.area.nombre]
         if traslado:

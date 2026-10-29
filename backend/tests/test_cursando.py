@@ -37,10 +37,10 @@ def test_rechaza_aprobados_y_cursos_fuera_del_clar():
 
 
 def test_los_cursos_en_curso_suman_y_avanzan_la_simulacion():
-    base = analizar(QUINTO).pensum2022.creditos
+    base = analizar(QUINTO).clar.creditos
     con, validos, _ = con_cursando(QUINTO, ["0773", "0778", "0781", "0601", "0722"])
     assert len(validos) == 5
-    assert analizar(con).pensum2022.creditos == base + 5 + 5 + 6 + 6 + 4
+    assert analizar(con).clar.creditos == base + 5 + 5 + 6 + 6 + 4
 
 
 def test_api_calculo_y_validacion():
@@ -72,7 +72,7 @@ def test_el_ejemplo_trae_cursos_en_curso_validos_del_siguiente_semestre():
         ).json()
         assert r["cursando"]["validos"] == datos["cursando"]
         assert r["cursando"]["invalidos"] == []
-        creditos = {c["curso"]["codigo"]: c["curso"]["creditos"] for c in r["analisis"]["pensum2022"]["red"]}
+        creditos = {c["curso"]["codigo"]: c["curso"]["creditos"] for c in r["analisis"]["clar"]["red"]}
         assert sum(creditos[c] for c in datos["cursando"]) <= 30
     clar = cliente.get("/api/ejemplo").json()["cursando"]
     assert {"0773", "0778", "0781", "0601"} <= set(clar)

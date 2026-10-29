@@ -29,7 +29,7 @@ MAXIMO_TEXTO = 3_000_000  # una red curricular guardada pesa ~450 KB
 
 app = FastAPI(
     title="Piletazo",
-    description="Traslado del pensum anterior al pensum CLAR 2022 de Ingeniería en Ciencias y Sistemas (USAC). No oficial.",
+    description="Avance en los pensums CLAR 2022 y CLAR 2025 y traslado desde el pensum anterior, Ingeniería en Ciencias y Sistemas (USAC). No oficial.",
     version="1.0.0",
 )
 
@@ -63,6 +63,8 @@ class Calculo(Esquema):
     carga_maxima: int = Field(30, ge=0, le=45)
     practicas: Literal[1, 2] = 1
     vacaciones: Literal[0, 1, 2] = 0
+    # Pensum CLAR del estudiante: 2022 (incluye a los trasladados del pensum anterior) o 2025.
+    plan: Literal["2022", "2025"] = "2022"
     hoy: Optional[date] = None
 
 
@@ -70,12 +72,13 @@ class ValidarCursando(Esquema):
     aprobados: List[Aprobado] = Field(max_length=300)
     codigo: str = Field(pattern=r"^\d{4}$")
     modalidad: Literal["eps", "tesis"] = "eps"
+    plan: Literal["2022", "2025"] = "2022"
 
 
 class Reporte(Calculo):
     nombre: str = Field("", max_length=120)
     carne: str = Field("", max_length=20)
-    origen: Literal["traslado", "clar2022"] = "traslado"
+    origen: Literal["traslado", "clar2022", "clar2025"] = "traslado"
 
 
 class Meta(Esquema):
@@ -113,17 +116,20 @@ def promedio_meta(datos: Meta) -> dict:
 
 
 @app.get("/api/ejemplo")
-def ejemplo(origen: Literal["traslado", "clar2022"] = "clar2022", semestres: int = Query(5, ge=1, le=10)) -> dict:
+def ejemplo(
+    origen: Literal["traslado", "clar2022", "clar2025"] = "clar2022", semestres: int = Query(5, ge=1, le=10)
+) -> dict:
     """Estudiante de ejemplo que terminó el semestre indicado y está llevando el siguiente."""
-    aprobados = estudiante_de_ejemplo("2022" if origen == "clar2022" else "2021", semestres)
-    cursando = cursando_de_ejemplo(aprobados, semestres + 1) if semestres < 10 else []
+    plan = "2025" if origen == "clar2025" else "2022"
+    aprobados = estudiante_de_ejemplo({"traslado": "2021", "clar2022": "2022", "clar2025": "2025"}[origen], semestres)
+    cursando = cursando_de_ejemplo(aprobados, semestres + 1, plan=plan) if semestres < 10 else []
     return {"aprobados": a_json(aprobados), "cursando": cursando, "semestre": semestres}
 
 
 @app.post("/api/cursando/validar")
 def validar_cursando(datos: ValidarCursando) -> dict:
     """Comprueba si el estudiante cumple los prerrequisitos para marcar un curso como cursando."""
-    return a_json(validar([CursoAprobado(**a.model_dump()) for a in datos.aprobados], datos.codigo, datos.modalidad))
+    return a_json(validar([CursoAprobado(**a.model_dump()) for a in datos.aprobados], datos.codigo, datos.modalidad, datos.plan))
 
 
 def _aprobados_con_cursando(datos: Calculo):
@@ -131,7 +137,7 @@ def _aprobados_con_cursando(datos: Calculo):
     for codigo in datos.cursando:
         if not codigo.isdigit() or len(codigo) != 4:
             raise HTTPException(422, f"Código de curso inválido: {codigo}")
-    return con_cursando(base, datos.cursando, datos.modalidad)
+    return con_cursando(base, datos.cursando, datos.modalidad, datos.plan)
 
 
 @app.post("/api/calculo")
@@ -139,7 +145,7 @@ def calcular(calculo: Calculo) -> dict:
     aprobados, cursando_validos, cursando_invalidos = _aprobados_con_cursando(calculo)
     if not aprobados:
         raise HTTPException(400, "No hay cursos aprobados.")
-    analisis = analizar(aprobados, calculo.modalidad)
+    analisis = analizar(aprobados, calculo.modalidad, calculo.plan)
     escenarios = [
         {
             "vacaciones": vacaciones,
@@ -149,6 +155,7 @@ def calcular(calculo: Calculo) -> dict:
                 practicas=calculo.practicas,
                 vacaciones=vacaciones,
                 modalidad=calculo.modalidad,
+                plan=calculo.plan,
                 hoy=calculo.hoy,
             ),
         }
@@ -164,6 +171,7 @@ def calcular(calculo: Calculo) -> dict:
             practicas=calculo.practicas,
             vacaciones=calculo.vacaciones,
             modalidad=calculo.modalidad,
+            plan=calculo.plan,
             hoy=calculo.hoy,
         )
         reprobar.append(
@@ -178,9 +186,9 @@ def calcular(calculo: Calculo) -> dict:
     return a_json(
         {
             "analisis": analisis,
-            "ruta_critica": ruta_critica(analisis.pensum2022),
+            "ruta_critica": ruta_critica(analisis.clar),
             "reprobar": reprobar,
-            "recomendacion": recomendar(analisis.pensum2022, calculo.carga_maxima),
+            "recomendacion": recomendar(analisis.clar, calculo.carga_maxima),
             "escenarios": escenarios,
             "catalogo": catalogo(),
             "cursando": {"validos": cursando_validos, "invalidos": cursando_invalidos},
@@ -193,18 +201,19 @@ def reporte(datos: Reporte) -> Response:
     aprobados, cursando_validos, _ = _aprobados_con_cursando(datos)
     if not aprobados:
         raise HTTPException(400, "No hay cursos aprobados.")
-    analisis = analizar(aprobados, datos.modalidad)
+    analisis = analizar(aprobados, datos.modalidad, datos.plan)
     ruta = planificar_ruta(
         aprobados,
         carga_maxima=datos.carga_maxima,
         practicas=datos.practicas,
         vacaciones=datos.vacaciones,
         modalidad=datos.modalidad,
+        plan=datos.plan,
         hoy=datos.hoy,
     )
     pdf = generar_pdf(
         analisis,
-        recomendar(analisis.pensum2022, datos.carga_maxima),
+        recomendar(analisis.clar, datos.carga_maxima),
         ruta,
         origen=datos.origen,
         nombre=datos.nombre.strip(),
@@ -262,13 +271,14 @@ def tarjeta(datos: Tarjeta, request: Request) -> Response:
     aprobados, _, _ = _aprobados_con_cursando(datos)
     if not aprobados:
         raise HTTPException(400, "No hay cursos aprobados.")
-    analisis = analizar(aprobados, datos.modalidad)
+    analisis = analizar(aprobados, datos.modalidad, datos.plan)
     ruta = planificar_ruta(
         aprobados,
         carga_maxima=datos.carga_maxima,
         practicas=datos.practicas,
         vacaciones=datos.vacaciones,
         modalidad=datos.modalidad,
+        plan=datos.plan,
         hoy=datos.hoy,
     )
     png = generar_tarjeta(

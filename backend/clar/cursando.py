@@ -13,7 +13,7 @@ from typing import List, Tuple
 
 from .analisis import cumple, describir_prerrequisito
 from .entrada import CursoAprobado
-from .pensums import Modalidad, pensum
+from .pensums import Modalidad, Plan, pensum
 
 NOTA_APROBATORIA = "61.00"
 OBSERVACION = "Cursando"
@@ -28,8 +28,10 @@ class Validacion:
     mensaje: str = ""
 
 
-def validar(aprobados: List[CursoAprobado], codigo: str, modalidad: Modalidad = "eps") -> Validacion:
-    clar = pensum("2022", modalidad).por_codigo
+def validar(
+    aprobados: List[CursoAprobado], codigo: str, modalidad: Modalidad = "eps", plan: Plan = "2022"
+) -> Validacion:
+    clar = pensum(plan, modalidad).por_codigo
     curso = clar.get(codigo)
     if curso is None:
         nombre = pensum("2021").por_codigo.get(codigo)
@@ -37,7 +39,7 @@ def validar(aprobados: List[CursoAprobado], codigo: str, modalidad: Modalidad = 
             codigo,
             nombre.nombre if nombre else codigo,
             False,
-            mensaje=f"{codigo} {nombre.nombre if nombre else ''} no está en la red CLAR 2022.".replace("  ", " "),
+            mensaje=f"{codigo} {nombre.nombre if nombre else ''} no está en la red CLAR {plan}.".replace("  ", " "),
         )
 
     codigos = {a.codigo for a in aprobados}
@@ -58,37 +60,37 @@ def validar(aprobados: List[CursoAprobado], codigo: str, modalidad: Modalidad = 
 
 
 def cursando_de_ejemplo(
-    aprobados: List[CursoAprobado], semestre: int, maximo: int = 30, modalidad: Modalidad = "eps"
+    aprobados: List[CursoAprobado], semestre: int, maximo: int = 30, modalidad: Modalidad = "eps", plan: Plan = "2022"
 ) -> List[str]:
     """Obligatorios del semestre indicado que el estudiante puede estar llevando, sin pasar `maximo` CLAR."""
     elegidos: List[str] = []
     creditos = 0
-    for curso in pensum("2022", modalidad).cursos:
+    for curso in pensum(plan, modalidad).cursos:
         if curso.semestre != semestre or not curso.obligatorio or creditos + curso.creditos > maximo:
             continue
-        if validar(aprobados, curso.codigo, modalidad).valido:
+        if validar(aprobados, curso.codigo, modalidad, plan).valido:
             elegidos.append(curso.codigo)
             creditos += curso.creditos
     return elegidos
 
 
 def con_cursando(
-    aprobados: List[CursoAprobado], cursando: List[str], modalidad: Modalidad = "eps"
+    aprobados: List[CursoAprobado], cursando: List[str], modalidad: Modalidad = "eps", plan: Plan = "2022"
 ) -> Tuple[List[CursoAprobado], List[str], List[Validacion]]:
     """Agrega los cursos en curso válidos como aprobados con nota 61; devuelve también los rechazados."""
     anterior = pensum("2021").por_codigo
-    clar = pensum("2022", modalidad).por_codigo
+    clar = pensum(plan, modalidad).por_codigo
     resultado = list(aprobados)
     validos: List[str] = []
     invalidos: List[Validacion] = []
     for codigo in dict.fromkeys(cursando):  # sin repetidos, en orden
-        v = validar(aprobados, codigo, modalidad)
+        v = validar(aprobados, codigo, modalidad, plan)
         if not v.valido:
             invalidos.append(v)
             continue
         curso = clar[codigo]
-        # Para el pensum anterior cuenta su propio valor en créditos, si el curso existía.
-        creditos = anterior[codigo].creditos if codigo in anterior else curso.creditos
+        # En el traslado, el pensum anterior cuenta su propio valor en créditos, si el curso existía.
+        creditos = anterior[codigo].creditos if plan == "2022" and codigo in anterior else curso.creditos
         resultado.append(CursoAprobado(codigo, curso.nombre, creditos, nota=NOTA_APROBATORIA, observacion=OBSERVACION))
         validos.append(codigo)
     return resultado, validos, invalidos

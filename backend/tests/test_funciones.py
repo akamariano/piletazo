@@ -17,7 +17,7 @@ SEXTO = ["0014", "0601", "0722", "0773", "0778", "0781"]
 # ---------- Ruta crítica ----------
 
 def test_ruta_critica_cadena_mas_larga():
-    rc = ruta_critica(analizar(QUINTO).pensum2022)
+    rc = ruta_critica(analizar(QUINTO).clar)
     # 0773 → 0774 → 0283 → 0785 → 0780: cinco semestres encadenados
     assert rc.semestres_minimos == 5
     assert {"0773", "0774", "0283", "0785", "0780"} <= set(rc.codigos)
@@ -26,7 +26,7 @@ def test_ruta_critica_cadena_mas_larga():
 
 def test_ruta_critica_se_acorta_al_cursar():
     con, _, _ = con_cursando(QUINTO, SEXTO)
-    rc = ruta_critica(analizar(con).pensum2022)
+    rc = ruta_critica(analizar(con).clar)
     assert rc.semestres_minimos == 4
     assert not set(SEXTO) & set(rc.codigos)
 

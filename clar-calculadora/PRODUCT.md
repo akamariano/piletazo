@@ -29,7 +29,8 @@ Cruza el historial real del estudiante con las dos redes curriculares de su carr
 - Reporte PDF: descarga directa generada por la API (ReportLab) y, como alternativa, diálogo de impresión.
 - Origen del estudiante: traslado desde el pensum anterior o CLAR 2022 desde el inicio (oculta cambios y equivalencias).
 - Modalidad de graduación: EPS (7999 obligatorio además de 0799) o tesis (solo 0799).
-- Próximamente: las demás carreras de Ingeniería de la Facultad, CLAR 2025 y un plan manual con arrastrar y soltar por semestre y escuela de vacaciones.
+- Pensum CLAR 2025 para estudiantes de nuevo ingreso (sin traslado: solo avance, recomendación y rutas), transcrito de `../clar2025/RED_2025_CLAR.jpg`.
+- Próximamente: las demás carreras de Ingeniería de la Facultad y un plan manual con arrastrar y soltar por semestre y escuela de vacaciones.
 - Recomendación del próximo semestre: carga máxima por defecto 30 CLAR, ajustable por el estudiante.
 - Proyección de créditos si se aprueban todos los obligatorios pendientes.
 - Rutas posibles: simulación semestre a semestre hasta el cierre (obligatorios, 300 CLAR y Social Humanística), con Prácticas Finales de 6 meses o 1 año en paralelo y escuelas de vacaciones (junio y diciembre) con 0, 1 o 2 cursos adelantados. Regla de vacaciones: máximo 4 horas de clase magistral; 2 h por curso, 4 h para Matemática Básica 2 (0103) y Matemática Intermedia 1 (0107). Supuesto no confirmado: cualquier curso disponible podría ofrecerse en vacaciones.

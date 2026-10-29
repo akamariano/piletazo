@@ -55,7 +55,7 @@ def generar_tarjeta(
     formato: str = "post",
 ) -> bytes:
     """El porcentaje y el nombre van siempre; los demás datos solo si están en `incluir`."""
-    p = analisis.pensum2022
+    p = analisis.clar
     porcentaje = min(100, round(p.creditos * 100 / p.cierre)) if p.cierre else 0
     alto_total = FORMATOS.get(formato, FORMATOS["post"])
     # En la historia el contenido se centra y deja libres las franjas que tapa Instagram arriba y abajo.
@@ -86,7 +86,7 @@ def generar_tarjeta(
     if nombre:
         d.text((80, y), nombre, font=_ajustar(d, nombre, ANCHO - 160, 44), fill=TEXTO)
         y += 64
-    carrera = "Ingeniería en Ciencias y Sistemas · USAC" + (" · CLAR 2022" if origen == "clar2022" else "")
+    carrera = "Ingeniería en Ciencias y Sistemas · USAC" + {"clar2022": " · CLAR 2022", "clar2025": " · CLAR 2025"}.get(origen, "")
     d.text((80, y), carrera, font=_fuente(26), fill=TEXTO_2)
 
     # Datos elegidos (0 a 4): en filas de dos; si queda uno solo, ocupa la fila completa

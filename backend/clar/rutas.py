@@ -1,4 +1,4 @@
-"""Simulación semestre a semestre hasta cerrar el pensum CLAR 2022."""
+"""Simulación semestre a semestre hasta cerrar el pensum CLAR (2022 o 2025)."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from typing import List, Literal, Optional
 
 from .analisis import ProgresoPensum, analizar
 from .entrada import CursoAprobado
-from .pensums import Curso, Modalidad, pensum
+from .pensums import Curso, Modalidad, Plan, pensum
 from .recomendacion import recomendar
 
 HORAS_MAXIMAS_VACACIONES = 4  # horas de clase magistral por escuela de vacaciones
@@ -82,17 +82,18 @@ def planificar_ruta(
     vacaciones: Literal[0, 1, 2],
     modalidad: Modalidad = "eps",
     hoy: Optional[date] = None,
+    plan: Plan = "2022",
 ) -> Ruta:
     """Los cursos cargados se toman como lo aprobado hasta el periodo en curso."""
     aprobados = list(aprobados_iniciales)
-    obligatorios = [c.codigo for c in pensum("2022", modalidad).cursos if c.obligatorio]
-    practicas_finales = pensum("2022", modalidad).por_codigo[PRACTICAS_FINALES]
+    obligatorios = [c.codigo for c in pensum(plan, modalidad).cursos if c.obligatorio]
+    practicas_finales = pensum(plan, modalidad).por_codigo[PRACTICAS_FINALES]
     ruta = Ruta()
     calendario = siguiente_periodo(hoy or date.today())
     practicas_restantes: Optional[int] = None
 
     def estado() -> ProgresoPensum:
-        return analizar(aprobados, modalidad).pensum2022
+        return analizar(aprobados, modalidad, plan).clar
 
     def terminado() -> bool:
         p = estado()

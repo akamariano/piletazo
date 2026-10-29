@@ -20,9 +20,9 @@ Piletazo nació como un **proyecto personal**: lo hice para calcular y verificar
 
 - **Si te trasladaron del pensum anterior al CLAR 2022:** cuántos créditos conservas, qué cursos cambiaron de valor en créditos, cuáles dejaste de poder asignarte por los nuevos prerrequisitos y cuáles se te desbloquearon.
 - **Si empezaste en CLAR 2022:** tu avance por semestre, tus áreas con requisito, los cursos que te convienen el próximo semestre y las rutas posibles para cerrar.
+- **Si empezaste en CLAR 2025** (vigente desde 2025, para estudiantes de nuevo ingreso): lo mismo, sobre la red nueva. No hay traslado desde otro pensum.
 - **Próximamente:**
   - Las **demás carreras de la Facultad de Ingeniería**: Civil, Industrial, Mecánica, Eléctrica, Química y el resto, cada una con su red de pensum.
-  - Soporte para el pensum **CLAR 2025**.
   - Un plan **manual con arrastrar y soltar (drag and drop)**: acomodar tú mismo los cursos en cada semestre y escuela de vacaciones restante.
 
 ## Qué hace
@@ -48,7 +48,7 @@ Piletazo nació como un **proyecto personal**: lo hice para calcular y verificar
 CalculoClar/
 ├── backend/            API en Python (FastAPI): toda la lógica
 │   ├── clar/
-│   │   ├── datos/          redes curriculares en JSON (pensum anterior y CLAR 2022)
+│   │   ├── datos/          redes curriculares en JSON (pensum anterior, CLAR 2022 y CLAR 2025)
 │   │   ├── pensums.py      carga de las redes y modalidad de graduación
 │   │   ├── entrada.py      lectura del texto del portal y del HTML de la red
 │   │   ├── analisis.py     créditos, equivalencias, prerrequisitos y áreas
@@ -60,7 +60,8 @@ CalculoClar/
 ├── clar-calculadora/   interfaz en Angular (solo presentación, consume la API)
 ├── Logo/               logo en todas sus versiones y el script que lo genera
 ├── 2021/               imágenes del pensum anterior (la página guardada del portal no se publica)
-└── CLAR_2022/          imagen de la red CLAR 2022 publicada (fuente de datos)
+├── CLAR_2022/          imagen de la red CLAR 2022 publicada (fuente de datos)
+└── clar2025/           imagen de la red CLAR 2025 publicada (fuente de datos)
 ```
 
 **Flujo:**
@@ -185,7 +186,7 @@ Google decide si muestra el sitio y en qué posición; puede tardar días o sema
 
 - **Datos:**
   - La red del pensum anterior (códigos, créditos, prerrequisitos y obligatorios) se extrajo automáticamente de la página de red curricular guardada desde el portal. Esa página no se publica en el repositorio porque contiene datos personales.
-  - La red CLAR 2022 se transcribió a mano desde la imagen publicada por la Facultad (`CLAR_2022/RED_CLAR_2022.png`). Si encuentras un error, corrígelo en `backend/clar/datos/pensum_2022.json` o avísame.
+  - Las redes CLAR 2022 y CLAR 2025 se transcribieron a mano desde las imágenes publicadas por la Facultad (`CLAR_2022/RED_CLAR_2022.png` y `clar2025/RED_2025_CLAR.jpg`). Si encuentras un error, corrígelo en `backend/clar/datos/pensum_2022.json` o `pensum_2025.json`, o avísame.
 - **Lógica:**
   - Empezó en TypeScript dentro de Angular y luego se trasladó a un backend en Python con FastAPI.
   - Las pruebas usan un historial de ejemplo basado en un caso real, sin notas ni datos personales.

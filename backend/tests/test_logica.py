@@ -44,7 +44,7 @@ def test_progreso_de_areas(texto_ejemplo):
     social21, idioma21 = a.pensum2021.areas
     assert (social21.logrado, social21.cumple) == (11, True)
     assert (idioma21.logrado, idioma21.cumple) == (4, True)
-    social22, idioma22 = a.pensum2022.areas
+    social22, idioma22 = a.clar.areas
     assert (social22.logrado, social22.cumple) == (7, False)
     assert (idioma22.aprobados, idioma22.creditos, idioma22.cumple) == (4, 12, None)
 
@@ -58,10 +58,10 @@ def test_red_anterior_con_sus_prerrequisitos(texto_ejemplo):
 
 def test_recomendacion_de_octavo(aprobados_semestre_actual):
     a = analizar(aprobados_semestre_actual)
-    r = recomendar(a.pensum2022, 30)
+    r = recomendar(a.clar, 30)
     assert {"0283", "0285", "0775", "0797", "0975"} <= set(codigos(r.cursos))
     assert r.creditos <= 30
-    assert recomendar(a.pensum2022, 12).creditos <= 12
+    assert recomendar(a.clar, 12).creditos <= 12
 
 
 def test_ruta_cierra_con_obligatorios_y_300(aprobados_semestre_actual):
@@ -104,8 +104,8 @@ def test_optativos_del_area_de_sistemas(aprobados_semestre_actual):
 
 
 def test_modalidad_eps_y_tesis(aprobados_semestre_actual):
-    eps = analizar(aprobados_semestre_actual, "eps").pensum2022
-    tesis = analizar(aprobados_semestre_actual, "tesis").pensum2022
+    eps = analizar(aprobados_semestre_actual, "eps").clar
+    tesis = analizar(aprobados_semestre_actual, "tesis").clar
     assert "7999" in codigos(eps.obligatorios_pendientes)
     assert "7999" not in codigos(tesis.obligatorios_pendientes)
     assert "0799" in codigos(tesis.obligatorios_pendientes)

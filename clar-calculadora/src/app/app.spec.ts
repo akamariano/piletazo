@@ -34,6 +34,27 @@ describe('App', () => {
     expect(peticion.request.params.get('semestres')).toBe('5');
   });
 
+  it('con CLAR 2025 pide el ejemplo y el cálculo del plan 2025', async () => {
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    const app = fixture.componentInstance as unknown as {
+      origen: { set: (v: string) => void };
+      probarEjemplo: () => Promise<void>;
+      nombreClar: () => string;
+    };
+    const http = TestBed.inject(HttpTestingController);
+    app.origen.set('clar2025');
+    expect(app.nombreClar()).toBe('CLAR 2025');
+    const carga = app.probarEjemplo();
+    const ejemplo = http.expectOne((r) => r.url === '/api/ejemplo');
+    expect(ejemplo.request.params.get('origen')).toBe('clar2025');
+    ejemplo.flush({ aprobados: [{ codigo: '0101', nombre: 'Área Matemática Básica 1', creditos: 9 }], cursando: [] });
+    await carga;
+    TestBed.tick();
+    const calculo = http.expectOne('/api/calculo');
+    expect(calculo.request.body.plan).toBe('2025');
+  });
+
   it('marca como CURSANDO los cursos que trae el ejemplo', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();

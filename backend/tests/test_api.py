@@ -23,7 +23,7 @@ def test_leer_texto_y_calcular(texto_ejemplo):
     # Claves en camelCase, como las usa Angular
     assert a["creditos2022"] == 187
     assert a["creditosSinEquivalencia"] == 12
-    assert "creditosObligatoriosPendientes" in a["pensum2022"]
+    assert "creditosObligatoriosPendientes" in a["clar"]
     assert a["pierdenDisponibilidad"][0]["curso"]["codigo"] == "0797"
     assert [e["vacaciones"] for e in datos["escenarios"]] == [0, 1, 2]
     assert datos["escenarios"][0]["ruta"]["cierre"]
@@ -83,7 +83,7 @@ def test_inicio_con_url_absoluta():
 
 
 def test_estudiante_de_ejemplo_quinto_semestre():
-    for origen, clave in (("clar2022", "pensum2022"), ("traslado", "pensum2021")):
+    for origen, clave in (("clar2022", "clar"), ("traslado", "pensum2021")):
         aprobados = cliente.get("/api/ejemplo", params={"origen": origen}).json()["aprobados"]
         assert aprobados
         datos = cliente.post("/api/calculo", json={"aprobados": aprobados, "hoy": "2026-10-28"}).json()

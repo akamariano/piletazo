@@ -39,8 +39,10 @@ export interface CursoAprobado {
 // ---------- Respuesta de la API (/api/calculo) ----------
 
 export type Modalidad = 'eps' | 'tesis';
-/** Con qué pensum empezó el estudiante: el anterior (traslado al CLAR) o CLAR 2022 desde el inicio. */
-export type Origen = 'traslado' | 'clar2022';
+/** Con qué pensum empezó el estudiante: el anterior (trasladado al CLAR 2022), CLAR 2022 o CLAR 2025. */
+export type Origen = 'traslado' | 'clar2022' | 'clar2025';
+/** Pensum CLAR que lleva el estudiante. */
+export type Plan = '2022' | '2025';
 export type EstadoCurso = 'aprobado' | 'disponible' | 'bloqueado';
 export type DuracionPracticas = 1 | 2; // semestres: 6 meses o 1 año
 export type CursosPorVacaciones = 0 | 1 | 2;
@@ -115,7 +117,7 @@ export interface Analisis {
   gananDisponibilidad: CursoRed[];
   cambiosPrerrequisitos: CursoRed[];
   pensum2021: ProgresoPensum;
-  pensum2022: ProgresoPensum;
+  clar: ProgresoPensum;
 }
 
 export interface CursoRecomendado {

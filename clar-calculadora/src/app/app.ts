@@ -17,6 +17,7 @@ import {
   Modalidad,
   Avisos,
   Origen,
+  Plan,
   PromedioMeta,
   RespuestaCalculo,
   ValidacionCursando,
@@ -69,6 +70,18 @@ export class App {
   protected readonly vacaciones = signal<CursosPorVacaciones>(0);
   protected readonly modalidad = signal<Modalidad>('eps');
   protected readonly origen = signal<Origen>('traslado');
+  protected readonly plan = computed<Plan>(() => (this.origen() === 'clar2025' ? '2025' : '2022'));
+  protected readonly nombreClar = computed(() => `CLAR ${this.plan()}`);
+  /** Empezó directamente en un pensum CLAR: no hay traslado ni pensum anterior que mostrar. */
+  protected readonly soloClar = computed(() => this.origen() !== 'traslado');
+  protected readonly descripcionOrigen = computed(
+    () =>
+      ({
+        traslado: 'pensum anterior trasladado al CLAR 2022',
+        clar2022: 'CLAR 2022',
+        clar2025: 'CLAR 2025',
+      })[this.origen()],
+  );
   /** Cursos que el estudiante lleva este semestre: cuentan como aprobados con 61. */
   protected readonly cursando = signal<string[]>([]);
   protected readonly errorCursando = signal('');
@@ -110,6 +123,7 @@ export class App {
         cargaMaxima: this.cargaMaxima(),
         practicas: this.practicas(),
         vacaciones: this.vacaciones(),
+        plan: this.plan(),
       },
     };
   });
@@ -172,11 +186,11 @@ export class App {
   /** Cursos marcados como CURSANDO, en el orden de la red CLAR 2022. */
   protected readonly cursosCursando = computed(() => {
     const cursando = this.conjuntoCursando();
-    return (this.analisis()?.pensum2022.red ?? []).filter((r) => cursando.has(r.curso.codigo));
+    return (this.analisis()?.clar.red ?? []).filter((r) => cursando.has(r.curso.codigo));
   });
 
   protected readonly creditosCursando = computed(() => {
-    const red = this.analisis()?.pensum2022.red ?? [];
+    const red = this.analisis()?.clar.red ?? [];
     const cursando = this.conjuntoCursando();
     return red.filter((r) => cursando.has(r.curso.codigo)).reduce((s, r) => s + r.curso.creditos, 0);
   });
@@ -184,11 +198,11 @@ export class App {
   protected readonly progreso = computed(() => {
     const a = this.analisis();
     if (!a) return null;
-    return this.vista() === '2022' || this.origen() === 'clar2022' ? a.pensum2022 : a.pensum2021;
+    return this.vista() === '2022' || this.soloClar() ? a.clar : a.pensum2021;
   });
 
   protected readonly unidad = computed(() =>
-    this.vista() === '2022' || this.origen() === 'clar2022' ? 'CLAR' : 'créditos',
+    this.vista() === '2022' || this.soloClar() ? 'CLAR' : 'créditos',
   );
 
   protected readonly proyeccion = computed(() => {
@@ -365,6 +379,7 @@ export class App {
           aprobados: this.aprobados(),
           codigo,
           modalidad: this.modalidad(),
+          plan: this.plan(),
         }),
       );
       if (v.valido) {
@@ -410,7 +425,7 @@ export class App {
 
   protected readonly nombreTarjeta = computed(() => (this.ejemplo() ? 'Estudiante de ejemplo' : this.nombre().trim()));
   protected readonly porcentajeCarrera = computed(() => {
-    const p = this.analisis()?.pensum2022;
+    const p = this.analisis()?.clar;
     return p && p.cierre ? Math.min(100, Math.round((p.creditos * 100) / p.cierre)) : 0;
   });
   private readonly textoCompartir = computed(
@@ -440,6 +455,7 @@ export class App {
         practicas: this.practicas(),
         vacaciones: this.vacaciones(),
         origen: this.origen(),
+        plan: this.plan(),
         nombre: this.nombreTarjeta(),
         incluir: this.incluirTarjeta(),
         formato,
@@ -601,7 +617,7 @@ export class App {
     this.aprobados.set(p['aprobados'] as CursoAprobado[]);
     this.cursando.set(Array.isArray(p['cursando']) ? (p['cursando'] as string[]) : []);
     if (p['modalidad'] === 'eps' || p['modalidad'] === 'tesis') this.modalidad.set(p['modalidad']);
-    if (p['origen'] === 'traslado' || p['origen'] === 'clar2022') this.origen.set(p['origen']);
+    if (p['origen'] === 'traslado' || p['origen'] === 'clar2022' || p['origen'] === 'clar2025') this.origen.set(p['origen']);
     if (typeof p['cargaMaxima'] === 'number') this.cargaMaxima.set(p['cargaMaxima']);
     if (p['practicas'] === 1 || p['practicas'] === 2) this.practicas.set(p['practicas']);
     if (p['vacaciones'] === 0 || p['vacaciones'] === 1 || p['vacaciones'] === 2) this.vacaciones.set(p['vacaciones']);
@@ -664,6 +680,7 @@ export class App {
           vacaciones: this.vacaciones(),
           cursando: this.cursando(),
           origen: this.origen(),
+          plan: this.plan(),
           nombre: this.nombre().trim(),
           carne: this.carne().trim(),
         }, { responseType: 'blob' }),

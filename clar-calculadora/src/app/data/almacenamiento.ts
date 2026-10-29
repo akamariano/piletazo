@@ -11,7 +11,7 @@ export interface DatosGuardados {
   practicas?: 1 | 2;
   vacaciones?: 0 | 1 | 2;
   modalidad?: 'eps' | 'tesis';
-  origen?: 'traslado' | 'clar2022';
+  origen?: 'traslado' | 'clar2022' | 'clar2025';
   cursando?: string[];
 }
 

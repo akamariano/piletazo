@@ -1,4 +1,4 @@
-"""Carga de las redes curriculares (pensum anterior y CLAR 2022) desde los JSON de `datos/`."""
+"""Carga de las redes curriculares (pensum anterior, CLAR 2022 y CLAR 2025) desde los JSON de `datos/`."""
 
 from __future__ import annotations
 
@@ -11,7 +11,9 @@ from typing import Dict, List, Literal, Optional
 DATOS = Path(__file__).parent / "datos"
 
 Modalidad = Literal["eps", "tesis"]
-ClavePensum = Literal["2021", "2022"]
+ClavePensum = Literal["2021", "2022", "2025"]
+# Pensum CLAR que lleva el estudiante. Quien viene del pensum anterior se trasladó al CLAR 2022.
+Plan = Literal["2022", "2025"]
 
 # Con EPS se asigna además el Seminario de Investigación E.P.S. (7999);
 # con tesis de investigación solo se lleva el Seminario de Investigación (0799).
@@ -78,7 +80,8 @@ def pensum(clave: ClavePensum, modalidad: Modalidad = "eps") -> Pensum:
 
 @lru_cache(maxsize=None)
 def catalogo() -> Dict[str, str]:
-    """Nombre de cada curso por código, prefiriendo el nombre del CLAR 2022."""
+    """Nombre de cada curso por código; si un código está en varias redes, gana el nombre del CLAR 2022."""
     nombres = {c.codigo: c.nombre for c in _leer("2021").cursos}
+    nombres.update({c.codigo: c.nombre for c in _leer("2025").cursos})
     nombres.update({c.codigo: c.nombre for c in _leer("2022").cursos})
     return nombres
