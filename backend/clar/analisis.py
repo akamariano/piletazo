@@ -1,0 +1,220 @@
+"""Comparación del historial del estudiante entre el pensum anterior y el CLAR 2022."""
+
+from __future__ import annotations
+
+import re
+from dataclasses import dataclass, field
+from typing import Dict, Iterable, List, Literal, Optional, Set
+
+from .entrada import CursoAprobado
+from .pensums import Curso, Modalidad, Pensum, RequisitoArea, catalogo, pensum
+
+EstadoCurso = Literal["aprobado", "disponible", "bloqueado"]
+CREDITOS = re.compile(r"^(\d+)CR$")
+
+
+@dataclass
+class Equivalencia:
+    codigo: str
+    nombre: str
+    creditos2021: int
+    creditos2022: Optional[int]
+    diferencia: int
+    periodo: Optional[str] = None
+    observacion: Optional[str] = None
+
+
+@dataclass
+class CursoRed:
+    curso: Curso
+    estado: EstadoCurso
+    faltantes: List[str]
+    prerrequisitos2021: Optional[List[str]]
+    agregados: List[str] = field(default_factory=list)
+    quitados: List[str] = field(default_factory=list)
+    # Podía asignarse con el pensum anterior pero ya no con el CLAR 2022.
+    pierde_disponibilidad: bool = False
+    # No podía asignarse con el pensum anterior pero sí con el CLAR 2022.
+    gana_disponibilidad: bool = False
+    creditos2021: Optional[int] = None
+
+
+@dataclass
+class CursoArea:
+    codigo: str
+    nombre: str
+    creditos: int
+    aprobado: bool
+
+
+@dataclass
+class ProgresoArea:
+    area: RequisitoArea
+    cursos: List[CursoArea]
+    creditos: int
+    aprobados: int
+    logrado: int  # avance en la unidad del requisito (créditos o cursos)
+    total: int
+    cumple: Optional[bool]  # None cuando el requisito es solo informativo
+
+
+@dataclass
+class ProgresoPensum:
+    creditos: int
+    cierre: int
+    red: List[CursoRed]
+    obligatorios_pendientes: List[CursoRed]
+    creditos_obligatorios_pendientes: int
+    areas: List[ProgresoArea]
+
+
+@dataclass
+class Analisis:
+    modalidad: Modalidad
+    aprobados: List[CursoAprobado]
+    equivalencias: List[Equivalencia]
+    creditos2021: int
+    creditos2022: int
+    creditos_sin_equivalencia: int
+    pierden_disponibilidad: List[CursoRed]
+    ganan_disponibilidad: List[CursoRed]
+    cambios_prerrequisitos: List[CursoRed]
+    pensum2021: ProgresoPensum
+    pensum2022: ProgresoPensum
+
+    @property
+    def red(self) -> List[CursoRed]:
+        return self.pensum2022.red
+
+
+def cumple(prerrequisito: str, aprobados: Set[str], creditos: int) -> bool:
+    cr = CREDITOS.match(prerrequisito)
+    if cr:
+        return creditos >= int(cr[1])
+    return any(c in aprobados for c in prerrequisito.split("|"))
+
+
+def describir_prerrequisito(prerrequisito: str) -> str:
+    cr = CREDITOS.match(prerrequisito)
+    if cr:
+        return f"{cr[1]} créditos"
+    nombres = catalogo()
+    return " ó ".join(f"{c} {nombres[c]}" if c in nombres else c for c in prerrequisito.split("|"))
+
+
+def analizar(aprobados: List[CursoAprobado], modalidad: Modalidad = "eps") -> Analisis:
+    anterior = pensum("2021", modalidad)
+    clar = pensum("2022", modalidad)
+    por2021 = anterior.por_codigo
+    por2022 = clar.por_codigo
+    codigos = {a.codigo for a in aprobados}
+
+    equivalencias: List[Equivalencia] = []
+    for a in aprobados:
+        nuevo = por2022.get(a.codigo)
+        creditos2022 = nuevo.creditos if nuevo else None
+        nombre = nuevo.nombre if nuevo else (por2021[a.codigo].nombre if a.codigo in por2021 else a.nombre)
+        equivalencias.append(
+            Equivalencia(
+                codigo=a.codigo,
+                nombre=nombre,
+                creditos2021=a.creditos,
+                creditos2022=creditos2022,
+                diferencia=(creditos2022 or 0) - a.creditos,
+                periodo=a.periodo,
+                observacion=a.observacion,
+            )
+        )
+
+    creditos2021 = sum(e.creditos2021 for e in equivalencias)
+    creditos2022 = sum(e.creditos2022 or 0 for e in equivalencias)
+    sin_equivalencia = sum(e.creditos2021 for e in equivalencias if e.creditos2022 is None)
+
+    red: List[CursoRed] = []
+    for curso in clar.cursos:
+        previo = por2021.get(curso.codigo)
+        pre2021 = previo.prerrequisitos if previo else None
+        faltantes = [p for p in curso.prerrequisitos if not cumple(p, codigos, creditos2022)]
+        aprobado = curso.codigo in codigos
+        disponible2022 = not faltantes
+        disponible2021 = pre2021 is not None and all(cumple(p, codigos, creditos2021) for p in pre2021)
+        red.append(
+            CursoRed(
+                curso=curso,
+                estado="aprobado" if aprobado else "disponible" if disponible2022 else "bloqueado",
+                faltantes=faltantes,
+                prerrequisitos2021=pre2021,
+                agregados=[p for p in curso.prerrequisitos if not _incluye(pre2021, p)] if pre2021 is not None else [],
+                quitados=[p for p in pre2021 if not _incluye(curso.prerrequisitos, p)] if pre2021 is not None else [],
+                pierde_disponibilidad=not aprobado and disponible2021 and not disponible2022,
+                gana_disponibilidad=not aprobado and pre2021 is not None and not disponible2021 and disponible2022,
+                creditos2021=previo.creditos if previo else None,
+            )
+        )
+
+    red2021: List[CursoRed] = []
+    for curso in anterior.cursos:
+        faltantes = [p for p in curso.prerrequisitos if not cumple(p, codigos, creditos2021)]
+        red2021.append(
+            CursoRed(
+                curso=curso,
+                estado="aprobado" if curso.codigo in codigos else "bloqueado" if faltantes else "disponible",
+                faltantes=faltantes,
+                prerrequisitos2021=curso.prerrequisitos,
+                creditos2021=curso.creditos,
+            )
+        )
+
+    pendientes = [r for r in red if r.estado != "aprobado"]
+    return Analisis(
+        modalidad=modalidad,
+        aprobados=aprobados,
+        equivalencias=equivalencias,
+        creditos2021=creditos2021,
+        creditos2022=creditos2022,
+        creditos_sin_equivalencia=sin_equivalencia,
+        pierden_disponibilidad=[r for r in pendientes if r.pierde_disponibilidad],
+        ganan_disponibilidad=[r for r in pendientes if r.gana_disponibilidad],
+        cambios_prerrequisitos=[
+            r
+            for r in pendientes
+            if not r.pierde_disponibilidad and not r.gana_disponibilidad and (r.agregados or r.quitados)
+        ],
+        pensum2021=_progreso(red2021, creditos2021, anterior, codigos),
+        pensum2022=_progreso(red, creditos2022, clar, codigos),
+    )
+
+
+def _progreso(red: List[CursoRed], creditos: int, p: Pensum, codigos: Set[str]) -> ProgresoPensum:
+    obligatorios = [r for r in red if r.curso.obligatorio and r.estado != "aprobado"]
+    return ProgresoPensum(
+        creditos=creditos,
+        cierre=p.cierre,
+        red=red,
+        obligatorios_pendientes=obligatorios,
+        creditos_obligatorios_pendientes=sum(r.curso.creditos for r in obligatorios),
+        areas=[_progreso_area(a, p.por_codigo, codigos) for a in p.areas],
+    )
+
+
+def _progreso_area(area: RequisitoArea, cursos: Dict[str, Curso], codigos: Set[str]) -> ProgresoArea:
+    lista = [CursoArea(c, cursos[c].nombre, cursos[c].creditos, c in codigos) for c in area.cursos]
+    creditos = sum(c.creditos for c in lista if c.aprobado)
+    aprobados = sum(1 for c in lista if c.aprobado)
+    logrado = creditos if area.unidad == "creditos" else aprobados
+    total = sum(c.creditos for c in lista) if area.unidad == "creditos" else len(lista)
+    return ProgresoArea(
+        area=area,
+        cursos=lista,
+        creditos=creditos,
+        aprobados=aprobados,
+        logrado=logrado,
+        total=total,
+        cumple=None if area.minimo is None else logrado >= area.minimo,
+    )
+
+
+def _incluye(lista: Iterable[str], prerrequisito: str) -> bool:
+    """'0039' y '0039|0031' se consideran el mismo prerrequisito."""
+    opciones = set(prerrequisito.split("|"))
+    return any(opciones & set(p.split("|")) for p in lista)

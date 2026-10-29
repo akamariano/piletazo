@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="es-GT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>404 · Ruta no encontrada · Piletazo</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;600;700&family=Geist+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --suelo: #0d1117; --panel: #151a22; --costura: #262c36; --texto: #e6edf3; --texto-2: #b1bac4; --tenue: #8b949e;
+    --azul: #1d4ed8; --celeste: #38bdf8; --aqua: #2dd4bf; --espuma: #ccfbf1;
+    --curva: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; overflow: hidden; color: var(--texto); font-family: Geist, system-ui, sans-serif;
+    background:
+      radial-gradient(900px 500px at 80% -10%, rgb(29 78 216 / 0.18), transparent 70%),
+      radial-gradient(700px 420px at -10% 0%, rgb(45 212 191 / 0.08), transparent 70%),
+      radial-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px) 0 0 / 22px 22px,
+      var(--suelo);
+  }
+  ::selection { background: rgb(34 184 230 / 0.45); }
+
+  /* Fragmentos de la página que la ola se lleva */
+  .restos { position: absolute; inset: 0; }
+  .resto {
+    position: absolute; padding: 10px 14px; border: 1px solid var(--costura); border-radius: 6px;
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.03), transparent), var(--panel);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04), 0 14px 32px -18px rgb(1 4 9 / 0.9);
+    font-size: 13px; color: var(--texto-2); white-space: nowrap;
+    animation: arrastre 1.6s var(--curva) forwards;
+  }
+  .resto b { font-family: 'Geist Mono', monospace; color: var(--celeste); font-weight: 500; }
+  .resto .grande { display: block; font-family: 'Geist Mono', monospace; font-size: 28px; color: var(--texto); }
+  .digito { position: absolute; font-family: 'Geist Mono', monospace; font-weight: 700; color: rgb(56 189 248 / 0.5); animation: arrastre 1.4s var(--curva) forwards; }
+
+  @keyframes arrastre {
+    to { transform: translate(-120vw, 30vh) rotate(-38deg); opacity: 0; }
+  }
+
+  /* La ola que barre la pantalla de derecha a izquierda */
+  .ola-grande {
+    position: absolute; top: 0; bottom: 0; right: 0; width: 160vw; height: 100%;
+    transform: translateX(100%);
+    animation: barrido 2.6s cubic-bezier(0.55, 0, 0.25, 1) 0.25s forwards;
+    pointer-events: none; z-index: 3;
+  }
+  @keyframes barrido {
+    to { transform: translateX(-120vw); }
+  }
+
+  /* Oleaje que queda al fondo */
+  .oleaje { position: absolute; left: 0; right: 0; bottom: 0; height: 34vh; overflow: hidden; opacity: 0; animation: aparecer 1s ease 2.2s forwards; }
+  .oleaje svg { position: absolute; bottom: 0; left: 0; width: 200%; height: 100%; animation: mecer 16s linear infinite; }
+  .oleaje svg:nth-child(2) { height: 76%; animation-duration: 11s; animation-direction: reverse; }
+  .oleaje svg:nth-child(3) { height: 52%; animation-duration: 8s; }
+  @keyframes mecer { to { transform: translateX(-50%); } }
+
+  /* Mensaje */
+  .mensaje {
+    position: relative; z-index: 2; height: 100%; display: grid; place-content: center; justify-items: center;
+    text-align: center; padding: 24px 16px 30vh; gap: 10px;
+    opacity: 0; transform: translateY(14px); animation: aparecer 0.9s var(--curva) 2.1s forwards;
+  }
+  @keyframes aparecer { to { opacity: 1; transform: none; } }
+  .codigo {
+    margin: 0; font-family: 'Geist Mono', monospace; font-weight: 700; font-size: clamp(64px, 14vw, 132px); line-height: 1;
+    letter-spacing: -0.04em; color: var(--espuma);
+    text-shadow: 0 10px 40px rgb(45 212 191 / 0.25);
+  }
+  h1 { margin: 6px 0 0; font-size: clamp(22px, 4vw, 30px); font-weight: 700; letter-spacing: -0.02em; }
+  .detalle { margin: 0; max-width: 46ch; color: var(--texto-2); line-height: 1.6; }
+  .acciones { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 14px; }
+  .boton {
+    display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 6px; text-decoration: none;
+    font-weight: 600; font-size: 15px; border: 1px solid #3a4250; color: var(--texto);
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.04), transparent), #1b212b;
+    transition: transform 0.15s var(--curva), border-color 0.15s ease;
+  }
+  .boton:hover { transform: translateY(-1px); border-color: #5b6575; }
+  .boton.primario { background: linear-gradient(135deg, var(--celeste), var(--aqua)); border-color: #7dd3fc; color: #04202a;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), 0 8px 18px -8px rgb(45 212 191 / 0.7); }
+  .boton:focus-visible { outline: 2px solid var(--celeste); outline-offset: 2px; }
+  .ruta { font-family: 'Geist Mono', monospace; font-size: 13px; color: var(--tenue); word-break: break-all; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .resto, .digito, .ola-grande { display: none; }
+    .mensaje, .oleaje { animation: none; opacity: 1; transform: none; }
+    .oleaje svg { animation: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="restos" aria-hidden="true">
+    <div class="resto" style="left:12%;top:14%;animation-delay:1.55s"><span class="grande">204</span>/ 300 CLAR</div>
+    <div class="resto" style="left:58%;top:10%;animation-delay:1.05s"><b>0283</b> Análisis y Diseño de Sistemas 1</div>
+    <div class="resto" style="left:72%;top:34%;animation-delay:0.85s"><b>0975</b> Redes de Computadoras 2</div>
+    <div class="resto" style="left:30%;top:42%;animation-delay:1.35s">Avance por semestre · Octavo</div>
+    <div class="resto" style="left:8%;top:62%;animation-delay:1.7s">Social Humanística · 7 / 8</div>
+    <div class="resto" style="left:52%;top:66%;animation-delay:1.2s"><b>0797</b> Seminario de Sistemas 1</div>
+    <span class="digito" style="left:86%;top:18%;font-size:22px;animation-delay:0.7s">1</span>
+    <span class="digito" style="left:44%;top:22%;font-size:30px;animation-delay:1.25s">0</span>
+    <span class="digito" style="left:22%;top:30%;font-size:18px;animation-delay:1.45s">1</span>
+    <span class="digito" style="left:80%;top:58%;font-size:26px;animation-delay:0.8s">0</span>
+    <span class="digito" style="left:38%;top:80%;font-size:20px;animation-delay:1.3s">1</span>
+  </div>
+
+  <svg class="ola-grande" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="agua" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#2dd4bf"/>
+        <stop offset="0.35" stop-color="#38bdf8"/>
+        <stop offset="1" stop-color="#1d4ed8"/>
+      </linearGradient>
+      <pattern id="binario" width="44" height="40" patternUnits="userSpaceOnUse">
+        <text x="4" y="16" font-family="Geist Mono, monospace" font-size="15" font-weight="700" fill="rgb(204 251 241 / 0.35)">10</text>
+        <text x="20" y="36" font-family="Geist Mono, monospace" font-size="15" font-weight="700" fill="rgb(204 251 241 / 0.25)">01</text>
+      </pattern>
+    </defs>
+    <!-- frente de la ola con la cresta curvándose hacia la izquierda -->
+    <path d="M1600 0 H330 C250 0 170 40 130 110 C90 180 120 250 190 260 C250 268 280 220 250 180 C230 150 190 160 200 190
+             C150 260 160 420 220 560 C270 680 300 800 260 900 H1600 Z" fill="url(#agua)"/>
+    <path d="M1600 0 H330 C250 0 170 40 130 110 C90 180 120 250 190 260 C250 268 280 220 250 180 C230 150 190 160 200 190
+             C150 260 160 420 220 560 C270 680 300 800 260 900 H1600 Z" fill="url(#binario)"/>
+    <path d="M330 0 C250 0 170 40 130 110 C90 180 120 250 190 260 C250 268 280 220 250 180" fill="none" stroke="#ccfbf1" stroke-width="10" stroke-linecap="round"/>
+    <g fill="#ccfbf1">
+      <circle cx="90" cy="70" r="9"/><circle cx="60" cy="130" r="6"/><circle cx="100" cy="200" r="5"/><circle cx="40" cy="60" r="4"/>
+    </g>
+  </svg>
+
+  <div class="oleaje" aria-hidden="true">
+    <svg viewBox="0 0 2880 200" preserveAspectRatio="none"><path fill="rgb(29 78 216 / 0.35)" d="M0 120 C 240 60 480 60 720 120 S 1200 180 1440 120 S 1920 60 2160 120 S 2640 180 2880 120 V200 H0Z"/></svg>
+    <svg viewBox="0 0 2880 200" preserveAspectRatio="none"><path fill="rgb(56 189 248 / 0.28)" d="M0 110 C 180 150 540 150 720 110 S 1260 70 1440 110 S 1980 150 2160 110 S 2700 70 2880 110 V200 H0Z"/></svg>
+    <svg viewBox="0 0 2880 200" preserveAspectRatio="none"><path fill="rgb(45 212 191 / 0.32)" d="M0 140 C 320 100 400 100 720 140 S 1120 180 1440 140 S 1840 100 2160 140 S 2560 180 2880 140 V200 H0Z"/></svg>
+  </div>
+
+  <main class="mensaje">
+    <p class="codigo">404</p>
+    <h1>Error: ruta no encontrada o recurso no disponible</h1>
+    <p class="detalle">La ola se llevó esta página. Puede que el enlace esté mal escrito o que el recurso ya no exista.</p>
+    <p class="ruta" id="ruta"></p>
+    <div class="acciones">
+      <a class="boton primario" href="/">Volver a Piletazo</a>
+      <a class="boton" href="mailto:marianoracnoguera@gmail.com?subject=Calculadora%20CLAR">Reportar el problema</a>
+    </div>
+  </main>
+  <script>
+    document.getElementById('ruta').textContent = location.pathname;
+  </script>
+</body>
+</html>

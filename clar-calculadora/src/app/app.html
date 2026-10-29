@@ -1,0 +1,935 @@
+<div class="fondo-olas" aria-hidden="true">
+  <svg class="ola ola-1" viewBox="0 0 2880 200" preserveAspectRatio="none"><path d="M0 120 C 240 60 480 60 720 120 S 1200 180 1440 120 S 1920 60 2160 120 S 2640 180 2880 120 V200 H0Z" /></svg>
+  <svg class="ola ola-2" viewBox="0 0 2880 200" preserveAspectRatio="none"><path d="M0 110 C 180 150 540 150 720 110 S 1260 70 1440 110 S 1980 150 2160 110 S 2700 70 2880 110 V200 H0Z" /></svg>
+  <svg class="ola ola-3" viewBox="0 0 2880 200" preserveAspectRatio="none"><path d="M0 150 C50 150 95 128 125 96 C145 74 180 66 205 84 C218 94 212 112 194 108 C222 138 270 150 360 150 C410 150 455 128 485 96 C505 74 540 66 565 84 C578 94 572 112 554 108 C582 138 630 150 720 150 C770 150 815 128 845 96 C865 74 900 66 925 84 C938 94 932 112 914 108 C942 138 990 150 1080 150 C1130 150 1175 128 1205 96 C1225 74 1260 66 1285 84 C1298 94 1292 112 1274 108 C1302 138 1350 150 1440 150 C1490 150 1535 128 1565 96 C1585 74 1620 66 1645 84 C1658 94 1652 112 1634 108 C1662 138 1710 150 1800 150 C1850 150 1895 128 1925 96 C1945 74 1980 66 2005 84 C2018 94 2012 112 1994 108 C2022 138 2070 150 2160 150 C2210 150 2255 128 2285 96 C2305 74 2340 66 2365 84 C2378 94 2372 112 2354 108 C2382 138 2430 150 2520 150 C2570 150 2615 128 2645 96 C2665 74 2700 66 2725 84 C2738 94 2732 112 2714 108 C2742 138 2790 150 2880 150 V200 H0Z" /></svg>
+</div>
+
+@if (cargando()) {
+  <div class="carga-flotante">
+    <app-cargando-ola [texto]="cargando()" />
+  </div>
+}
+
+<div class="shell">
+  <aside class="rail">
+    <div class="marca">
+      <app-logo class="marca-logo" variante="simple" />
+      <div>
+        <strong>Piletazo</strong>
+        <small>Tu camino al cierre · no oficial</small>
+      </div>
+    </div>
+
+    @if (analisis()) {
+      <nav class="nav" aria-label="Secciones">
+        @for (s of seccionesVisibles(); track s.id) {
+          <a
+            [href]="'#' + s.id"
+            [class.activa]="seccionActiva() === s.id"
+            [attr.aria-current]="seccionActiva() === s.id ? 'location' : null"
+            (click)="seccionActiva.set(s.id)"
+            ><app-icono [nombre]="s.icono" />{{ s.etiqueta }}</a
+          >
+        }
+      </nav>
+    }
+
+    <section class="perfil" aria-labelledby="perfil-titulo">
+      <h2 id="perfil-titulo" class="rotulo">Estudiante</h2>
+      <label class="campo">
+        <span>Nombre</span>
+        <input type="text" autocomplete="name" placeholder="Tu nombre" [value]="nombre()" (input)="nombre.set($any($event.target).value)" />
+      </label>
+      <label class="campo">
+        <span>Carné</span>
+        <input type="text" inputmode="numeric" placeholder="2021XXXXX" [value]="carne()" (input)="carne.set($any($event.target).value)" />
+      </label>
+      <p class="estado-guardado">
+        <app-icono nombre="guardar" />
+        @switch (consentimiento()) {
+          @case ('si') { Guardado en este navegador }
+          @case ('no') { No se guarda nada }
+          @default { Sin guardar todavía }
+        }
+      </p>
+    </section>
+
+    @if (analisis() || consentimiento()) {
+    <div class="rail-acciones">
+      @if (analisis()) {
+        <button class="boton primario" (click)="descargarPdf()" [disabled]="descargando()">
+          <app-icono nombre="descargar" />{{ descargando() ? 'Generando PDF…' : 'Descargar PDF' }}
+        </button>
+        <button class="boton" (click)="imprimir()"><app-icono nombre="impresora" />Imprimir reporte</button>
+        <button class="boton" (click)="editandoEntrada.set(!editandoEntrada())">
+          <app-icono nombre="editar" />{{ editandoEntrada() ? 'Cerrar edición' : 'Cambiar cursos' }}
+        </button>
+      }
+      @if (consentimiento() || analisis()) {
+        <button class="boton peligro" (click)="olvidar()"><app-icono nombre="basura" />Borrar mis datos</button>
+      }
+    </div>
+    }
+  </aside>
+
+  <main class="principal">
+    <a class="creador" href="https://akamariano.github.io/" target="_blank" rel="noopener">
+      <app-marca-mr class="creador-mr" />
+      <span class="creador-texto">Creado por <b>Mariano Rac</b> · desarrollador de software</span>
+      <span class="creador-sitio">Visita mi sitio<app-icono nombre="externo" /></span>
+    </a>
+
+    @if (pedirPermiso()) {
+      <section class="aviso-guardar" role="region" aria-label="Guardar datos">
+        <app-icono nombre="guardar" />
+        <div>
+          <strong>¿Guardar tus datos en este navegador?</strong>
+          <p>Tu nombre, carné y cursos quedarían solo en este dispositivo para no volver a cargarlos. Puedes borrarlos cuando quieras.</p>
+        </div>
+        <div class="aviso-acciones">
+          <button class="boton primario" (click)="responderPermiso('si')">Guardar</button>
+          <button class="boton" (click)="responderPermiso('no')">No, gracias</button>
+        </div>
+      </section>
+    }
+
+    @if (!analisis() && !editandoEntrada()) {
+      <section class="presentacion">
+        <app-logo class="presentacion-logo" />
+        <div class="presentacion-texto">
+          <h1>Piletazo</h1>
+          <p class="presentacion-lema">Tu camino al cierre de pensum en Ingeniería en Ciencias y Sistemas de la USAC.</p>
+          <p>
+            En la Facultad de Ingeniería, cerrar pensum se celebra con el piletazo. Esta app te ayuda a llegar ahí:
+            carga tus cursos aprobados y mira cuánto llevas en el pensum CLAR 2022 y en la red de pensum, qué te conviene asignarte y en qué semestre cerrarías.
+          </p>
+          <p class="presentacion-origen">
+            Piletazo nació como un proyecto personal: lo hice para calcular y verificar mi propio futuro en la facultad
+            después del cambio al CLAR, y ahora lo comparto con quien le sirva. — Mariano
+          </p>
+        </div>
+        <ul class="para-quien">
+          <li>
+            <app-icono nombre="comparar" />
+            <div><strong>Si te trasladaron al CLAR 2022</strong><span>Cuántos créditos conservas, qué cambió en prerrequisitos y en valor de créditos.</span></div>
+          </li>
+          <li>
+            <app-icono nombre="pipeline" />
+            <div><strong>Si empezaste en CLAR 2022</strong><span>Tu avance por semestre, áreas, próximos cursos y rutas para cerrar.</span></div>
+          </li>
+          <li class="pronto">
+            <app-icono nombre="calendario" />
+            <div><strong>CLAR 2025 <span class="estado tenue">Próximamente</span></strong><span>Estamos preparando la red del pensum 2025.</span></div>
+          </li>
+          <li class="pronto">
+            <app-icono nombre="libro" />
+            <div><strong>Más carreras de Ingeniería <span class="estado tenue">Próximamente</span></strong><span>Civil, Industrial, Mecánica, Eléctrica, Química y las demás carreras de la Facultad.</span></div>
+          </li>
+          <li class="pronto">
+            <app-icono nombre="arrastrar" />
+            <div><strong>Arma tu plan a mano <span class="estado tenue">Próximamente</span></strong><span>Arrastra y suelta cursos en cada semestre y escuela de vacaciones restante.</span></div>
+          </li>
+        </ul>
+      </section>
+    }
+
+    @if (!analisis() || editandoEntrada()) {
+      <section class="panel entrada">
+        <header class="panel-cabecera">
+          <h2 class="entrada-titulo">{{ analisis() ? 'Cambiar cursos aprobados' : 'Carga tus cursos aprobados' }}</h2>
+        </header>
+        <fieldset class="segmentado origen">
+          <legend>¿Con qué pensum empezaste?</legend>
+          <label><input type="radio" name="origen" [checked]="origen() === 'traslado'" (change)="origen.set('traslado')" /><span>Pensum anterior · me trasladaron al CLAR</span></label>
+          <label><input type="radio" name="origen" [checked]="origen() === 'clar2022'" (change)="origen.set('clar2022')" /><span>CLAR 2022 desde el inicio</span></label>
+          <label class="deshabilitado" title="Próximamente"><input type="radio" name="origen" disabled /><span>CLAR 2025 · próximamente</span></label>
+        </fieldset>
+        <div class="pestanas" role="tablist">
+          <button role="tab" [class.activa]="modo() === 'pegar'" [attr.aria-selected]="modo() === 'pegar'" (click)="modo.set('pegar')">
+            <app-icono nombre="portapapeles" />Pegar cursos
+          </button>
+          <button role="tab" [class.activa]="modo() === 'archivo'" [attr.aria-selected]="modo() === 'archivo'" (click)="modo.set('archivo')">
+            <app-icono nombre="subir" />Subir archivo
+          </button>
+        </div>
+
+        @if (modo() === 'pegar') {
+          <p class="ayuda">En el portal abre <strong>Cursos aprobados</strong>, selecciona la tabla, cópiala y pégala aquí.</p>
+          <textarea
+            rows="10"
+            spellcheck="false"
+            aria-label="Cursos aprobados"
+            placeholder="0101    AREA MATEMATICA BASICA 1    7    2021-05    69.00&#10;0103    AREA MATEMATICA BASICA 2    7    2021-07    71.00&#10;…"
+            [value]="texto()"
+            (input)="texto.set($any($event.target).value)"
+          ></textarea>
+          <div class="fila-acciones">
+            <button class="boton primario" (click)="calcularDesdeTexto()" [disabled]="!texto().trim() || leyendo()">
+              {{ leyendo() ? 'Leyendo cursos…' : 'Calcular' }}
+            </button>
+          </div>
+        } @else {
+          <p class="ayuda">
+            Sube tu red curricular guardada desde el portal (<em>Guardar como → Página web completa</em>; basta el <code>.html</code>) o un <code>.txt</code> con tus cursos.
+          </p>
+          <label class="zona-archivo">
+            <input type="file" accept=".html,.htm,.txt" (change)="cargarArchivos($event)" />
+            <app-icono nombre="subir" />
+            <span>{{ nombreArchivo() || 'Elegir archivo .html o .txt' }}</span>
+          </label>
+        }
+
+        <div class="probar">
+          <div>
+            <strong>¿Solo quieres ver cómo funciona?</strong>
+            <span>Carga un estudiante de {{ origen() === 'clar2022' ? 'CLAR 2022' : 'pensum anterior trasladado al CLAR' }} que acaba de terminar 5.º semestre.</span>
+          </div>
+          <button type="button" class="boton" (click)="probarEjemplo()" [disabled]="leyendo()">
+            <app-icono nombre="pipeline" />Probar con un ejemplo
+          </button>
+        </div>
+
+        @if (error() || (errorServidor() && !analisis())) {
+          <p class="error" role="alert"><app-icono nombre="alerta" />{{ error() || errorServidor() }}</p>
+        }
+
+      </section>
+    }
+
+    @if (analisis(); as a) {
+      @if (progreso(); as p) {
+        @if (ejemplo()) {
+          <section class="aviso-ejemplo" role="status">
+            <app-icono nombre="pipeline" />
+            <div>
+              <strong>Estás viendo un ejemplo</strong>
+              <p>
+                Estudiante de {{ origen() === 'clar2022' ? 'CLAR 2022' : 'pensum anterior trasladado al CLAR 2022' }} que acaba de terminar 5.º semestre:
+                todos los obligatorios del 1.º al 5.º, Idioma Técnico 1 y 2 y Deportes 1. No se guarda nada.
+              </p>
+            </div>
+            <div class="aviso-acciones">
+              <button class="boton primario" (click)="salirDelEjemplo(); editandoEntrada.set(true)">Cargar mis cursos</button>
+              <button class="boton" (click)="salirDelEjemplo()">Salir del ejemplo</button>
+            </div>
+          </section>
+        }
+
+        <header class="barra-superior">
+          <div>
+            <h1>{{ ejemplo() ? 'Estudiante de ejemplo' : nombre().trim() ? nombre().trim() : 'Tu situación' }}</h1>
+            <p>
+              @if (carne().trim() && !ejemplo()) { Carné {{ carne().trim() }} · }
+              {{ a.aprobados.length }} cursos aprobados
+            </p>
+          </div>
+          <div class="controles-superiores">
+          <button class="boton primario boton-pdf" (click)="descargarPdf()" [disabled]="descargando()">
+            <app-icono nombre="descargar" />{{ descargando() ? 'Generando…' : 'Exportar PDF' }}
+          </button>
+          <fieldset class="segmentado modalidad">
+            <legend>Modalidad de graduación</legend>
+            <label title="Llevas 0799 y además 7999 Seminario de Investigación E.P.S.">
+              <input type="radio" name="modalidad" [checked]="modalidad() === 'eps'" (change)="modalidad.set('eps')" /><span>EPS</span>
+            </label>
+            <label title="Solo llevas 0799 Seminario de Investigación">
+              <input type="radio" name="modalidad" [checked]="modalidad() === 'tesis'" (change)="modalidad.set('tesis')" /><span>Tesis</span>
+            </label>
+          </fieldset>
+          @if (origen() === 'traslado') {
+          <label class="selector">
+            <span>Ver progreso en</span>
+            <select [value]="vista()" (change)="vista.set($any($event.target).value)">
+              <option value="2022">Pensum CLAR 2022 (actual)</option>
+              <option value="2021">Pensum anterior al CLAR</option>
+            </select>
+          </label>
+          }
+          </div>
+        </header>
+
+        @if (errorPdf()) {
+          <p class="error" role="alert"><app-icono nombre="alerta" />{{ errorPdf() }}</p>
+        }
+        @if (errorServidor()) {
+          <p class="error" role="alert"><app-icono nombre="alerta" />{{ errorServidor() }} Se muestra el último cálculo.</p>
+        }
+        <p class="nota-modalidad">
+          <app-icono nombre="libro" />
+          @if (modalidad() === 'eps') {
+            Con <b>EPS</b> llevas 0799 Seminario de Investigación y además 7999 Seminario de Investigación E.P.S. Sistemas (también aplica a Pregrado-Postgrado).
+          } @else {
+            Con <b>tesis de investigación</b> solo llevas 0799 Seminario de Investigación; 7999 Seminario de Investigación E.P.S. queda como optativo.
+          }
+        </p>
+
+        <section id="resumen" class="panel">
+          <header class="panel-cabecera fila">
+            <h2>Créditos {{ unidad() === 'CLAR' ? 'CLAR 2022' : 'del pensum anterior' }}</h2>
+            <label class="interruptor">
+              <input type="checkbox" role="switch" [checked]="proyectar()" (change)="proyectar.set($any($event.target).checked)" />
+              <span class="pista" aria-hidden="true"></span>
+              Proyectar obligatorios pendientes
+            </label>
+          </header>
+
+          <div class="medidor">
+            <p class="cifra">
+              <span class="num">{{ proyectar() ? proyeccion()!.total : p.creditos }}</span>
+              <span class="de">/ {{ p.cierre }} {{ unidad() }}</span>
+            </p>
+            <div class="barra-credito" role="img" [attr.aria-label]="p.creditos + ' de ' + p.cierre + ' ' + unidad()">
+              <div class="relleno" [style.width.%]="porcentaje(p.creditos, p.cierre)"></div>
+              @if (proyectar()) {
+                <div
+                  class="relleno proyectado"
+                  [style.left.%]="porcentaje(p.creditos, p.cierre)"
+                  [style.width.%]="porcentaje(proyeccion()!.total, p.cierre) - porcentaje(p.creditos, p.cierre)"
+                ></div>
+              }
+            </div>
+            @if (proyectar()) {
+              <p class="nota-medidor">
+                Hoy tienes <b class="num">{{ p.creditos }}</b>. Si apruebas los <b>{{ proyeccion()!.cursos }}</b> obligatorios pendientes
+                (<b class="num">{{ proyeccion()!.creditos }}</b> {{ unidad() }}) llegarías a <b class="num">{{ proyeccion()!.total }}</b>.
+                @if (proyeccion()!.optativosFaltantes > 0) {
+                  Te faltarían <b class="num">{{ proyeccion()!.optativosFaltantes }}</b> {{ unidad() }} de cursos optativos para cerrar.
+                } @else {
+                  Con eso alcanzarías los {{ p.cierre }} {{ unidad() }} del cierre.
+                }
+              </p>
+            } @else {
+              <p class="nota-medidor">
+                Te faltan <b class="num">{{ p.cierre - p.creditos > 0 ? p.cierre - p.creditos : 0 }}</b> {{ unidad() }} para cerrar ·
+                {{ porcentaje(p.creditos, p.cierre).toFixed(0) }}% de la carrera.
+              </p>
+            }
+          </div>
+
+          <dl class="datos">
+            @if (origen() === 'traslado') {
+              <div>
+                <dt>{{ vista() === '2022' ? 'Pensum anterior' : 'CLAR 2022' }}</dt>
+                <dd>
+                  <span class="num">{{ vista() === '2022' ? a.creditos2021 : a.creditos2022 }}</span>
+                  <small>/ {{ vista() === '2022' ? a.pensum2021.cierre : a.pensum2022.cierre }}</small>
+                </dd>
+              </div>
+              <div>
+                <dt>Diferencia por el traslado</dt>
+                <dd [class.sube]="a.creditos2022 > a.creditos2021" [class.baja]="a.creditos2022 < a.creditos2021">
+                  <span class="num">{{ a.creditos2022 - a.creditos2021 > 0 ? '+' : '' }}{{ a.creditos2022 - a.creditos2021 }}</span>
+                </dd>
+              </div>
+              <div>
+                <dt>Sin equivalencia en CLAR</dt>
+                <dd [class.baja]="a.creditosSinEquivalencia > 0"><span class="num">{{ a.creditosSinEquivalencia }}</span><small>créditos</small></dd>
+              </div>
+            } @else {
+              <div>
+                <dt>Cursos aprobados</dt>
+                <dd><span class="num">{{ a.aprobados.length }}</span><small>cursos</small></dd>
+              </div>
+              <div>
+                <dt>Obligatorios por aprobar</dt>
+                <dd><span class="num">{{ p.creditosObligatoriosPendientes }}</span><small>CLAR</small></dd>
+              </div>
+              <div>
+                <dt>Fuera de la red CLAR</dt>
+                <dd [class.baja]="a.creditosSinEquivalencia > 0"><span class="num">{{ a.creditosSinEquivalencia }}</span><small>créditos</small></dd>
+              </div>
+            }
+            <div>
+              <dt>Obligatorios pendientes</dt>
+              <dd><span class="num">{{ p.obligatoriosPendientes.length }}</span><small>cursos</small></dd>
+            </div>
+          </dl>
+        </section>
+
+        <section id="pipeline" class="panel">
+          <header class="panel-cabecera fila">
+            <h2>Avance por semestre</h2>
+            <p class="leyenda">
+              <span class="ok"><app-icono nombre="hecho" />Obligatorios completos</span>
+              <span class="info"><app-icono nombre="enCurso" />En curso</span>
+              <span class="tenue"><app-icono nombre="pendiente" />Pendiente</span>
+            </p>
+          </header>
+          <ol class="pipeline">
+            @for (e of etapas(); track e.numero) {
+              <li class="etapa" [class]="'etapa ' + e.estado">
+                <span class="etapa-icono">
+                  <app-icono [nombre]="e.estado === 'completa' ? 'hecho' : e.estado === 'en-curso' ? 'enCurso' : 'pendiente'" />
+                </span>
+                <span class="etapa-nombre">{{ e.nombre }}</span>
+                <span class="etapa-dato num">{{ e.aprobados }}/{{ e.obligatorios }}</span>
+              </li>
+            }
+          </ol>
+        </section>
+
+        <div class="columnas">
+          @if (recomendacion(); as r) {
+            <section id="proximo" class="panel">
+              <header class="panel-cabecera fila">
+                <h2>Recomendación para el próximo semestre</h2>
+                <label class="carga">
+                  <span>Carga máxima</span>
+                  <input
+                    type="number"
+                    min="0"
+                    max="45"
+                    [value]="cargaMaxima()"
+                    (change)="cambiarCarga($any($event.target).value)"
+                    aria-label="Carga máxima en CLAR"
+                  />
+                  <span>CLAR</span>
+                </label>
+              </header>
+              <p class="ayuda">
+                Según el pensum CLAR 2022, entre los cursos que ya puedes asignarte. Primero los obligatorios que abren más camino.
+              </p>
+              @if (r.cursos.length) {
+                <ul class="lista-filas">
+                  @for (c of r.cursos; track c.red.curso.codigo) {
+                    <li>
+                      <span class="codigo">{{ c.red.curso.codigo }}</span>
+                      <span class="fila-texto">
+                        <span>
+                          {{ c.red.curso.nombre }}
+                          @if (c.red.curso.obligatorio) {<span class="ob" title="Curso obligatorio">OB<span class="solo-lector"> obligatorio</span></span>}
+                        </span>
+                        <small>{{ c.razones.join(' · ') }}</small>
+                      </span>
+                      <span class="num fila-cred">{{ c.red.curso.creditos }}</span>
+                    </li>
+                  }
+                </ul>
+                <p class="total-fila">
+                  <span>{{ r.cursos.length }} cursos</span>
+                  <span><b class="num">{{ r.creditos }}</b> / {{ r.maximo }} CLAR</span>
+                </p>
+              } @else {
+                <p class="vacio">Con una carga de {{ r.maximo }} CLAR no cabe ningún curso disponible.</p>
+              }
+              @if (r.fueraDeCarga.length) {
+                <details class="desplegable">
+                  <summary>También disponibles ({{ r.fueraDeCarga.length }})</summary>
+                  <ul class="lista-compacta">
+                    @for (c of r.fueraDeCarga; track c.red.curso.codigo) {
+                      <li>
+                        <span class="codigo">{{ c.red.curso.codigo }}</span>
+                        <span>{{ c.red.curso.nombre }}</span>
+                        <span class="num">{{ c.red.curso.creditos }}</span>
+                      </li>
+                    }
+                  </ul>
+                </details>
+              }
+            </section>
+          }
+
+          <section id="areas" class="panel">
+            <header class="panel-cabecera">
+              <h2>Áreas con requisito</h2>
+            </header>
+            @for (ar of p.areas; track ar.area.nombre) {
+              <article class="area">
+                <header class="fila">
+                  <h3>{{ ar.area.nombre }}</h3>
+                  @if (ar.cumple === true) {
+                    <span class="estado ok">Completa</span>
+                  } @else if (ar.cumple === false) {
+                    <span class="estado aviso">Faltan {{ ar.area.minimo! - ar.logrado }} {{ ar.area.unidad === 'creditos' ? unidad() : 'cursos' }}</span>
+                  } @else {
+                    <span class="estado tenue">Informativo</span>
+                  }
+                </header>
+                <p class="area-cifra">
+                  @if (ar.area.minimo !== null) {
+                    <span class="num">{{ ar.logrado }}</span>
+                    <small>/ {{ ar.area.minimo }} {{ ar.area.unidad === 'creditos' ? unidad() : 'cursos' }}</small>
+                  } @else {
+                    <span class="num">{{ ar.aprobados }}</span>
+                    <small>/ {{ ar.cursos.length }} cursos · {{ ar.creditos }} {{ unidad() }}</small>
+                  }
+                </p>
+                <div class="barra-fina" [class.ok]="ar.cumple === true">
+                  <div [style.width.%]="porcentaje(ar.logrado, ar.area.minimo ?? ar.total)"></div>
+                </div>
+                <ul class="lista-compacta">
+                  @for (c of ar.cursos; track c.codigo) {
+                    <li [class.hecho]="c.aprobado">
+                      <app-icono [nombre]="c.aprobado ? 'hecho' : 'pendiente'" />
+                      <span class="codigo">{{ c.codigo }}</span>
+                      <span>{{ c.nombre }}</span>
+                      <span class="num">{{ c.creditos }}</span>
+                    </li>
+                  }
+                </ul>
+                <p class="nota">{{ ar.area.nota }}</p>
+              </article>
+            }
+          </section>
+        </div>
+
+        @if (ruta(); as ru) {
+          <section id="rutas" class="panel">
+            <header class="panel-cabecera">
+              <h2>Rutas posibles para cerrar</h2>
+              <p>
+                Simula cada periodo llevando los cursos recomendados, con carga máxima de {{ cargaMaxima() }} CLAR por semestre,
+                hasta completar los obligatorios y los {{ a.pensum2022.cierre }} CLAR. Toma tus cursos cargados como lo aprobado hasta el periodo en curso.
+              </p>
+            </header>
+
+            <div class="controles-ruta">
+              <fieldset class="segmentado">
+                <legend><app-icono nombre="maletin" />Prácticas finales</legend>
+                <label><input type="radio" name="practicas" [checked]="practicas() === 1" (change)="practicas.set(1)" /><span>6 meses</span></label>
+                <label><input type="radio" name="practicas" [checked]="practicas() === 2" (change)="practicas.set(2)" /><span>1 año</span></label>
+              </fieldset>
+              <fieldset class="segmentado">
+                <legend><app-icono nombre="sol" />¿Adelantar cursos en cada escuela de vacaciones?</legend>
+                <label><input type="radio" name="vacaciones" [checked]="vacaciones() === 0" (change)="vacaciones.set(0)" /><span>No adelantar</span></label>
+                <label><input type="radio" name="vacaciones" [checked]="vacaciones() === 1" (change)="vacaciones.set(1)" /><span>1 curso</span></label>
+                <label><input type="radio" name="vacaciones" [checked]="vacaciones() === 2" (change)="vacaciones.set(2)" /><span>2 cursos</span></label>
+              </fieldset>
+            </div>
+
+            <div class="comparativa" role="list">
+              @for (e of escenarios(); track e.vacaciones) {
+                <button
+                  role="listitem"
+                  class="escenario"
+                  [class.activo]="e.vacaciones === vacaciones()"
+                  [attr.aria-pressed]="e.vacaciones === vacaciones()"
+                  (click)="vacaciones.set(e.vacaciones)"
+                >
+                  <span class="escenario-nombre">
+                    {{ e.vacaciones === 0 ? 'Sin escuelas de vacaciones' : e.vacaciones === 1 ? '1 curso por escuela' : '2 cursos por escuela' }}
+                  </span>
+                  <span class="escenario-cierre">{{ e.ruta.cierre ?? 'Sin cierre' }}</span>
+                  <span class="escenario-dato num">{{ e.ruta.semestres }} {{ e.ruta.semestres === 1 ? 'semestre' : 'semestres' }}</span>
+                </button>
+              }
+            </div>
+
+            @if (ru.cierre) {
+              <p class="veredicto">
+                <app-icono nombre="bandera" />
+                <span>Cerrarías pensum en el <b>{{ ru.cierre }}</b>, después de <b class="num">{{ ru.semestres }}</b> {{ ru.semestres === 1 ? 'semestre' : 'semestres' }} más, con <b class="num">{{ ru.creditosFinales }}</b> CLAR.</span>
+              </p>
+            } @else if (ru.bloqueo) {
+              <p class="error"><app-icono nombre="alerta" />{{ ru.bloqueo }}</p>
+            }
+
+            <ol class="linea-tiempo">
+              @for (pe of ru.periodos; track pe.nombre) {
+                <li class="periodo" [class.vacaciones]="pe.tipo === 'vacaciones'">
+                  <div class="periodo-cabecera">
+                    <span class="periodo-icono"><app-icono [nombre]="pe.tipo === 'vacaciones' ? 'sol' : 'calendario'" /></span>
+                    <strong>{{ pe.nombre }}</strong>
+                    @if (pe.practicas) {
+                      <span class="estado info">
+                        <app-icono nombre="maletin" />
+                        @switch (pe.practicas) {
+                          @case ('inicia') { Inicias prácticas finales }
+                          @case ('continua') { Prácticas finales en curso }
+                          @case ('termina') { Terminas prácticas finales }
+                          @default { Prácticas finales completas }
+                        }
+                      </span>
+                    }
+                    <span class="periodo-total num">+{{ pe.creditos }} · {{ pe.acumulado }} CLAR</span>
+                  </div>
+                  @if (pe.cursos.length) {
+                    <ul class="periodo-cursos">
+                      @for (c of pe.cursos; track c.codigo) {
+                        <li [class.obligatorio]="c.obligatorio">
+                          <span class="codigo">{{ c.codigo }}</span>{{ c.nombre }}
+                          @if (c.obligatorio) {<span class="ob" title="Curso obligatorio">OB<span class="solo-lector"> obligatorio</span></span>}
+                          <span class="num">{{ c.creditos }}</span>
+                        </li>
+                      }
+                    </ul>
+                  }
+                </li>
+              }
+            </ol>
+            <p class="proximamente">
+              <app-icono nombre="arrastrar" />
+              <span><b>Próximamente:</b> podrás arrastrar y soltar cursos para armar a mano tu plan en cada semestre y escuela de vacaciones restante.</span>
+            </p>
+            <p class="nota">
+              Supuestos: en escuela de vacaciones se llevan como máximo 4 horas de clase magistral (2 horas por curso; Matemática Básica 2 y Matemática Intermedia 1 son de 4),
+              y cualquier curso disponible podría ofrecerse. Confirma la oferta real de cada escuela de vacaciones.
+            </p>
+          </section>
+        }
+
+        @if (origen() === 'traslado') {
+        <section id="cambios" class="panel">
+          <header class="panel-cabecera">
+            <h2>Cambios del traslado</h2>
+          </header>
+          @if (a.pierdenDisponibilidad.length === 0 && a.gananDisponibilidad.length === 0 && a.cambiosPrerrequisitos.length === 0) {
+            <p class="vacio">Ningún curso pendiente cambia de prerrequisitos para ti.</p>
+          }
+          @if (a.pierdenDisponibilidad.length) {
+            <h3 class="sub aviso"><app-icono nombre="candado" />Dejarías de poder asignarte</h3>
+            <ul class="lista-filas">
+              @for (r of a.pierdenDisponibilidad; track r.curso.codigo) {
+                <li>
+                  <span class="codigo">{{ r.curso.codigo }}</span>
+                  <span class="fila-texto">
+                    <span>{{ r.curso.nombre }}</span>
+                    <small>Antes: {{ r.prerrequisitos2021!.length ? r.prerrequisitos2021!.map(describir).join(', ') : 'sin prerrequisitos' }}</small>
+                    <small class="texto-aviso">Ahora te falta: {{ r.faltantes.map(describir).join(', ') }}</small>
+                  </span>
+                </li>
+              }
+            </ul>
+          }
+          @if (a.gananDisponibilidad.length) {
+            <h3 class="sub ok"><app-icono nombre="abierto" />Se te desbloquean</h3>
+            <ul class="lista-filas">
+              @for (r of a.gananDisponibilidad; track r.curso.codigo) {
+                <li>
+                  <span class="codigo">{{ r.curso.codigo }}</span>
+                  <span class="fila-texto">
+                    <span>{{ r.curso.nombre }}</span>
+                    <small>
+                      Antes: {{ r.prerrequisitos2021!.map(describir).join(', ') }} · Ahora:
+                      {{ r.curso.prerrequisitos.length ? r.curso.prerrequisitos.map(describir).join(', ') : 'sin prerrequisitos' }}
+                    </small>
+                  </span>
+                </li>
+              }
+            </ul>
+          }
+          @if (a.cambiosPrerrequisitos.length) {
+            <h3 class="sub"><app-icono nombre="comparar" />Otros pendientes con prerrequisitos distintos</h3>
+            <div class="tabla-scroll">
+              <table class="tabla-apilable">
+                <thead>
+                  <tr><th scope="col">Curso</th><th scope="col">Se agrega</th><th scope="col">Se quita</th><th scope="col">Estado</th></tr>
+                </thead>
+                <tbody>
+                  @for (r of a.cambiosPrerrequisitos; track r.curso.codigo) {
+                    <tr>
+                      <td data-etiqueta="Curso"><span class="codigo">{{ r.curso.codigo }}</span> {{ r.curso.nombre }}</td>
+                      <td data-etiqueta="Se agrega">{{ r.agregados.map(describir).join(', ') || '—' }}</td>
+                      <td data-etiqueta="Se quita">{{ r.quitados.map(describir).join(', ') || '—' }}</td>
+                      <td data-etiqueta="Estado"><span class="estado" [class.info]="r.estado === 'disponible'" [class.tenue]="r.estado === 'bloqueado'">{{ r.estado }}</span></td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </section>
+        }
+
+        <section id="red" class="panel">
+          <header class="panel-cabecera fila">
+            <h2>Red curricular {{ vista() === '2022' ? 'CLAR 2022' : 'anterior' }}</h2>
+            <p class="leyenda">
+              <span class="ok"><i class="muestra aprobado"></i>Aprobado</span>
+              <span class="info"><i class="muestra disponible"></i>Puedes asignarlo</span>
+              <span class="tenue"><i class="muestra bloqueado"></i>Bloqueado</span>
+              <span><span class="ob" aria-hidden="true">OB</span>Obligatorio</span>
+              @if (vista() === '2022') {
+                <span class="aviso"><app-icono nombre="alerta" />Afectado por el cambio</span>
+              }
+            </p>
+          </header>
+          <p class="ayuda">Pasa el cursor o enfoca un curso para ver sus prerrequisitos.</p>
+          <div class="red">
+            @for (e of etapas(); track e.numero) {
+              <div class="semestre">
+                <h3><span class="num">{{ e.numero }}</span>{{ e.nombre }}</h3>
+                @for (r of e.cursos; track r.curso.codigo) {
+                  <div class="curso" [class]="'curso ' + r.estado" [attr.title]="tituloCurso(r)" tabindex="0">
+                    <span class="codigo">{{ r.curso.codigo }}</span>
+                    <span class="curso-nombre">{{ r.curso.nombre }}</span>
+                    <span class="curso-meta">
+                      @if (r.curso.obligatorio) {<span class="ob" title="Curso obligatorio">OB<span class="solo-lector"> obligatorio</span></span>}
+                      <span class="curso-cred num">{{ r.curso.creditos }}</span>
+                    </span>
+                    @if (r.pierdeDisponibilidad) {
+                      <span class="marca-aviso" aria-label="Afectado por el cambio"><app-icono nombre="alerta" /></span>
+                    }
+                    @if (r.faltantes.length && r.estado === 'bloqueado') {
+                      <span class="curso-detalle">Falta: {{ r.faltantes.join(', ') }}</span>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </section>
+
+        @if (origen() === 'traslado') {
+        <section id="equivalencias" class="panel">
+          <header class="panel-cabecera">
+            <h2>Equivalencia de tus cursos aprobados</h2>
+          </header>
+          <div class="tabla-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Código</th><th scope="col">Curso</th>
+                  <th scope="col" class="der">Antes</th><th scope="col" class="der">CLAR 2022</th><th scope="col" class="der">Diferencia</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (e of a.equivalencias; track e.codigo) {
+                  <tr [class.sin-equivalencia]="e.creditos2022 === null">
+                    <td><span class="codigo">{{ e.codigo }}</span></td>
+                    <td>
+                      {{ e.nombre }}
+                      @if (e.creditos2022 === null) {<span class="estado baja">No está en la red CLAR</span>}
+                    </td>
+                    <td class="der num">{{ e.creditos2021 }}</td>
+                    <td class="der num">{{ e.creditos2022 ?? '—' }}</td>
+                    <td class="der num" [class.sube]="e.diferencia > 0" [class.baja]="e.diferencia < 0">
+                      {{ e.diferencia > 0 ? '+' : '' }}{{ e.diferencia }}
+                    </td>
+                  </tr>
+                }
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="2">Total</td>
+                  <td class="der num">{{ a.creditos2021 }}</td>
+                  <td class="der num">{{ a.creditos2022 }}</td>
+                  <td class="der num" [class.sube]="a.creditos2022 > a.creditos2021" [class.baja]="a.creditos2022 < a.creditos2021">
+                    {{ a.creditos2022 - a.creditos2021 > 0 ? '+' : '' }}{{ a.creditos2022 - a.creditos2021 }}
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </section>
+        }
+      }
+    }
+
+    <footer class="pie">
+      <div class="pie-tarjeta">
+        <div class="pie-autor">
+          <app-marca-mr class="pie-mr" />
+          <div>
+            <p class="pie-rotulo">Desarrollado por</p>
+            <a class="pie-nombre" href="https://akamariano.github.io/" target="_blank" rel="noopener">Mariano Rac<app-icono nombre="externo" /></a>
+            <p class="pie-rol">Desarrollador de software · Ingeniería en Ciencias y Sistemas</p>
+          </div>
+        </div>
+        <div class="pie-acciones">
+          <a class="boton" href="https://akamariano.github.io/" target="_blank" rel="noopener"><app-icono nombre="usuario" />Ver mi sitio</a>
+          <a class="boton primario" href="#contacto"><app-icono nombre="correo" />Enviar sugerencias o información</a>
+        </div>
+      </div>
+      <section id="contacto" class="contacto" aria-labelledby="contacto-titulo">
+        <div class="contacto-intro">
+          <h2 id="contacto-titulo">Sugerencias o información</h2>
+          <p>Cuéntame qué mejorar, un error en la red o lo que necesites. Te abro el correo listo con el asunto <b>Calculadora CLAR</b>.</p>
+          <p class="contacto-destino">
+            Para: <span class="num">{{ correo }}</span>
+            <button type="button" class="enlace" (click)="copiarCorreo()">{{ copiado() ? 'Copiado' : 'Copiar' }}</button>
+          </p>
+        </div>
+        <div class="contacto-form">
+          <label class="campo">
+            <span>Tu mensaje</span>
+            <textarea rows="4" placeholder="Escribe aquí tu sugerencia o pregunta" [value]="mensaje()" (input)="mensaje.set($any($event.target).value)"></textarea>
+          </label>
+          <label class="campo">
+            <span>Tu correo (opcional, para responderte)</span>
+            <input type="text" inputmode="email" autocomplete="email" placeholder="tucorreo@ejemplo.com" [value]="correoRespuesta()" (input)="correoRespuesta.set($any($event.target).value)" />
+          </label>
+          <div class="fila-acciones">
+            <button type="button" class="boton primario" (click)="abrirGmail()" [disabled]="!mensaje().trim()"><app-icono nombre="correo" />Enviar con Gmail</button>
+            <a class="boton" [href]="enlaceCorreo()" [class.inactivo]="!mensaje().trim()">Usar mi app de correo</a>
+          </div>
+        </div>
+      </section>
+      <div class="pie-columnas">
+        <div>
+          <h2>Sobre Piletazo</h2>
+          <p>
+            Nació como un proyecto personal para calcular y verificar mi futuro en la facultad. Hoy te acompaña hasta el cierre de pensum en Ciencias y Sistemas:
+            traslado del pensum anterior al CLAR 2022 y avance de quienes ya estudian en CLAR 2022. Próximamente: las demás carreras de Ingeniería, CLAR 2025 y un plan manual con arrastrar y soltar.
+          </p>
+        </div>
+        <div>
+          <h2>Sobre los datos</h2>
+          <p>
+            La red anterior se tomó de la red curricular del portal y la red CLAR 2022 se transcribió de la red publicada por la Facultad.
+            Si encuentras un error, escríbeme.
+          </p>
+        </div>
+        <div>
+          <h2>Privacidad</h2>
+          <p>Tus cursos se envían al servidor de Piletazo solo para calcular y no se almacenan allí. Tu nombre y carné nunca salen de tu navegador; se guardan en este dispositivo solo si lo aceptas.</p>
+        </div>
+        <div>
+          <h2>Aviso</h2>
+          <p>Herramienta no oficial. Confirma tu situación con Control Académico de la Facultad de Ingeniería antes de asignarte.</p>
+        </div>
+      </div>
+      <p class="pie-base">
+        <span>© {{ anio }} Mariano Roberto Rac Noguera · Todos los derechos reservados</span>
+        <span>Hecho en Guatemala para estudiantes de Sistemas</span>
+      </p>
+    </footer>
+  </main>
+</div>
+
+<!-- Reporte para imprimir / guardar como PDF -->
+@if (analisis(); as a) {
+  <article class="reporte">
+    <header class="rep-cabecera">
+      <div>
+        <h1>Piletazo · {{ origen() === 'traslado' ? 'Reporte de traslado al pensum CLAR 2022' : 'Reporte de avance en el pensum CLAR 2022' }}</h1>
+        <p>Ingeniería en Ciencias y Sistemas · generado el {{ fecha }}</p>
+      </div>
+      <dl>
+        <div><dt>Estudiante</dt><dd>{{ nombre().trim() || '—' }}</dd></div>
+        <div><dt>Carné</dt><dd>{{ carne().trim() || '—' }}</dd></div>
+        <div><dt>Modalidad de graduación</dt><dd>{{ modalidad() === 'eps' ? 'EPS' : 'Tesis de investigación' }}</dd></div>
+      </dl>
+    </header>
+
+    <section>
+      <h2>Créditos</h2>
+      <table [class.solo-clar]="origen() === 'clar2022'">
+        <thead><tr><th>Pensum</th><th class="der">Aprobados</th><th class="der">Cierre</th><th class="der">Obligatorios pendientes</th><th class="der">Con obligatorios aprobados</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>CLAR 2022</td><td class="der">{{ a.pensum2022.creditos }}</td><td class="der">{{ a.pensum2022.cierre }}</td>
+            <td class="der">{{ a.pensum2022.obligatoriosPendientes.length }} ({{ a.pensum2022.creditosObligatoriosPendientes }} CLAR)</td>
+            <td class="der">{{ a.pensum2022.creditos + a.pensum2022.creditosObligatoriosPendientes }}</td>
+          </tr>
+          @if (origen() === 'traslado') {
+          <tr>
+            <td>Anterior al CLAR</td><td class="der">{{ a.pensum2021.creditos }}</td><td class="der">{{ a.pensum2021.cierre }}</td>
+            <td class="der">{{ a.pensum2021.obligatoriosPendientes.length }} ({{ a.pensum2021.creditosObligatoriosPendientes }} créditos)</td>
+            <td class="der">{{ a.pensum2021.creditos + a.pensum2021.creditosObligatoriosPendientes }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      <p>Modalidad de graduación: {{ modalidad() === 'eps' ? 'EPS' : 'Tesis de investigación' }}.
+        {{ origen() === 'traslado' ? 'Créditos aprobados sin equivalencia en la red CLAR' : 'Créditos de cursos fuera de la red CLAR' }}: {{ a.creditosSinEquivalencia }}.</p>
+    </section>
+
+    @if (recomendacion(); as r) {
+      <section>
+        <h2>Recomendación para el próximo semestre (máximo {{ r.maximo }} CLAR)</h2>
+        <table>
+          <thead><tr><th>Código</th><th>Curso</th><th>Motivo</th><th class="der">CLAR</th></tr></thead>
+          <tbody>
+            @for (c of r.cursos; track c.red.curso.codigo) {
+              <tr><td>{{ c.red.curso.codigo }}</td><td>{{ c.red.curso.nombre }}</td><td>{{ c.razones.join(' · ') }}</td><td class="der">{{ c.red.curso.creditos }}</td></tr>
+            }
+          </tbody>
+          <tfoot><tr><td colspan="3">Total</td><td class="der">{{ r.creditos }}</td></tr></tfoot>
+        </table>
+      </section>
+    }
+
+    @if (ruta(); as ru) {
+      <section>
+        <h2>Ruta para cerrar ({{ practicas() === 1 ? 'prácticas de 6 meses' : 'prácticas de 1 año' }}, {{ vacaciones() === 0 ? 'sin escuelas de vacaciones' : vacaciones() + ' curso(s) por escuela de vacaciones' }})</h2>
+        <p>
+          @if (ru.cierre) { Cierre estimado: {{ ru.cierre }} · {{ ru.semestres }} semestres · {{ ru.creditosFinales }} CLAR. } @else { {{ ru.bloqueo }} }
+        </p>
+        <table>
+          <thead><tr><th>Periodo</th><th>Cursos</th><th class="der">CLAR</th><th class="der">Acumulado</th></tr></thead>
+          <tbody>
+            @for (pe of ru.periodos; track pe.nombre) {
+              <tr>
+                <td>{{ pe.nombre }}</td>
+                <td>
+                  {{ pe.cursos.map(cursoCorto).join(', ') }}{{ pe.practicas ? (pe.cursos.length ? ' · ' : '') + 'Prácticas finales' : '' }}
+                </td>
+                <td class="der">{{ pe.creditos }}</td><td class="der">{{ pe.acumulado }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </section>
+    }
+
+    <section>
+      <h2>Áreas con requisito</h2>
+      <table>
+        <thead><tr><th>Área</th>@if (origen() === 'traslado') {<th>Pensum anterior</th>}<th>CLAR 2022</th></tr></thead>
+        <tbody>
+          @for (ar of a.pensum2022.areas; track ar.area.nombre; let i = $index) {
+            <tr>
+              <td>{{ ar.area.nombre }}</td>
+              @if (origen() === 'traslado') {
+              <td>
+                {{ a.pensum2021.areas[i].logrado }} / {{ a.pensum2021.areas[i].area.minimo }}
+                {{ a.pensum2021.areas[i].area.unidad === 'creditos' ? 'créditos' : 'cursos' }}
+                {{ a.pensum2021.areas[i].cumple ? '(completa)' : '(pendiente)' }}
+              </td>
+              }
+              <td>
+                @if (ar.area.minimo !== null) {
+                  {{ ar.logrado }} / {{ ar.area.minimo }} CLAR {{ ar.cumple ? '(completa)' : '(pendiente)' }}
+                } @else {
+                  {{ ar.aprobados }} de {{ ar.cursos.length }} cursos ({{ ar.creditos }} CLAR)
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </section>
+
+    @if (origen() === 'traslado' && (a.pierdenDisponibilidad.length || a.gananDisponibilidad.length)) {
+      <section>
+        <h2>Cambios de prerrequisitos que te afectan</h2>
+        <ul>
+          @for (r of a.pierdenDisponibilidad; track r.curso.codigo) {
+            <li><b>{{ r.curso.codigo }} {{ r.curso.nombre }}:</b> dejarías de poder asignártelo; ahora te falta {{ r.faltantes.map(describir).join(', ') }}.</li>
+          }
+          @for (r of a.gananDisponibilidad; track r.curso.codigo) {
+            <li><b>{{ r.curso.codigo }} {{ r.curso.nombre }}:</b> se te desbloquea con el CLAR 2022.</li>
+          }
+        </ul>
+      </section>
+    }
+
+    @if (origen() === 'traslado') {
+    <section>
+      <h2>Equivalencia de cursos aprobados</h2>
+      <table>
+        <thead><tr><th>Código</th><th>Curso</th><th class="der">Antes</th><th class="der">CLAR 2022</th><th class="der">Diferencia</th></tr></thead>
+        <tbody>
+          @for (e of a.equivalencias; track e.codigo) {
+            <tr>
+              <td>{{ e.codigo }}</td><td>{{ e.nombre }}{{ e.creditos2022 === null ? ' (sin equivalencia)' : '' }}</td>
+              <td class="der">{{ e.creditos2021 }}</td><td class="der">{{ e.creditos2022 ?? '—' }}</td>
+              <td class="der">{{ e.diferencia > 0 ? '+' : '' }}{{ e.diferencia }}</td>
+            </tr>
+          }
+        </tbody>
+        <tfoot><tr><td colspan="2">Total</td><td class="der">{{ a.creditos2021 }}</td><td class="der">{{ a.creditos2022 }}</td><td class="der">{{ a.creditos2022 - a.creditos2021 > 0 ? '+' : '' }}{{ a.creditos2022 - a.creditos2021 }}</td></tr></tfoot>
+      </table>
+    </section>
+    }
+
+    <footer class="rep-pie">
+      <app-marca-mr class="rep-mr" />
+      <div>
+        <p>Reporte no oficial generado con Piletazo. Confirma tu situación con Control Académico de la Facultad de Ingeniería.</p>
+        <p>Desarrollado por Mariano Rac · akamariano.github.io · Sugerencias: marianoracnoguera&#64;gmail.com</p>
+      </div>
+    </footer>
+  </article>
+}

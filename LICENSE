@@ -1,0 +1,34 @@
+Copyright (c) 2026 Mariano Roberto Rac Noguera. Todos los derechos reservados.
+
+Piletazo (antes "Calculadora CLAR"), incluidos su código fuente (frontend en
+Angular y backend en Python), su diseño, su interfaz, futuras integraciones para las demás carreras, sus textos, su nombre y su logo (la ola de 0s y 1s y todas sus versiones en la carpeta Logo/), es obra de
+Mariano Roberto Rac Noguera y está protegido por la legislación de derecho de
+autor y propiedad intelectual de Guatemala y por los tratados internacionales
+aplicables.
+
+Se permite:
+  - Usar la aplicación publicada para consultar tu propio avance académico.
+  - Ver y leer este código en el repositorio con fines de consulta.
+
+No se permite, sin autorización previa y por escrito del autor:
+  - Copiar, modificar, adaptar o crear obras derivadas de este software, su
+    diseño o su logo.
+  - Distribuir, publicar, sublicenciar o vender este software o partes de él.
+  - Usar el nombre "Piletazo" o su logo para identificar otro producto o servicio.
+
+Contenido de terceros (no es propiedad del autor y conserva sus propios derechos):
+  - Las redes curriculares (cursos, códigos, créditos y prerrequisitos) del pensum
+    anterior y del pensum CLAR 2022 son información publicada por la Facultad de
+    Ingeniería de la Universidad de San Carlos de Guatemala. Piletazo no es una
+    herramienta oficial ni está avalada por la Universidad.
+  - Iconos de Lucide (licencia ISC), fuentes Geist y Geist Mono (SIL Open Font
+    License 1.1) y las bibliotecas indicadas en package.json y requirements.txt,
+    cada una bajo su propia licencia.
+
+EL SOFTWARE SE PROPORCIONA "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO. Los cálculos
+son orientativos; la situación académica oficial debe confirmarse con Control
+Académico de la Facultad de Ingeniería. El autor no es responsable por decisiones
+tomadas con base en esta herramienta.
+
+Para permisos, licencias o colaboraciones:
+  Mariano Rac · https://akamariano.github.io/ · marianoracnoguera@gmail.com

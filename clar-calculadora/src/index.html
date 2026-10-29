@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="es-GT">
+<head>
+  <meta charset="utf-8">
+  <title>Piletazo · Pensum CLAR 2022 y red de Ingeniería en Ciencias y Sistemas USAC</title>
+  <meta name="description" content="Calcula tu avance en el pensum CLAR 2022 de Ingeniería en Ciencias y Sistemas de la USAC: créditos, red de pensum, traslado desde el pensum anterior, cursos para el próximo semestre y cuándo cerrarías pensum.">
+  <meta name="keywords" content="ingeniería USAC, sistemas USAC, ciencias y sistemas USAC, red de pensum USAC, pensum CLAR 2022, red curricular FIUSAC, cierre de pensum, créditos CLAR, Facultad de Ingeniería USAC, piletazo">
+  <meta name="author" content="Mariano Roberto Rac Noguera">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <!--__VERIFICACION_GOOGLE__-->
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="canonical" href="__SITIO__/">
+
+  <!-- Vista previa al compartir (WhatsApp, Facebook, X, LinkedIn) -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_GT">
+  <meta property="og:site_name" content="Piletazo">
+  <meta property="og:title" content="Piletazo · Tu camino al cierre de pensum en Sistemas USAC">
+  <meta property="og:description" content="Mira tu avance en el pensum CLAR 2022 de Ingeniería en Ciencias y Sistemas (USAC), tu traslado desde el pensum anterior y en qué semestre cerrarías.">
+  <meta property="og:url" content="__SITIO__/">
+  <meta property="og:image" content="__SITIO__/og-imagen.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Piletazo: una ola hecha de 0s y 1s">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Piletazo · Tu camino al cierre de pensum en Sistemas USAC">
+  <meta name="twitter:description" content="Avance en el pensum CLAR 2022, traslado desde el pensum anterior y rutas para cerrar pensum en Ingeniería en Ciencias y Sistemas USAC.">
+  <meta name="twitter:image" content="__SITIO__/og-imagen.png">
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#0d1117">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Piletazo",
+    "alternateName": ["Calculadora CLAR", "Calculadora de pensum CLAR 2022 USAC"],
+    "url": "__SITIO__/",
+    "image": "__SITIO__/og-imagen.png",
+    "description": "Herramienta no oficial para estudiantes de Ingeniería en Ciencias y Sistemas de la Universidad de San Carlos de Guatemala: avance en el pensum CLAR 2022, red de pensum, traslado desde el pensum anterior, recomendación de cursos y rutas para cerrar pensum.",
+    "applicationCategory": "EducationalApplication",
+    "operatingSystem": "Web",
+    "inLanguage": "es-GT",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GTQ" },
+    "audience": {
+      "@type": "EducationalAudience",
+      "educationalRole": "student",
+      "audienceType": "Estudiantes de Ingeniería en Ciencias y Sistemas, Facultad de Ingeniería, USAC"
+    },
+    "about": [
+      { "@type": "Thing", "name": "Pensum CLAR 2022" },
+      { "@type": "Thing", "name": "Ingeniería en Ciencias y Sistemas" },
+      { "@type": "CollegeOrUniversity", "name": "Universidad de San Carlos de Guatemala", "sameAs": "https://www.usac.edu.gt/" }
+    ],
+    "author": {
+      "@type": "Person",
+      "name": "Mariano Roberto Rac Noguera",
+      "url": "https://akamariano.github.io/",
+      "jobTitle": "Desarrollador de software"
+    },
+    "copyrightHolder": { "@type": "Person", "name": "Mariano Roberto Rac Noguera" },
+    "copyrightYear": 2026
+  }
+  </script>
+  <style>
+    body { margin: 0; background: #0d1117; color: #e6edf3; font-family: Geist, system-ui, sans-serif; }
+    .previo { max-width: 760px; margin: 0 auto; padding: 48px 20px; line-height: 1.6; }
+    .previo h1 { font-size: 30px; margin: 0 0 4px; }
+    .previo p, .previo li { color: #b1bac4; }
+    /* Ola de entrada: cruza de izquierda a derecha y descubre la página */
+    #ola-entrada { position: fixed; inset: 0; z-index: 1000; pointer-events: none; overflow: hidden; }
+    #ola-entrada .marea {
+      --w: max(60vw, 460px);
+      position: absolute; top: 0; bottom: 0; left: calc(-1 * var(--w)); width: calc(var(--w) + 100vw);
+      display: flex; will-change: transform;
+      animation: marea 1.7s cubic-bezier(0.65, 0, 0.3, 1) 0.45s forwards;
+    }
+    #ola-entrada .muro { flex: 0 0 var(--w); height: 100%; display: block;
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%); mask-image: linear-gradient(90deg, transparent, #000 18%); }
+    #ola-entrada .telon {
+      flex: 0 0 100vw; height: 100%; display: grid; place-content: center; justify-items: center; gap: 14px;
+      background: radial-gradient(800px 500px at 50% 40%, rgb(29 78 216 / 0.22), transparent 70%), #0a1a3f;
+      color: #e6edf3; font-family: Geist, system-ui, sans-serif;
+    }
+    #ola-entrada .telon img { width: 112px; height: 112px; border-radius: 26px; box-shadow: 0 22px 44px -22px rgb(56 189 248 / 0.7);
+      animation: latido 1.2s ease-in-out infinite; }
+    #ola-entrada .telon strong { font-size: 30px; letter-spacing: -0.03em; }
+    #ola-entrada .telon span { font-size: 14px; color: #7dd3fc; }
+    @keyframes marea { to { transform: translateX(calc(100vw + var(--w))); } }
+    #ola-entrada .mar-fondo { animation: mecer-fondo 1.4s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 50% 100%; }
+    #ola-entrada .cresta { animation: ondear 0.7s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 0% 100%; }
+    #ola-entrada .rocio { animation: rociar 0.6s ease-out infinite; }
+    #ola-entrada .corrientes path { stroke-dasharray: 60 90; animation: correr 0.9s linear infinite; }
+    #ola-entrada .ola-mar { animation: levantar 1.7s cubic-bezier(0.65, 0, 0.3, 1) 0.45s both; transform-origin: 50% 100%; }
+    @keyframes mecer-fondo { to { transform: translateY(-14px) scaleY(1.04); } }
+    @keyframes ondear { to { transform: rotate(-2.5deg) translateY(-6px); } }
+    @keyframes rociar { 0% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(26px, -18px); opacity: 0.2; } }
+    @keyframes correr { to { stroke-dashoffset: -150; } }
+    @keyframes levantar { 0% { transform: scaleY(0.82); } 40% { transform: scaleY(1.04); } 100% { transform: scaleY(0.96); } }
+    @keyframes latido { 50% { transform: translateY(-5px); } }
+    @media (prefers-reduced-motion: reduce) { #ola-entrada { display: none; } }
+    @media print { #ola-entrada { display: none; } }
+  </style>
+</head>
+<body>
+  <div id="ola-entrada" aria-hidden="true">
+    <div class="marea">
+      <svg class="muro" viewBox="0 0 800 1000" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="entrada-cuerpo" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0" stop-color="#0b2a6f"/>
+            <stop offset="0.45" stop-color="#1d4ed8"/>
+            <stop offset="0.8" stop-color="#38bdf8"/>
+            <stop offset="1" stop-color="#5eead4"/>
+          </linearGradient>
+          <linearGradient id="entrada-fondo" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0" stop-color="#071a45"/>
+            <stop offset="1" stop-color="#1e40af"/>
+          </linearGradient>
+          <radialGradient id="entrada-tubo" cx="0.35" cy="0.4" r="0.7">
+            <stop offset="0" stop-color="#0e7490"/>
+            <stop offset="1" stop-color="#0b2a6f"/>
+          </radialGradient>
+          <pattern id="entrada-binario" width="46" height="42" patternUnits="userSpaceOnUse">
+            <text x="4" y="17" font-family="monospace" font-size="15" font-weight="700" fill="rgb(204 251 241 / 0.22)">10</text>
+            <text x="22" y="38" font-family="monospace" font-size="15" font-weight="700" fill="rgb(204 251 241 / 0.14)">01</text>
+          </pattern>
+        </defs>
+        <!-- telón por delante del frente: la página se descubre solo detrás de la ola -->
+        <rect x="500" y="0" width="300" height="1000" fill="#0a1a3f"/>
+        <!-- mar de fondo -->
+        <path class="mar-fondo" d="M0 1000 V520 C90 490 170 470 260 430 C350 390 420 360 520 380 C620 400 700 470 800 520 V1000 Z" fill="url(#entrada-fondo)"/>
+        <g class="ola-mar">
+          <!-- cuerpo de la ola: el lomo sube y la cresta se curva sobre el tubo -->
+          <path d="M0 1000 V470 C110 450 210 400 300 320 C370 255 430 150 520 112 C610 74 702 104 738 178
+                   C768 238 748 306 694 306 C654 306 640 266 664 248 C624 296 612 382 646 470
+                   C690 584 758 646 800 700 V1000 Z" fill="url(#entrada-cuerpo)"/>
+          <path d="M0 1000 V470 C110 450 210 400 300 320 C370 255 430 150 520 112 C610 74 702 104 738 178
+                   C768 238 748 306 694 306 C654 306 640 266 664 248 C624 296 612 382 646 470
+                   C690 584 758 646 800 700 V1000 Z" fill="url(#entrada-binario)"/>
+          <!-- tubo bajo la cresta -->
+          <path d="M664 248 C640 266 654 306 694 306 C730 306 752 270 744 228 C770 300 760 380 720 420 C680 460 640 420 646 380 C640 330 646 282 664 248 Z" fill="url(#entrada-tubo)" opacity="0.85"/>
+          <!-- corrientes dentro del agua -->
+          <g class="corrientes" fill="none" stroke="rgb(204 251 241 / 0.35)" stroke-width="5" stroke-linecap="round">
+            <path d="M40 600 C160 570 260 540 380 470 C460 420 520 360 590 320"/>
+            <path d="M20 760 C150 730 290 700 420 640 C510 600 580 560 650 540"/>
+            <path d="M60 900 C200 880 340 850 480 800 C580 770 660 750 760 760"/>
+          </g>
+          <!-- espuma de la cresta -->
+          <g class="cresta">
+            <path d="M300 320 C370 255 430 150 520 112 C610 74 702 104 738 178 C768 238 748 306 694 306 C654 306 640 266 664 248"
+                  fill="none" stroke="#ecfeff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+            <g fill="#ecfeff">
+              <circle cx="560" cy="100" r="13"/><circle cx="610" cy="92" r="11"/><circle cx="660" cy="104" r="12"/>
+              <circle cx="700" cy="128" r="10"/><circle cx="728" cy="160" r="9"/><circle cx="470" cy="140" r="9"/>
+            </g>
+          </g>
+          <!-- rocío por delante de la ola -->
+          <g class="rocio" fill="#ccfbf1">
+            <circle cx="770" cy="120" r="9"/><circle cx="790" cy="190" r="6"/><circle cx="760" cy="70" r="5"/>
+            <circle cx="785" cy="250" r="4"/><circle cx="740" cy="40" r="4"/>
+          </g>
+        </g>
+      </svg>
+      <div class="telon">
+        <img src="piletazo-icono-512.png" alt="">
+        <strong>Piletazo</strong>
+        <span>Tu camino al cierre de pensum</span>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var ola = document.getElementById('ola-entrada');
+      if (!ola) return;
+      var quitar = function () { if (ola.parentNode) ola.parentNode.removeChild(ola); };
+      ola.querySelector('.marea').addEventListener('animationend', quitar);
+      setTimeout(quitar, 4000);
+    })();
+  </script>
+  <app-root>
+    <!-- Contenido inicial: lo ven los buscadores y quien no tiene JavaScript; Angular lo reemplaza al cargar -->
+    <main class="previo">
+      <h1>Piletazo</h1>
+      <p>Tu camino al cierre de pensum en <strong>Ingeniería en Ciencias y Sistemas de la USAC</strong>.</p>
+      <p>
+        Carga tus cursos aprobados y mira tu avance en el <strong>pensum CLAR 2022</strong> y en la
+        <strong>red de pensum</strong> de la Facultad de Ingeniería: créditos, cursos obligatorios,
+        áreas Social Humanística e Idioma Técnico, cursos para el próximo semestre y en qué semestre cerrarías pensum.
+      </p>
+      <ul>
+        <li>Traslado del pensum anterior al pensum CLAR 2022: equivalencias y cambios de prerrequisitos.</li>
+        <li>Avance para quienes empezaron en CLAR 2022.</li>
+        <li>Rutas para cerrar pensum con escuelas de vacaciones y prácticas finales.</li>
+        <li>Reporte en PDF.</li>
+      </ul>
+      <p>Herramienta no oficial creada por Mariano Rac. Próximamente: las demás carreras de la Facultad de Ingeniería de la USAC y el pensum CLAR 2025.</p>
+      <noscript><p>Activa JavaScript para usar la calculadora.</p></noscript>
+    </main>
+  </app-root>
+</body>
+</html>

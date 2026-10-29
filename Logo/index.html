@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Piletazo · Logo</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700&family=Geist+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root { --oscuro: #0d1117; --claro: #f0f9ff; --texto: #0b2a6f; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Geist, system-ui, sans-serif; background: #e6f4fb; color: var(--texto); }
+  main { max-width: 1080px; margin: 0 auto; padding: 40px 16px 64px; }
+  h1 { margin: 0 0 4px; font-size: 28px; letter-spacing: -0.02em; }
+  h2 { margin: 36px 0 12px; font-size: 16px; }
+  p { margin: 0; color: #335b8a; }
+  .rejilla { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+  figure { margin: 0; border-radius: 14px; overflow: hidden; border: 1px solid #c7e3f2; background: #fff; }
+  figure > div { display: grid; place-items: center; min-height: 180px; padding: 24px; }
+  figure.oscuro > div { background: var(--oscuro); }
+  figure.claro > div { background: var(--claro); }
+  figure img { max-width: 100%; height: auto; }
+  figcaption { padding: 10px 14px; font-size: 13px; border-top: 1px solid #e2f0f8; }
+  figcaption code { font-family: 'Geist Mono', monospace; font-size: 12px; color: #0e7490; }
+  .paleta { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .color { border-radius: 12px; overflow: hidden; border: 1px solid #c7e3f2; background: #fff; font-size: 13px; }
+  .color i { display: block; height: 64px; }
+  .color span { display: block; padding: 8px 12px; }
+  .color code { font-family: 'Geist Mono', monospace; color: #335b8a; }
+  .tamanos { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Piletazo</h1>
+  <p>Una ola rompiendo, vista de lado, hecha de 0s y 1s: la tradición del piletazo al cerrar pensum en la Facultad de Ingeniería, contada en el idioma de Sistemas. Se genera con <code>generar_logo.py</code>.</p>
+
+  <h2>Ícono de la app</h2>
+  <div class="rejilla">
+    <figure class="oscuro"><div><img src="piletazo-icono.svg" width="128" alt="Ícono Piletazo"></div><figcaption><code>piletazo-icono.svg</code> · color</figcaption></figure>
+    <figure class="oscuro"><div><img src="piletazo-ola.svg" width="128" alt=""></div><figcaption><code>piletazo-ola.svg</code> · sin fondo</figcaption></figure>
+    <figure class="claro"><div class="tamanos"><img src="favicon.svg" width="16" alt=""><img src="favicon.svg" width="32" alt=""><img src="favicon.svg" width="48" alt=""><img src="piletazo-icono-512.png" width="96" alt=""></div><figcaption><code>favicon.svg</code> (trazo, para 16–32 px) y PNG</figcaption></figure>
+  </div>
+
+  <h2>Logo horizontal</h2>
+  <div class="rejilla">
+    <figure class="oscuro"><div><img src="piletazo-horizontal-oscuro.svg" width="300" alt="Piletazo"></div><figcaption><code>piletazo-horizontal-oscuro.svg</code></figcaption></figure>
+    <figure class="claro"><div><img src="piletazo-horizontal-claro.svg" width="300" alt="Piletazo"></div><figcaption><code>piletazo-horizontal-claro.svg</code></figcaption></figure>
+  </div>
+
+  <h2>Logo vertical</h2>
+  <div class="rejilla">
+    <figure class="oscuro"><div><img src="piletazo-vertical-oscuro.svg" width="220" alt="Piletazo"></div><figcaption><code>piletazo-vertical-oscuro.svg</code></figcaption></figure>
+    <figure class="claro"><div><img src="piletazo-vertical-claro.svg" width="220" alt="Piletazo"></div><figcaption><code>piletazo-vertical-claro.svg</code></figcaption></figure>
+  </div>
+
+  <h2>Símbolo a una tinta</h2>
+  <div class="rejilla">
+    <figure class="oscuro"><div><img src="piletazo-simbolo-blanco.svg" width="96" alt=""></div><figcaption><code>piletazo-simbolo-blanco.svg</code></figcaption></figure>
+    <figure class="claro"><div><img src="piletazo-simbolo-azul.svg" width="96" alt=""></div><figcaption><code>piletazo-simbolo-azul.svg</code></figcaption></figure>
+    <figure class="oscuro"><div><img src="piletazo-simbolo-aqua.svg" width="96" alt=""></div><figcaption><code>piletazo-simbolo-aqua.svg</code></figcaption></figure>
+  </div>
+
+  <h2>Paleta</h2>
+  <div class="paleta">
+    <div class="color"><i style="background:#0b2a6f"></i><span>Azul profundo <code>#0b2a6f</code></span></div>
+    <div class="color"><i style="background:#1d4ed8"></i><span>Azul <code>#1d4ed8</code></span></div>
+    <div class="color"><i style="background:#38bdf8"></i><span>Celeste <code>#38bdf8</code></span></div>
+    <div class="color"><i style="background:#0891b2"></i><span>Agua profunda <code>#0891b2</code></span></div>
+    <div class="color"><i style="background:#2dd4bf"></i><span>Aqua <code>#2dd4bf</code></span></div>
+    <div class="color"><i style="background:#0a1a3f"></i><span>Fondo noche <code>#0a1a3f</code></span></div>
+    <div class="color"><i style="background:#ccfbf1"></i><span>Espuma <code>#ccfbf1</code></span></div>
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "cd clar-calculadora && npm ci",
+  "buildCommand": "cd clar-calculadora && npm run build:vercel",
+  "outputDirectory": "clar-calculadora/dist/clar-calculadora/browser",
+  "functions": {
+    "api/index.py": {
+      "includeFiles": "backend/clar/**",
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
+    { "source": "/api/:ruta*", "destination": "/api/index" },
+    { "source": "/robots.txt", "destination": "/api/index" },
+    { "source": "/sitemap.xml", "destination": "/api/index" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ]
+}

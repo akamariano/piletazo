@@ -1,0 +1,29 @@
+# Python
+backend/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Node / Angular
+node_modules/
+clar-calculadora/dist/
+clar-calculadora/.angular/
+
+# Vercel
+.vercel/
+
+# Sistema
+.DS_Store
+
+# Datos personales: nunca al repositorio público
+creditos*Mariano*.txt
+*notas*.txt
+2021/FIUSAC.html
+2021/FIUSAC_files_Mariano/
+clar-calculadora/src/fixtures/
+
+# Material de trabajo de diseño (capturas con datos personales, referencias de terceros)
+**/.impeccable/review/
+**/.impeccable/mocks/
+**/.impeccable/ref/
+**/.impeccable/build/

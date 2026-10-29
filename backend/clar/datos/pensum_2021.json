@@ -1,0 +1,1040 @@
+{
+  "nombre": "Pensum anterior al CLAR",
+  "cierre": 250,
+  "unidad": "créditos",
+  "cursos": [
+    {
+      "codigo": "0017",
+      "nombre": "Área Social Humanística 1",
+      "creditos": 4,
+      "semestre": 1,
+      "obligatorio": true,
+      "prerrequisitos": []
+    },
+    {
+      "codigo": "0069",
+      "nombre": "Área Técnica Complementaria 1",
+      "creditos": 3,
+      "semestre": 1,
+      "obligatorio": true,
+      "prerrequisitos": []
+    },
+    {
+      "codigo": "0101",
+      "nombre": "Área Matemática Básica 1",
+      "creditos": 7,
+      "semestre": 1,
+      "obligatorio": true,
+      "prerrequisitos": []
+    },
+    {
+      "codigo": "0348",
+      "nombre": "Química General 1",
+      "creditos": 3,
+      "semestre": 1,
+      "obligatorio": true,
+      "prerrequisitos": []
+    },
+    {
+      "codigo": "0006",
+      "nombre": "Idioma Técnico 1",
+      "creditos": 2,
+      "semestre": 1,
+      "obligatorio": false,
+      "prerrequisitos": []
+    },
+    {
+      "codigo": "0039",
+      "nombre": "Deportes 1",
+      "creditos": 1,
+      "semestre": 1,
+      "obligatorio": false,
+      "prerrequisitos": []
+    },
+    {
+      "codigo": "0005",
+      "nombre": "Técnicas de Estudio e Investigación",
+      "creditos": 3,
+      "semestre": 2,
+      "obligatorio": true,
+      "prerrequisitos": []
+    },
+    {
+      "codigo": "0019",
+      "nombre": "Área Social Humanística 2",
+      "creditos": 4,
+      "semestre": 2,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0017"
+      ]
+    },
+    {
+      "codigo": "0103",
+      "nombre": "Área Matemática Básica 2",
+      "creditos": 7,
+      "semestre": 2,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0101"
+      ]
+    },
+    {
+      "codigo": "0147",
+      "nombre": "Física Básica",
+      "creditos": 5,
+      "semestre": 2,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0101"
+      ]
+    },
+    {
+      "codigo": "0040",
+      "nombre": "Deportes 2",
+      "creditos": 1,
+      "semestre": 2,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0039|0031"
+      ]
+    },
+    {
+      "codigo": "0107",
+      "nombre": "Área Matemática Intermedia 1",
+      "creditos": 10,
+      "semestre": 3,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0103"
+      ]
+    },
+    {
+      "codigo": "0150",
+      "nombre": "Física 1",
+      "creditos": 6,
+      "semestre": 3,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0103",
+        "0147"
+      ]
+    },
+    {
+      "codigo": "0770",
+      "nombre": "Introducción a la Programación y Computación 1",
+      "creditos": 4,
+      "semestre": 3,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0103",
+        "33CR"
+      ]
+    },
+    {
+      "codigo": "0795",
+      "nombre": "Lógica de Sistemas",
+      "creditos": 2,
+      "semestre": 3,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0103",
+        "33CR"
+      ]
+    },
+    {
+      "codigo": "0960",
+      "nombre": "Matemática para Computación 1",
+      "creditos": 5,
+      "semestre": 3,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0103",
+        "33CR"
+      ]
+    },
+    {
+      "codigo": "0018",
+      "nombre": "Filosofía de la Ciencia",
+      "creditos": 3,
+      "semestre": 3,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0019"
+      ]
+    },
+    {
+      "codigo": "0112",
+      "nombre": "Área Matemática Intermedia 2",
+      "creditos": 5,
+      "semestre": 4,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0107"
+      ]
+    },
+    {
+      "codigo": "0114",
+      "nombre": "Área Matemática Intermedia 3",
+      "creditos": 5,
+      "semestre": 4,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0107"
+      ]
+    },
+    {
+      "codigo": "0152",
+      "nombre": "Física 2",
+      "creditos": 6,
+      "semestre": 4,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0107",
+        "0150"
+      ]
+    },
+    {
+      "codigo": "0732",
+      "nombre": "Estadística 1",
+      "creditos": 5,
+      "semestre": 4,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0107",
+        "0005"
+      ]
+    },
+    {
+      "codigo": "0771",
+      "nombre": "Introducción a la Programación y Computación 2",
+      "creditos": 5,
+      "semestre": 4,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0770",
+        "0107",
+        "0960",
+        "0795"
+      ]
+    },
+    {
+      "codigo": "0796",
+      "nombre": "Lenguajes Formales y de Programación",
+      "creditos": 3,
+      "semestre": 4,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0770",
+        "0795",
+        "0960"
+      ]
+    },
+    {
+      "codigo": "0962",
+      "nombre": "Matemática para Computación 2",
+      "creditos": 5,
+      "semestre": 4,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0960",
+        "0770",
+        "0795"
+      ]
+    },
+    {
+      "codigo": "2025",
+      "nombre": "Prácticas Iniciales",
+      "creditos": 0,
+      "semestre": 4,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0770"
+      ]
+    },
+    {
+      "codigo": "0010",
+      "nombre": "Lógica",
+      "creditos": 2,
+      "semestre": 4,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0019"
+      ]
+    },
+    {
+      "codigo": "0116",
+      "nombre": "Matemática Aplicada 3",
+      "creditos": 5,
+      "semestre": 5,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0112",
+        "0114"
+      ],
+      "diplomado": "DM"
+    },
+    {
+      "codigo": "0118",
+      "nombre": "Matemática Aplicada 1",
+      "creditos": 6,
+      "semestre": 5,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0112",
+        "0114"
+      ],
+      "diplomado": "DM"
+    },
+    {
+      "codigo": "0736",
+      "nombre": "Análisis Probabilístico",
+      "creditos": 4,
+      "semestre": 5,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0732"
+      ]
+    },
+    {
+      "codigo": "0772",
+      "nombre": "Estructuras de Datos",
+      "creditos": 5,
+      "semestre": 5,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0771",
+        "0796",
+        "0962"
+      ]
+    },
+    {
+      "codigo": "0777",
+      "nombre": "Organización de Lenguajes y Compiladores 1",
+      "creditos": 4,
+      "semestre": 5,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0771",
+        "0796",
+        "0962"
+      ]
+    },
+    {
+      "codigo": "0964",
+      "nombre": "Organización Computacional",
+      "creditos": 3,
+      "semestre": 5,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0152",
+        "0962",
+        "0771"
+      ]
+    },
+    {
+      "codigo": "0028",
+      "nombre": "Ecología",
+      "creditos": 3,
+      "semestre": 5,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "90CR"
+      ]
+    },
+    {
+      "codigo": "0368",
+      "nombre": "Principios de Metrología",
+      "creditos": 3,
+      "semestre": 5,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0732",
+        "0152",
+        "0354|0348"
+      ]
+    },
+    {
+      "codigo": "0650",
+      "nombre": "Contabilidad 1",
+      "creditos": 3,
+      "semestre": 5,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "90CR"
+      ]
+    },
+    {
+      "codigo": "3022",
+      "nombre": "Psicología Industrial (diplomado)",
+      "creditos": 0,
+      "semestre": 5,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "90CR"
+      ],
+      "diplomado": "DA"
+    },
+    {
+      "codigo": "3123",
+      "nombre": "Matemática Aplicada 5 (diplomado)",
+      "creditos": 0,
+      "semestre": 5,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0112",
+        "0114"
+      ],
+      "diplomado": "DM"
+    },
+    {
+      "codigo": "0014",
+      "nombre": "Economía",
+      "creditos": 4,
+      "semestre": 6,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0732"
+      ]
+    },
+    {
+      "codigo": "0601",
+      "nombre": "Investigación de Operaciones I",
+      "creditos": 5,
+      "semestre": 6,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0732",
+        "0771"
+      ]
+    },
+    {
+      "codigo": "0722",
+      "nombre": "Teoría de Sistemas 1",
+      "creditos": 5,
+      "semestre": 6,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0116",
+        "0118",
+        "0732",
+        "0772"
+      ]
+    },
+    {
+      "codigo": "0773",
+      "nombre": "Manejo e Implementación de Archivos",
+      "creditos": 4,
+      "semestre": 6,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0772",
+        "0796"
+      ]
+    },
+    {
+      "codigo": "0778",
+      "nombre": "Arquitectura de Computadores y Ensambladores 1",
+      "creditos": 5,
+      "semestre": 6,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0964",
+        "0796"
+      ]
+    },
+    {
+      "codigo": "0781",
+      "nombre": "Organización de Lenguajes y Compiladores 2",
+      "creditos": 5,
+      "semestre": 6,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0777",
+        "0772"
+      ]
+    },
+    {
+      "codigo": "0008",
+      "nombre": "Idioma Técnico 2",
+      "creditos": 2,
+      "semestre": 6,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0006"
+      ]
+    },
+    {
+      "codigo": "0120",
+      "nombre": "Matemática Aplicada 2",
+      "creditos": 6,
+      "semestre": 6,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0118"
+      ],
+      "diplomado": "DM"
+    },
+    {
+      "codigo": "0122",
+      "nombre": "Matemática Aplicada 4",
+      "creditos": 4,
+      "semestre": 6,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0118"
+      ]
+    },
+    {
+      "codigo": "0200",
+      "nombre": "Ingeniería Eléctrica 1",
+      "creditos": 5,
+      "semestre": 6,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0114",
+        "0152"
+      ]
+    },
+    {
+      "codigo": "0335",
+      "nombre": "Gestión de Desastres",
+      "creditos": 3,
+      "semestre": 6,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0028"
+      ]
+    },
+    {
+      "codigo": "0652",
+      "nombre": "Contabilidad 2",
+      "creditos": 3,
+      "semestre": 6,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0650"
+      ]
+    },
+    {
+      "codigo": "0739",
+      "nombre": "Didáctica de la Matemática",
+      "creditos": 2,
+      "semestre": 6,
+      "obligatorio": false,
+      "prerrequisitos": []
+    },
+    {
+      "codigo": "3658",
+      "nombre": "Administración de Personal (diplomado)",
+      "creditos": 0,
+      "semestre": 6,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "3022"
+      ],
+      "diplomado": "DA"
+    },
+    {
+      "codigo": "0281",
+      "nombre": "Sistemas Operativos 1",
+      "creditos": 5,
+      "semestre": 7,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0778",
+        "0781"
+      ]
+    },
+    {
+      "codigo": "0603",
+      "nombre": "Investigación de Operaciones II",
+      "creditos": 5,
+      "semestre": 7,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0601"
+      ]
+    },
+    {
+      "codigo": "0724",
+      "nombre": "Teoría de Sistemas 2",
+      "creditos": 5,
+      "semestre": 7,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0722",
+        "0601",
+        "0736"
+      ]
+    },
+    {
+      "codigo": "0774",
+      "nombre": "Sistemas de Bases de Datos 1",
+      "creditos": 5,
+      "semestre": 7,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0773"
+      ]
+    },
+    {
+      "codigo": "0779",
+      "nombre": "Arquitectura de Computadores y Ensambladores 2",
+      "creditos": 4,
+      "semestre": 7,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0778"
+      ]
+    },
+    {
+      "codigo": "0970",
+      "nombre": "Redes de Computadoras 1",
+      "creditos": 4,
+      "semestre": 7,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0773",
+        "0778"
+      ]
+    },
+    {
+      "codigo": "2036",
+      "nombre": "Prácticas Intermedias",
+      "creditos": 0,
+      "semestre": 7,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "2025",
+        "0778",
+        "0777",
+        "0773"
+      ]
+    },
+    {
+      "codigo": "0009",
+      "nombre": "Idioma Técnico 3",
+      "creditos": 2,
+      "semestre": 7,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0008"
+      ]
+    },
+    {
+      "codigo": "0654",
+      "nombre": "Contabilidad 3",
+      "creditos": 3,
+      "semestre": 7,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0652"
+      ]
+    },
+    {
+      "codigo": "0734",
+      "nombre": "Estadística 2",
+      "creditos": 5,
+      "semestre": 7,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0732"
+      ]
+    },
+    {
+      "codigo": "3662",
+      "nombre": "Legislación 1 (diplomado)",
+      "creditos": 0,
+      "semestre": 7,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "90CR"
+      ],
+      "diplomado": "DA"
+    },
+    {
+      "codigo": "0283",
+      "nombre": "Análisis y Diseño de Sistemas 1",
+      "creditos": 5,
+      "semestre": 8,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0774"
+      ]
+    },
+    {
+      "codigo": "0285",
+      "nombre": "Sistemas Operativos 2",
+      "creditos": 4,
+      "semestre": 8,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0281"
+      ]
+    },
+    {
+      "codigo": "0775",
+      "nombre": "Sistemas de Bases de Datos 2",
+      "creditos": 4,
+      "semestre": 8,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0281",
+        "0774"
+      ]
+    },
+    {
+      "codigo": "0797",
+      "nombre": "Seminario de Sistemas I",
+      "creditos": 3,
+      "semestre": 8,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "170CR",
+        "0724"
+      ]
+    },
+    {
+      "codigo": "0799",
+      "nombre": "Seminario de Investigación",
+      "creditos": 4,
+      "semestre": 8,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "200CR"
+      ]
+    },
+    {
+      "codigo": "0975",
+      "nombre": "Redes de Computadoras 2",
+      "creditos": 4,
+      "semestre": 8,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0970"
+      ]
+    },
+    {
+      "codigo": "0011",
+      "nombre": "Idioma Técnico 4",
+      "creditos": 2,
+      "semestre": 8,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0009"
+      ]
+    },
+    {
+      "codigo": "0288",
+      "nombre": "Introducción al Estudio de Impacto Ambiental",
+      "creditos": 4,
+      "semestre": 8,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "190CR"
+      ]
+    },
+    {
+      "codigo": "0700",
+      "nombre": "Ingeniería Económica 1",
+      "creditos": 5,
+      "semestre": 8,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0732"
+      ],
+      "diplomado": "DA"
+    },
+    {
+      "codigo": "3664",
+      "nombre": "Legislación 2 (diplomado)",
+      "creditos": 0,
+      "semestre": 8,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "3662"
+      ],
+      "diplomado": "DA"
+    },
+    {
+      "codigo": "0729",
+      "nombre": "Modelación y Simulación 1",
+      "creditos": 5,
+      "semestre": 9,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0603",
+        "0724"
+      ]
+    },
+    {
+      "codigo": "0785",
+      "nombre": "Análisis y Diseño de Sistemas 2",
+      "creditos": 5,
+      "semestre": 9,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0283"
+      ]
+    },
+    {
+      "codigo": "0786",
+      "nombre": "Sistemas Organizacionales y Gerenciales 1",
+      "creditos": 4,
+      "semestre": 9,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0283",
+        "0722"
+      ],
+      "diplomado": "DA"
+    },
+    {
+      "codigo": "0798",
+      "nombre": "Seminario de Sistemas 2",
+      "creditos": 3,
+      "semestre": 9,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0797",
+        "190CR"
+      ]
+    },
+    {
+      "codigo": "0972",
+      "nombre": "Inteligencia Artificial 1",
+      "creditos": 4,
+      "semestre": 9,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0781",
+        "0775",
+        "0724"
+      ]
+    },
+    {
+      "codigo": "7999",
+      "nombre": "Seminario de Investigación E.P.S. Sistemas",
+      "creditos": 4,
+      "semestre": 9,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "225CR"
+      ]
+    },
+    {
+      "codigo": "0001",
+      "nombre": "Ética Profesional",
+      "creditos": 4,
+      "semestre": 9,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "200CR"
+      ],
+      "diplomado": "DA"
+    },
+    {
+      "codigo": "0702",
+      "nombre": "Ingeniería Económica 2",
+      "creditos": 4,
+      "semestre": 9,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0700"
+      ]
+    },
+    {
+      "codigo": "0738",
+      "nombre": "Teoría Probabilistica de Decisiones",
+      "creditos": 5,
+      "semestre": 9,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0736"
+      ]
+    },
+    {
+      "codigo": "0776",
+      "nombre": "Bases de Datos Avanzadas",
+      "creditos": 5,
+      "semestre": 9,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0775"
+      ]
+    },
+    {
+      "codigo": "0788",
+      "nombre": "Sistemas Aplicados 1",
+      "creditos": 5,
+      "semestre": 9,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0283"
+      ]
+    },
+    {
+      "codigo": "0790",
+      "nombre": "Emprendedores de Negocios Informáticos",
+      "creditos": 4,
+      "semestre": 9,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0786"
+      ]
+    },
+    {
+      "codigo": "0966",
+      "nombre": "Seguridad y Auditoría de Redes de Computadoras",
+      "creditos": 4,
+      "semestre": 9,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0975"
+      ]
+    },
+    {
+      "codigo": "0720",
+      "nombre": "Modelación y Simulación 2",
+      "creditos": 5,
+      "semestre": 10,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0729"
+      ]
+    },
+    {
+      "codigo": "0780",
+      "nombre": "Software Avanzado",
+      "creditos": 6,
+      "semestre": 10,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0785"
+      ]
+    },
+    {
+      "codigo": "0787",
+      "nombre": "Sistemas Organizacionales y Gerenciales 2",
+      "creditos": 4,
+      "semestre": 10,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "0786"
+      ],
+      "diplomado": "DA"
+    },
+    {
+      "codigo": "2009",
+      "nombre": "Prácticas Finales Ingeniería Ciencias y Sistemas",
+      "creditos": 0,
+      "semestre": 10,
+      "obligatorio": true,
+      "prerrequisitos": [
+        "2036",
+        "200CR"
+      ]
+    },
+    {
+      "codigo": "0656",
+      "nombre": "Administración de Empresas 1",
+      "creditos": 5,
+      "semestre": 10,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "150CR"
+      ]
+    },
+    {
+      "codigo": "0706",
+      "nombre": "Preparación y Evaluación de Proyectos 1",
+      "creditos": 4,
+      "semestre": 10,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0700",
+        "190CR"
+      ],
+      "diplomado": "DA"
+    },
+    {
+      "codigo": "0710",
+      "nombre": "Planeamiento",
+      "creditos": 6,
+      "semestre": 10,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "190CR"
+      ]
+    },
+    {
+      "codigo": "0735",
+      "nombre": "Auditoría de Proyectos de Software",
+      "creditos": 5,
+      "semestre": 10,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0785"
+      ]
+    },
+    {
+      "codigo": "0789",
+      "nombre": "Sistemas Aplicados 2",
+      "creditos": 5,
+      "semestre": 10,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0785",
+        "0788"
+      ]
+    },
+    {
+      "codigo": "0968",
+      "nombre": "Inteligencia Artificial 2",
+      "creditos": 4,
+      "semestre": 10,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0972"
+      ]
+    },
+    {
+      "codigo": "0974",
+      "nombre": "Redes de Nueva Generación",
+      "creditos": 4,
+      "semestre": 10,
+      "obligatorio": false,
+      "prerrequisitos": [
+        "0975"
+      ]
+    }
+  ],
+  "areas": [
+    {
+      "nombre": "Social Humanística",
+      "cursos": [
+        "0017",
+        "0019",
+        "0001",
+        "0018",
+        "0010"
+      ],
+      "unidad": "creditos",
+      "minimo": 10,
+      "nota": "Es obligatorio aprobar 10 créditos del área humanística."
+    },
+    {
+      "nombre": "Idioma Técnico",
+      "cursos": [
+        "0006",
+        "0008",
+        "0009",
+        "0011"
+      ],
+      "unidad": "cursos",
+      "minimo": 4,
+      "nota": "También se acredita con el examen único de inglés o la constancia de nivel 12 de CALUSAC."
+    }
+  ]
+}

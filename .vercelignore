@@ -1,0 +1,9 @@
+backend/.venv
+
+**/__pycache__
+**/node_modules
+clar-calculadora/dist
+clar-calculadora/.angular
+clar-calculadora/.impeccable
+.impeccable
+2021/FIUSAC_files_Mariano

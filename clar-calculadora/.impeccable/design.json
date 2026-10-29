@@ -1,0 +1,491 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-28T23:11:40.622401+00:00",
+  "title": "Design System: Piletazo",
+  "extensions": {
+    "colorMeta": {
+      "accion": {
+        "role": "primary",
+        "displayName": "Azul Acción",
+        "canonical": "#2f81f7",
+        "tonalRamp": [
+          "#12233b",
+          "#163869",
+          "#154d9d",
+          "#0d65e3",
+          "#468aec",
+          "#87afe8",
+          "#c0d2ed",
+          "#edf1f8"
+        ]
+      },
+      "azul": {
+        "role": "primary",
+        "displayName": "Azul Señal",
+        "canonical": "#79c0ff",
+        "tonalRamp": [
+          "#10283c",
+          "#13426c",
+          "#105ea2",
+          "#047feb",
+          "#3f9ef3",
+          "#83bbec",
+          "#bed8ee",
+          "#ecf3f8"
+        ]
+      },
+      "verde": {
+        "role": "secondary",
+        "displayName": "Verde Compilado",
+        "canonical": "#56d364",
+        "tonalRamp": [
+          "#19331c",
+          "#265a2b",
+          "#2e8438",
+          "#34bc43",
+          "#64ce70",
+          "#99d6a0",
+          "#c8e4cb",
+          "#eff6f0"
+        ]
+      },
+      "ambar": {
+        "role": "secondary",
+        "displayName": "Ámbar Advertencia",
+        "canonical": "#e3b341",
+        "tonalRamp": [
+          "#372d16",
+          "#614d1f",
+          "#906f23",
+          "#ce9b22",
+          "#dcb456",
+          "#dfc891",
+          "#e8dec4",
+          "#f7f4ee"
+        ]
+      },
+      "rojo": {
+        "role": "secondary",
+        "displayName": "Rojo Pérdida",
+        "canonical": "#f85149",
+        "tonalRamp": [
+          "#3b1412",
+          "#691a16",
+          "#9d1c15",
+          "#e3170d",
+          "#ec4d46",
+          "#e88b87",
+          "#edc2c0",
+          "#f8eded"
+        ]
+      },
+      "cian": {
+        "role": "tertiary",
+        "displayName": "Violeta Crédito",
+        "canonical": "#5eead4",
+        "tonalRamp": [
+          "#25103c",
+          "#3e136c",
+          "#5710a2",
+          "#7404eb",
+          "#963ff3",
+          "#b683ec",
+          "#d5beee",
+          "#f2ecf8"
+        ]
+      },
+      "suelo": {
+        "role": "neutral",
+        "displayName": "Suelo Grafito",
+        "canonical": "#0d1117",
+        "tonalRamp": [
+          "#20252c",
+          "#333d4c",
+          "#45556e",
+          "#587198",
+          "#8094b2",
+          "#a9b5c6",
+          "#cfd5dd",
+          "#f1f2f4"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Panel",
+        "canonical": "#151a22",
+        "tonalRamp": [
+          "#21252b",
+          "#353d4a",
+          "#48556b",
+          "#5d7293",
+          "#8494ae",
+          "#abb5c4",
+          "#d0d5dc",
+          "#f1f2f4"
+        ]
+      },
+      "elevado": {
+        "role": "neutral",
+        "displayName": "Elevado",
+        "canonical": "#1b212b",
+        "tonalRamp": [
+          "#21252b",
+          "#363d4a",
+          "#49556a",
+          "#5d7192",
+          "#8494ae",
+          "#acb5c4",
+          "#d1d5dc",
+          "#f1f2f4"
+        ]
+      },
+      "costura": {
+        "role": "neutral",
+        "displayName": "Costura",
+        "canonical": "#262c36",
+        "tonalRamp": [
+          "#22252a",
+          "#383e48",
+          "#4d5666",
+          "#64738c",
+          "#8995a9",
+          "#aeb5c1",
+          "#d2d5da",
+          "#f1f2f3"
+        ]
+      },
+      "costura-fuerte": {
+        "role": "neutral",
+        "displayName": "Costura Fuerte",
+        "canonical": "#343b47",
+        "tonalRamp": [
+          "#23252a",
+          "#393e47",
+          "#4e5665",
+          "#66738a",
+          "#8b95a7",
+          "#afb5c0",
+          "#d2d5da",
+          "#f1f2f3"
+        ]
+      },
+      "texto": {
+        "role": "neutral",
+        "displayName": "Texto",
+        "canonical": "#e6edf3",
+        "tonalRamp": [
+          "#1e272e",
+          "#30414f",
+          "#405b73",
+          "#4f7ba0",
+          "#799bb9",
+          "#a5b9ca",
+          "#ced7df",
+          "#f0f2f4"
+        ]
+      },
+      "texto-2": {
+        "role": "neutral",
+        "displayName": "Texto 2",
+        "canonical": "#b1bac4",
+        "tonalRamp": [
+          "#232629",
+          "#3a3f46",
+          "#4f5963",
+          "#687788",
+          "#8d98a5",
+          "#b0b7bf",
+          "#d3d6da",
+          "#f1f2f3"
+        ]
+      },
+      "tenue": {
+        "role": "neutral",
+        "displayName": "Tenue",
+        "canonical": "#8b949e",
+        "tonalRamp": [
+          "#242628",
+          "#3c4044",
+          "#535960",
+          "#6e7782",
+          "#9199a1",
+          "#b3b7bc",
+          "#d4d6d8",
+          "#f2f2f3"
+        ]
+      },
+      "azul-fondo": {
+        "role": "neutral",
+        "displayName": "Fondo Azul 12%",
+        "canonical": "#79c0ff @ 12% (rgb / 0.12)",
+        "tonalRamp": [
+          "#10283c",
+          "#13426c",
+          "#105ea2",
+          "#047feb",
+          "#3f9ef3",
+          "#83bbec",
+          "#bed8ee",
+          "#ecf3f8"
+        ]
+      },
+      "verde-fondo": {
+        "role": "neutral",
+        "displayName": "Fondo Verde 12%",
+        "canonical": "#56d364 @ 12% (rgb / 0.12)",
+        "tonalRamp": [
+          "#19331c",
+          "#265a2b",
+          "#2e8438",
+          "#34bc43",
+          "#64ce70",
+          "#99d6a0",
+          "#c8e4cb",
+          "#eff6f0"
+        ]
+      },
+      "ambar-fondo": {
+        "role": "neutral",
+        "displayName": "Fondo Ámbar 12%",
+        "canonical": "#e3b341 @ 12% (rgb / 0.12)",
+        "tonalRamp": [
+          "#372d16",
+          "#614d1f",
+          "#906f23",
+          "#ce9b22",
+          "#dcb456",
+          "#dfc891",
+          "#e8dec4",
+          "#f7f4ee"
+        ]
+      },
+      "rojo-fondo": {
+        "role": "neutral",
+        "displayName": "Fondo Rojo 12%",
+        "canonical": "#f85149 @ 12% (rgb / 0.12)",
+        "tonalRamp": [
+          "#3b1412",
+          "#691a16",
+          "#9d1c15",
+          "#e3170d",
+          "#ec4d46",
+          "#e88b87",
+          "#edc2c0",
+          "#f8eded"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Cifra",
+        "purpose": "Cifra de créditos del medidor; 36px bajo 520px."
+      },
+      "headline": {
+        "displayName": "Encabezado",
+        "purpose": "Nombre del estudiante y título de entrada (22px)."
+      },
+      "title": {
+        "displayName": "Título de panel",
+        "purpose": "Títulos de panel y subtítulos de sección."
+      },
+      "body": {
+        "displayName": "Cuerpo",
+        "purpose": "Texto base de la interfaz."
+      },
+      "body-sm": {
+        "displayName": "Cuerpo pequeño",
+        "purpose": "Ayudas, notas, filas de tabla, navegación."
+      },
+      "label": {
+        "displayName": "Etiqueta",
+        "purpose": "Etiquetas de campo, dt, leyendas, chips, cabeceras de tabla."
+      },
+      "code": {
+        "displayName": "Código",
+        "purpose": "Códigos de curso en Geist Mono azul."
+      },
+      "print-body": {
+        "displayName": "Cuerpo de reporte",
+        "purpose": "Reporte imprimible en tinta sobre papel carta."
+      }
+    },
+    "shadows": [
+      {
+        "name": "anillo-enfoque",
+        "value": "0 0 0 3px rgb(47 129 247 / 0.25)",
+        "purpose": "Foco de campos junto al borde accion."
+      },
+      {
+        "name": "costura-interior",
+        "value": "inset 0 0 0 1px var(--costura-fuerte)",
+        "purpose": "Ítem de navegación activo."
+      }
+    ],
+    "motion": [
+      {
+        "name": "estado-rapido",
+        "value": "0.15s ease",
+        "purpose": "Hover de botones, campos, segmentados y escenarios."
+      },
+      {
+        "name": "interruptor",
+        "value": "0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Perilla del interruptor de proyección."
+      },
+      {
+        "name": "progreso",
+        "value": "0.6s cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Ancho de barras de créditos y de área; crecimiento de la proyección."
+      },
+      {
+        "name": "reducido",
+        "value": "transition: none",
+        "purpose": "prefers-reduced-motion anula transiciones y scroll suave."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "columnas",
+        "value": "1100px"
+      },
+      {
+        "name": "telefono",
+        "value": "860px"
+      },
+      {
+        "name": "compacto",
+        "value": "520px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botón primario",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Única acción principal por zona: generar reporte, calcular, guardar.",
+      "html": "<button class=\"ds-btn ds-btn-primario\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M6 9V2h12v7\"/><path d=\"M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2\"/><rect x=\"6\" y=\"14\" width=\"12\" height=\"8\"/></svg>Generar reporte PDF</button>",
+      "css": ".ds-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:8px 14px; border-radius:var(--radio,6px); border:1px solid var(--costura-fuerte,#343b47); background:var(--elevado,#1b212b); color:var(--texto,#e6edf3); font:500 14px var(--sans,'Geist',system-ui,sans-serif); cursor:pointer; transition:background .15s ease, border-color .15s ease; } .ds-btn:hover { background:#222934; border-color:#4a5260; } .ds-btn:focus-visible { outline:2px solid var(--azul,#79c0ff); outline-offset:2px; } .ds-btn-primario { background:var(--accion,#2f81f7); border-color:var(--accion,#2f81f7); color:#fff; } .ds-btn-primario:hover { background:#4c93f9; border-color:#4c93f9; }"
+    },
+    {
+      "name": "Botón secundario",
+      "kind": "button",
+      "refersTo": "button",
+      "description": "Acción secundaria sobre el escalón elevado.",
+      "html": "<button class=\"ds-btn\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M21.17 6.81a1 1 0 0 0-3.99-3.99L3.84 16.17a2 2 0 0 0-.5.83l-1.32 4.35a.5.5 0 0 0 .62.62l4.35-1.32a2 2 0 0 0 .83-.5z\"/></svg>Cambiar cursos</button>",
+      "css": ".ds-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:8px 14px; border-radius:var(--radio,6px); border:1px solid var(--costura-fuerte,#343b47); background:var(--elevado,#1b212b); color:var(--texto,#e6edf3); font:500 14px var(--sans,'Geist',system-ui,sans-serif); cursor:pointer; transition:background .15s ease, border-color .15s ease; } .ds-btn:hover { background:#222934; border-color:#4a5260; } .ds-btn:focus-visible { outline:2px solid var(--azul,#79c0ff); outline-offset:2px; }"
+    },
+    {
+      "name": "Botón destructivo",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Borrar datos: borde discontinuo rojo que se vuelve sólido al hover.",
+      "html": "<button class=\"ds-btn ds-btn-peligro\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 6h18\"/><path d=\"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6\"/><path d=\"M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\"/></svg>Borrar mis datos</button>",
+      "css": ".ds-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:8px 14px; border-radius:var(--radio,6px); border:1px solid var(--costura-fuerte,#343b47); background:var(--elevado,#1b212b); color:var(--texto,#e6edf3); font:500 14px var(--sans,'Geist',system-ui,sans-serif); cursor:pointer; transition:background .15s ease, border-color .15s ease; } .ds-btn:hover { background:#222934; border-color:#4a5260; } .ds-btn:focus-visible { outline:2px solid var(--azul,#79c0ff); outline-offset:2px; } .ds-btn-peligro { background:transparent; border:1px dashed rgb(248 81 73 / .55); color:var(--rojo,#f85149); } .ds-btn-peligro:hover { background:var(--rojo-fondo,rgb(248 81 73 / .12)); border-style:solid; border-color:rgb(248 81 73 / .55); }"
+    },
+    {
+      "name": "Campo de texto",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Campo de consola: borde costura, foco azul con anillo de 3px.",
+      "html": "<label class=\"ds-campo\"><span>Carné</span><input class=\"ds-input\" type=\"text\" placeholder=\"2021XXXXX\"></label>",
+      "css": ".ds-campo { display:grid; gap:4px; font:12px var(--sans,'Geist',system-ui,sans-serif); color:var(--tenue,#8b949e); max-width:240px; } .ds-input { background:var(--panel,#151a22); border:1px solid var(--costura,#262c36); border-radius:var(--radio,6px); padding:8px 10px; color:var(--texto,#e6edf3); font:15px var(--sans,'Geist',system-ui,sans-serif); transition:border-color .15s ease; } .ds-input::placeholder { color:#6e7681; } .ds-input:hover { border-color:var(--costura-fuerte,#343b47); } .ds-input:focus { outline:none; border-color:var(--accion,#2f81f7); box-shadow:0 0 0 3px rgb(47 129 247 / .25); }"
+    },
+    {
+      "name": "Navegación del riel",
+      "kind": "nav",
+      "refersTo": "nav-item",
+      "description": "Ítems de sección del riel; el activo sube a elevado con icono azul.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#\" class=\"ds-activa\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m12 14 4-4\"/><path d=\"M3.34 19a10 10 0 1 1 17.32 0\"/></svg>Resumen</a><a href=\"#\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M3 12h6\"/><path d=\"M15 12h6\"/></svg>Avance por semestre</a></nav>",
+      "css": ".ds-nav { display:grid; gap:2px; width:232px; background:var(--suelo,#0d1117); padding:8px; } .ds-nav a { display:flex; align-items:center; gap:10px; padding:7px 10px; border-radius:var(--radio,6px); color:var(--texto-2,#b1bac4); text-decoration:none; font:14px var(--sans,'Geist',system-ui,sans-serif); } .ds-nav a svg { color:var(--tenue,#8b949e); } .ds-nav a:hover { background:var(--panel,#151a22); color:var(--texto,#e6edf3); } .ds-nav a:focus-visible { outline:2px solid var(--azul,#79c0ff); outline-offset:2px; } .ds-nav a.ds-activa { background:var(--elevado,#1b212b); color:var(--texto,#e6edf3); box-shadow:inset 0 0 0 1px var(--costura-fuerte,#343b47); } .ds-nav a.ds-activa svg { color:var(--azul,#79c0ff); }"
+    },
+    {
+      "name": "Chips de estado",
+      "kind": "chip",
+      "refersTo": "status-chip-ok",
+      "description": "Píldoras de estado con texto del acento y fondo al 12%.",
+      "html": "<div class=\"ds-chips\"><span class=\"ds-estado ds-ok\">Completa</span><span class=\"ds-estado ds-aviso\">Faltan 2 CLAR</span><span class=\"ds-estado ds-info\">disponible</span><span class=\"ds-estado ds-baja\">No está en la red CLAR</span></div>",
+      "css": ".ds-chips { display:flex; gap:8px; flex-wrap:wrap; } .ds-estado { display:inline-block; padding:1px 8px; border-radius:20px; font:500 12px var(--sans,'Geist',system-ui,sans-serif); border:1px solid currentColor; white-space:nowrap; } .ds-ok { color:var(--verde,#56d364); background:var(--verde-fondo,rgb(86 211 100 / .12)); } .ds-aviso { color:var(--ambar,#e3b341); background:var(--ambar-fondo,rgb(227 179 65 / .12)); } .ds-info { color:var(--azul,#79c0ff); background:var(--azul-fondo,rgb(121 192 255 / .12)); } .ds-baja { color:var(--rojo,#f85149); background:var(--rojo-fondo,rgb(248 81 73 / .12)); }"
+    },
+    {
+      "name": "Panel con medidor de créditos",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Panel plano con cifra mono, barra en pozo y proyección rayada violeta.",
+      "html": "<section class=\"ds-panel\"><h2>Créditos CLAR 2022</h2><p class=\"ds-cifra\"><span>204</span><small>/ 300 CLAR</small></p><div class=\"ds-barra\"><div class=\"ds-relleno\" style=\"width:68%\"></div><div class=\"ds-proy\" style=\"left:68%;width:20%\"></div></div><p class=\"ds-nota\">Te faltan <b>96</b> CLAR para cerrar · 68% de la carrera.</p></section>",
+      "css": ".ds-panel { background:var(--panel,#151a22); border:1px solid var(--costura,#262c36); border-radius:var(--radio,6px); padding:18px 20px; color:var(--texto,#e6edf3); font:15px/1.55 var(--sans,'Geist',system-ui,sans-serif); max-width:560px; } .ds-panel h2 { margin:0 0 14px; font-size:15px; font-weight:600; letter-spacing:-.01em; } .ds-cifra { margin:0; display:flex; align-items:baseline; gap:8px; } .ds-cifra span { font:500 44px/1.1 var(--mono,'Geist Mono',ui-monospace,monospace); letter-spacing:-.03em; font-variant-numeric:tabular-nums; } .ds-cifra small { color:var(--tenue,#8b949e); font-size:15px; } .ds-barra { position:relative; height:10px; margin-top:12px; background:var(--suelo,#0d1117); border:1px solid var(--costura,#262c36); border-radius:10px; overflow:hidden; } .ds-relleno,.ds-proy { position:absolute; top:0; bottom:0; left:0; } .ds-relleno { background:var(--verde,#56d364); } .ds-proy { background:repeating-linear-gradient(-45deg,var(--violeta,#5eead4) 0 6px,rgb(210 168 255 / .55) 6px 12px); } .ds-nota { margin:10px 0 0; color:var(--texto-2,#b1bac4); font-size:14px; } .ds-nota b { color:var(--texto,#e6edf3); font-family:var(--mono,'Geist Mono',monospace); font-weight:600; }"
+    },
+    {
+      "name": "Pipeline de semestres",
+      "kind": "custom",
+      "refersTo": "pipeline-stage",
+      "description": "Etapas conectadas cuyo conector toma el estado de la etapa a la que lleva.",
+      "html": "<ol class=\"ds-pipeline\"><li class=\"ds-etapa ds-completa\"><span class=\"ds-ic\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"m9 12 2 2 4-4\"/></svg></span><span class=\"ds-nom\">Sexto</span><span class=\"ds-dato\">6/6</span></li><li class=\"ds-etapa ds-en-curso\"><span class=\"ds-ic\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></svg></span><span class=\"ds-nom\">Octavo</span><span class=\"ds-dato\">3/5</span></li><li class=\"ds-etapa\"><span class=\"ds-ic\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\"/></svg></span><span class=\"ds-nom\">Noveno</span><span class=\"ds-dato\">0/4</span></li></ol>",
+      "css": ".ds-pipeline { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3,110px); gap:14px; font-family:var(--sans,'Geist',system-ui,sans-serif); color:var(--texto,#e6edf3); } .ds-etapa { position:relative; display:grid; gap:4px; padding:10px 10px 9px; border:1px solid var(--costura-fuerte,#343b47); border-radius:var(--radio,6px); background:var(--suelo,#0d1117); } .ds-etapa:not(:last-child)::after { content:''; position:absolute; top:50%; right:-15px; width:14px; height:2px; background:var(--costura-fuerte,#343b47); } .ds-etapa:has(+ .ds-completa)::after { background:var(--verde,#56d364); } .ds-etapa:has(+ .ds-en-curso)::after { background:var(--azul,#79c0ff); } .ds-completa { border-color:rgb(86 211 100 / .55); } .ds-en-curso { border-color:rgb(121 192 255 / .65); background:var(--azul-fondo,rgb(121 192 255 / .12)); } .ds-ic { display:flex; font-size:17px; color:var(--tenue,#8b949e); } .ds-ic svg { width:17px; height:17px; } .ds-completa .ds-ic { color:var(--verde,#56d364); } .ds-en-curso .ds-ic { color:var(--azul,#79c0ff); } .ds-nom { font-size:13px; font-weight:500; } .ds-dato { font:12px var(--mono,'Geist Mono',monospace); color:var(--tenue,#8b949e); font-variant-numeric:tabular-nums; }"
+    },
+    {
+      "name": "Celda de curso",
+      "kind": "custom",
+      "refersTo": "course-cell",
+      "description": "Celda de la red curricular: bloqueado, disponible o aprobado.",
+      "html": "<div class=\"ds-red\"><div class=\"ds-curso ds-aprobado\"><span class=\"ds-cod\">0281</span><span>Sistemas Operativos 1</span><span>5</span></div><div class=\"ds-curso ds-disp\"><span class=\"ds-cod\">0283</span><span>Análisis y Diseño 1</span><span>5</span></div><div class=\"ds-curso\"><span class=\"ds-cod\">0785</span><span>Análisis y Diseño 2</span><span>5</span></div></div>",
+      "css": ".ds-red { display:grid; gap:4px; width:220px; } .ds-curso { display:grid; grid-template-columns:40px minmax(0,1fr) auto; gap:8px; align-items:baseline; padding:7px 9px; font:12.5px/1.35 var(--sans,'Geist',system-ui,sans-serif); border:1px solid var(--costura,#262c36); border-radius:5px; background:var(--suelo,#0d1117); color:var(--tenue,#8b949e); } .ds-cod { font:11.5px var(--mono,'Geist Mono',monospace); } .ds-aprobado { border-color:rgb(86 211 100 / .35); background:var(--verde-fondo,rgb(86 211 100 / .12)); color:var(--texto,#e6edf3); } .ds-aprobado .ds-cod { color:var(--verde,#56d364); } .ds-disp { border-color:rgb(121 192 255 / .6); color:var(--texto,#e6edf3); } .ds-disp .ds-cod { color:var(--azul,#79c0ff); } .ds-curso:hover { border-color:var(--costura-fuerte,#343b47); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "La consola de compilación",
+    "overview": "La carrera se lee como un pipeline de CI: diez etapas (semestres) que pasan, corren o esperan, cursos que compilan en verde o quedan bloqueados por una dependencia. La interfaz es una consola de desarrollador oscura: suelo grafito, paneles planos separados por costuras de 1px y un único escalón de elevación. Nada flota; la profundidad se dice con tono y borde, no con sombra.\n\nEl color es sintaxis, no decoración. Cada acento existe para un estado: verde aprobado, azul disponible o acción, ámbar afectado o pendiente, rojo pérdida o destructivo, violeta para cifras de créditos. La densidad es alta y tabular, como un panel de herramientas que se usa sentado antes de asignarse cursos; la tipografía Geist lleva la interfaz y Geist Mono solo aparece donde hay códigos de curso y números.\n\nEl mismo sistema se invierte para el papel: el reporte imprimible abandona el oscuro y pasa a tinta negra sobre blanco, tamaño carta, con reglas finas en puntos tipográficos.",
+    "keyCharacteristics": [
+      "Oscuro por defecto (`color-scheme: dark`), plano, sin sombras de elevación.",
+      "Costuras de 1px como único separador estructural entre paneles, filas y columnas de datos.",
+      "Acentos de estado con su fondo translúcido al 12% como pareja fija.",
+      "Geist Mono con cifras tabulares para todo dato que se compara.",
+      "Un único radio (6px) para casi toda superficie.",
+      "Iconos de trazo Lucide a 1.75px, heredando `currentColor`."
+    ],
+    "rules": [
+      {
+        "name": "The Syntax Highlight Rule",
+        "body": "Un acento solo aparece si nombra un estado. Verde aprobado, azul disponible o acción, ámbar afectado, rojo pérdida, violeta créditos. Ninguna superficie lleva color por adorno.",
+        "section": "colors"
+      },
+      {
+        "name": "The Twelve Percent Rule",
+        "body": "Cada acento de estado tiene una pareja de fondo al 12% de opacidad (`*-fondo`); los bordes coloreados van entre 35% y 65%. Nunca rellenos de estado sólidos.",
+        "section": "colors"
+      },
+      {
+        "name": "The Mono Means Data Rule",
+        "body": "Geist Mono con `tabular-nums` solo para códigos de curso, cifras y el texto pegado del historial. Nunca para títulos ni prosa.",
+        "section": "typography"
+      },
+      {
+        "name": "The No Heavy Weight Rule",
+        "body": "El peso máximo es 600. La jerarquía se construye con tamaño y tinta (texto, texto-2, tenue), no con negritas de 700.",
+        "section": "typography"
+      },
+      {
+        "name": "The Seams Not Shadows Rule",
+        "body": "Las superficies se separan con costuras de 1px y cambio de tono. Si algo necesita destacar, sube a `elevado` o toma un borde de estado; nunca una sombra difusa.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** separar superficies con costuras de 1px (`costura`) y el salto de tono suelo → panel → elevado.",
+      "**Do** emparejar cada acento de estado con su fondo `*-fondo` al 12% y bordes entre 35% y 65%.",
+      "**Do** escribir códigos de curso y cifras en Geist Mono con `tabular-nums`; créditos en `violeta`.",
+      "**Do** usar el radio único de 6px salvo en elementos diminutos (4–5px) o formas con significado circular.",
+      "**Do** usar iconos de trazo Lucide de 24×24 a 1.75px heredando `currentColor`.",
+      "**Do** mantener las transiciones en 150–200ms para estados y 600ms con `cubic-bezier(0.16, 1, 0.3, 1)` para barras de progreso, y anularlas con `prefers-reduced-motion`.",
+      "**Do** invertir a tinta sobre papel blanco en impresión, sin fondos oscuros."
+    ],
+    "donts": [
+      "**Don't** usar sombras difusas de elevación ni tarjetas que floten sobre el suelo.",
+      "**Don't** poner color de acento sin un estado que nombrar, ni rellenos sólidos de estado salvo el botón primario.",
+      "**Don't** usar Geist Mono para títulos o prosa.",
+      "**Don't** pasar de peso 600.",
+      "**Don't** usar el escudo, logotipos ni marca de la USAC o FIUSAC; la marca es la \"C\" tipográfica en mono verde.",
+      "**Don't** convertir la interfaz en un dashboard claro de tarjetas iguales con un acento azul."
+    ]
+  }
+}
