@@ -11,6 +11,28 @@ from .pensums import Curso, Modalidad, Pensum, RequisitoArea, catalogo, pensum
 
 EstadoCurso = Literal["aprobado", "disponible", "bloqueado"]
 CREDITOS = re.compile(r"^(\d+)CR$")
+NOTA = re.compile(r"^\d{1,3}(\.\d+)?$")
+
+
+@dataclass
+class Rendimiento:
+    """Promedio de las notas numéricas de los cursos aprobados (sin los que se están cursando)."""
+
+    cursos_aprobados: int
+    cursos_con_nota: int
+    promedio: Optional[float]
+    promedio_ponderado: Optional[float]  # ponderado por créditos
+
+
+def rendimiento(aprobados: List[CursoAprobado]) -> Rendimiento:
+    reales = [a for a in aprobados if a.observacion != "Cursando"]
+    notas = [(float(a.nota), a.creditos) for a in reales if a.nota and NOTA.match(a.nota) and 0 <= float(a.nota) <= 100]
+    promedio = round(sum(n for n, _ in notas) / len(notas), 2) if notas else None
+    con_creditos = [(n, c) for n, c in notas if c > 0]
+    ponderado = (
+        round(sum(n * c for n, c in con_creditos) / sum(c for _, c in con_creditos), 2) if con_creditos else None
+    )
+    return Rendimiento(len(reales), len(notas), promedio, ponderado)
 
 
 @dataclass
@@ -76,6 +98,7 @@ class Analisis:
     creditos2021: int
     creditos2022: int
     creditos_sin_equivalencia: int
+    rendimiento: Rendimiento
     pierden_disponibilidad: List[CursoRed]
     ganan_disponibilidad: List[CursoRed]
     cambios_prerrequisitos: List[CursoRed]
@@ -173,6 +196,7 @@ def analizar(aprobados: List[CursoAprobado], modalidad: Modalidad = "eps") -> An
         creditos2021=creditos2021,
         creditos2022=creditos2022,
         creditos_sin_equivalencia=sin_equivalencia,
+        rendimiento=rendimiento(aprobados),
         pierden_disponibilidad=[r for r in pendientes if r.pierde_disponibilidad],
         ganan_disponibilidad=[r for r in pendientes if r.gana_disponibilidad],
         cambios_prerrequisitos=[

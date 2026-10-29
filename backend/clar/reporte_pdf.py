@@ -106,6 +106,15 @@ def generar_pdf(
                       f"{len(p21.obligatorios_pendientes)} ({p21.creditos_obligatorios_pendientes} créditos)",
                       p21.creditos + p21.creditos_obligatorios_pendientes])
     partes.append(_tabla(filas, [ancho * x for x in (0.26, 0.14, 0.12, 0.26, 0.22)]))
+    r = analisis.rendimiento
+    if r.promedio is not None:
+        partes.append(Spacer(0, 4))
+        partes.append(Paragraph(
+            f"<b>Cursos aprobados:</b> {r.cursos_aprobados} · <b>Promedio:</b> {r.promedio:.2f} "
+            f"(ponderado por créditos: {r.promedio_ponderado:.2f}; {r.cursos_con_nota} cursos con nota)", TEXTO))
+    else:
+        partes.append(Spacer(0, 4))
+        partes.append(Paragraph(f"<b>Cursos aprobados:</b> {r.cursos_aprobados} · Sin notas numéricas para calcular el promedio.", TEXTO))
     etiqueta = "sin equivalencia en la red CLAR" if traslado else "de cursos fuera de la red CLAR"
     partes.append(Spacer(0, 4))
     partes.append(Paragraph(f"Créditos {etiqueta}: {analisis.creditos_sin_equivalencia}.", TEXTO))

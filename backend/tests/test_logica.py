@@ -116,3 +116,29 @@ def test_modalidad_eps_y_tesis(aprobados_semestre_actual):
     }
     assert "7999" in llevados("eps")
     assert "7999" not in llevados("tesis")
+
+
+def test_promedio_y_cursos_aprobados():
+    from clar.analisis import rendimiento
+    from clar.entrada import CursoAprobado
+
+    r = rendimiento(
+        [
+            CursoAprobado("0101", "Básica 1", 2, nota="70.00"),
+            CursoAprobado("0103", "Básica 2", 4, nota="90"),
+            CursoAprobado("0006", "Idioma 1", 2, nota="Aprobado", observacion="Equivalencia con creditos"),
+            CursoAprobado("2025", "Prácticas", 0, nota="80.00"),
+            CursoAprobado("0773", "Archivos", 5, nota="61.00", observacion="Cursando"),
+        ]
+    )
+    assert r.cursos_aprobados == 4  # el que se está cursando no cuenta
+    assert r.cursos_con_nota == 3  # "Aprobado" no tiene nota numérica
+    assert r.promedio == 80.0  # (70 + 90 + 80) / 3
+    assert r.promedio_ponderado == 83.33  # (70·2 + 90·4) / 6; prácticas sin créditos no pesan
+
+
+def test_promedio_del_historial_de_ejemplo(texto_ejemplo):
+    r = analizar(parsear_texto(texto_ejemplo)).rendimiento
+    assert r.cursos_aprobados == 46
+    assert r.promedio == 61.0  # el historial anónimo usa 61 en todas las notas numéricas
+    assert r.cursos_con_nota == 41

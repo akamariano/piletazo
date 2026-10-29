@@ -134,7 +134,8 @@ def estudiante_de_ejemplo(clave_pensum: str, semestres: int = 5) -> List[CursoAp
     """Estudiante que acaba de terminar `semestres`: todos los obligatorios hasta ahí, idiomas 1–2 y deportes 1."""
     red = pensum(clave_pensum)  # type: ignore[arg-type]
     return [
-        CursoAprobado(c.codigo, c.nombre, c.creditos, nota="Aprobado", observacion="Ejemplo")
+        # Notas de muestra entre 61 y 95, fijas por código para que el ejemplo sea siempre igual.
+        CursoAprobado(c.codigo, c.nombre, c.creditos, nota=f"{61 + int(c.codigo) * 7 % 35}.00", observacion="Ejemplo")
         for c in red.cursos
         if c.semestre <= semestres and (c.obligatorio or c.codigo in OPTATIVOS_DE_EJEMPLO)
     ]

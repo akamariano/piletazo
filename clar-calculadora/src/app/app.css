@@ -2731,3 +2731,42 @@ tr.sin-equivalencia td {
   margin-top: 14px;
   color: var(--tenue);
 }
+
+/* ---------- Promedio y cursos aprobados en el resumen ---------- */
+.datos {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.datos > div {
+  border-bottom: 1px solid var(--costura);
+}
+
+.datos > div:nth-child(3n) {
+  border-right: 0;
+}
+
+.datos > div:nth-last-child(-n + 3) {
+  border-bottom: 0;
+}
+
+.dato-promedio dd .num {
+  color: var(--cian);
+}
+
+@media (max-width: 860px) {
+  .datos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .datos > div:nth-child(3n) {
+    border-right: 1px solid var(--costura);
+  }
+  .datos > div:nth-child(2n) {
+    border-right: 0;
+  }
+  .datos > div:nth-last-child(-n + 3) {
+    border-bottom: 1px solid var(--costura);
+  }
+  .datos > div:nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+}

@@ -95,8 +95,17 @@ export interface ProgresoPensum {
   areas: ProgresoArea[];
 }
 
+/** Promedio de las notas numéricas de los cursos aprobados (sin los que se están cursando). */
+export interface Rendimiento {
+  cursosAprobados: number;
+  cursosConNota: number;
+  promedio: number | null;
+  promedioPonderado: number | null;
+}
+
 export interface Analisis {
   modalidad: Modalidad;
+  rendimiento: Rendimiento;
   aprobados: CursoAprobado[];
   equivalencias: Equivalencia[];
   creditos2021: number;

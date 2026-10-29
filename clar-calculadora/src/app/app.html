@@ -221,7 +221,8 @@
             <h1>{{ ejemplo() ? 'Estudiante de ejemplo' : nombre().trim() ? nombre().trim() : 'Tu situación' }}</h1>
             <p>
               @if (carne().trim() && !ejemplo()) { Carné {{ carne().trim() }} · }
-              {{ a.aprobados.length - cursando().length }} cursos aprobados
+              {{ a.rendimiento.cursosAprobados }} cursos aprobados
+              @if (a.rendimiento.promedio !== null) { · promedio <b class="num">{{ a.rendimiento.promedio.toFixed(2) }}</b> }
               @if (cursando().length) { · <span class="texto-cursando">{{ cursando().length }} cursando</span> }
             </p>
           </div>
@@ -309,7 +310,25 @@
           </div>
 
           <dl class="datos">
+            <div class="dato-promedio">
+              <dt>Promedio</dt>
+              <dd>
+                @if (a.rendimiento.promedio !== null) {
+                  <span class="num">{{ a.rendimiento.promedio.toFixed(2) }}</span>
+                  <small>ponderado {{ a.rendimiento.promedioPonderado?.toFixed(2) }}</small>
+                } @else {
+                  <span class="num">—</span><small>sin notas numéricas</small>
+                }
+              </dd>
+            </div>
             @if (origen() === 'traslado') {
+              <div>
+                <dt>Cursos aprobados</dt>
+                <dd>
+                  <span class="num">{{ a.rendimiento.cursosAprobados }}</span><small>cursos</small>
+                  @if (cursando().length) {<small class="texto-cursando">+{{ cursando().length }} cursando</small>}
+                </dd>
+              </div>
               <div>
                 <dt>{{ vista() === '2022' ? 'Pensum anterior' : 'CLAR 2022' }}</dt>
                 <dd>
@@ -331,13 +350,20 @@
               <div>
                 <dt>Cursos aprobados</dt>
                 <dd>
-                  <span class="num">{{ a.aprobados.length - cursando().length }}</span><small>cursos</small>
+                  <span class="num">{{ a.rendimiento.cursosAprobados }}</span><small>cursos</small>
                   @if (cursando().length) {<small class="texto-cursando">+{{ cursando().length }} cursando</small>}
                 </dd>
               </div>
               <div>
                 <dt>Obligatorios por aprobar</dt>
                 <dd><span class="num">{{ p.creditosObligatoriosPendientes }}</span><small>CLAR</small></dd>
+              </div>
+              <div>
+                <dt>Cursando este semestre</dt>
+                <dd>
+                  <span class="num" [class.texto-cursando]="cursando().length > 0">{{ cursando().length }}</span><small>cursos</small>
+                  <small>· {{ creditosCursando() }} CLAR</small>
+                </dd>
               </div>
               <div>
                 <dt>Fuera de la red CLAR</dt>
@@ -917,6 +943,15 @@
           }
         </tbody>
       </table>
+      <p>
+        Cursos aprobados: {{ a.rendimiento.cursosAprobados }} ·
+        @if (a.rendimiento.promedio !== null) {
+          Promedio: {{ a.rendimiento.promedio.toFixed(2) }} (ponderado por créditos: {{ a.rendimiento.promedioPonderado?.toFixed(2) }};
+          {{ a.rendimiento.cursosConNota }} cursos con nota).
+        } @else {
+          Sin notas numéricas para calcular el promedio.
+        }
+      </p>
       <p>Modalidad de graduación: {{ modalidad() === 'eps' ? 'EPS' : 'Tesis de investigación' }}.
         {{ origen() === 'traslado' ? 'Créditos aprobados sin equivalencia en la red CLAR' : 'Créditos de cursos fuera de la red CLAR' }}: {{ a.creditosSinEquivalencia }}.</p>
     </section>
