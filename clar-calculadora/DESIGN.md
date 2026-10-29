@@ -319,7 +319,7 @@ Columnas por semestre de celdas de curso (código mono, nombre, créditos). Bloq
 - **Don't** poner color de acento sin un estado que nombrar, ni rellenos sólidos de estado salvo el botón primario.
 - **Don't** usar Geist Mono para títulos o prosa.
 - **Don't** pasar de peso 600.
-- **Don't** usar el escudo, logotipos ni marca de la USAC o FIUSAC; la marca es la "C" tipográfica en mono verde.
+- **Don't** usar el escudo, logotipos ni marca de la USAC o FIUSAC; la marca es la ola de 0s y 1s de Piletazo.
 - **Don't** convertir la interfaz en un dashboard claro de tarjetas iguales con un acento azul.
 
 ## Identidad Piletazo (actualización)
@@ -330,3 +330,9 @@ Columnas por semestre de celdas de curso (código mono, nombre, créditos). Bloq
 - **Profundidad.** Luz desde arriba (`brillo`), sombras con desplazamiento y desenfoque (`sombra-panel`, `sombra-elevada`), pozos hundidos para campos y barras (`sombra-pozo`). Lo disponible se eleva; lo bloqueado se hunde.
 - **Movimiento.** Tres olas de fondo en desplazamiento lento (12–26 s), entrada escalonada del avance por semestre, llenado de la barra de créditos y paneles que suben al entrar en pantalla desde un estado ya visible. Todo se apaga con `prefers-reduced-motion`.
 - **Distintivo OB.** Cada curso obligatorio lleva una placa mono "OB" que toma el color del estado del curso.
+- **Estados adicionales de curso.**
+  - **CURSANDO:** naranja `#fb923c` con rayado diagonal y placa mono «CURSANDO»; el botón *Lo estoy cursando* es naranja de contorno y se rellena con el degradado `#fdba74 → #fb923c` al quedar seleccionado.
+  - **CRÍTICO:** placa mono rosa (`#fb7185 → #e11d48`) en los obligatorios de la ruta crítica; el mismo rosa marca el atraso en «¿Y si repruebo?».
+  - **Nuevo:** placa con el degradado aqua → celeste (por ejemplo, CLAR 2025 en la presentación).
+- **Carga y entrada.** Una ola gigante de 0s y 1s cruza la pantalla de izquierda a derecha al entrar o recargar y descubre la página. Los indicadores de carga son una cápsula con un tren de olas con cresta que avanza. La página 404 muestra una ola que se lleva la interfaz.
+- **Tarjeta para compartir.** Mismo fondo noche y degradado `ola`, porcentaje en aqua `#5eead4`, celdas de datos en panel y pie con QR blanco y el monograma MR del autor (degradado `#0071e3 → #7b5cff`, propio de su sitio personal; es la única excepción al «no se usa morado»).

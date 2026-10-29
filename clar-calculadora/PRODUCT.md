@@ -27,7 +27,7 @@ Cruza el historial real del estudiante con las dos redes curriculares de su carr
 - Angular 22 (componentes standalone, signals) como interfaz; toda la lógica vive en una API de Python (FastAPI) en `../backend`, que también sirve la página compilada.
 - Los cursos se envían a la API solo para calcular y no se almacenan. Nombre y carné no salen del navegador salvo en el PDF que el estudiante pide. El guardado local requiere consentimiento explícito.
 - Reporte PDF: descarga directa generada por la API (ReportLab) y, como alternativa, diálogo de impresión.
-- Origen del estudiante: traslado desde el pensum anterior o CLAR 2022 desde el inicio (oculta cambios y equivalencias).
+- Origen del estudiante: traslado desde el pensum anterior al CLAR 2022, CLAR 2022 desde el inicio o CLAR 2025 desde el inicio. Sin traslado se ocultan cambios, equivalencias y avisos de cambio.
 - Modalidad de graduación: EPS (7999 obligatorio además de 0799) o tesis (solo 0799).
 - Pensum CLAR 2025 para estudiantes de nuevo ingreso (sin traslado: solo avance, recomendación y rutas), transcrito de `../clar2025/RED_2025_CLAR.jpg`.
 - Próximamente: las demás carreras de Ingeniería de la Facultad y un plan manual con arrastrar y soltar por semestre y escuela de vacaciones.
@@ -35,7 +35,14 @@ Cruza el historial real del estudiante con las dos redes curriculares de su carr
 - Proyección de créditos si se aprueban todos los obligatorios pendientes.
 - Rutas posibles: simulación semestre a semestre hasta el cierre (obligatorios, 300 CLAR y Social Humanística), con Prácticas Finales de 6 meses o 1 año en paralelo y escuelas de vacaciones (junio y diciembre) con 0, 1 o 2 cursos adelantados. Regla de vacaciones: máximo 4 horas de clase magistral; 2 h por curso, 4 h para Matemática Básica 2 (0103) y Matemática Intermedia 1 (0107). Supuesto no confirmado: cualquier curso disponible podría ofrecerse en vacaciones.
 - Los optativos sugeridos priorizan las áreas de Sistemas (Metodología, Ciencias de la Computación, Desarrollo de Software).
-- La red CLAR 2022 fue transcrita a mano de la red publicada; puede contener errores y debe poder corregirse en `src/app/data/pensum-2022.ts`.
+- Las redes CLAR 2022 y CLAR 2025 fueron transcritas a mano de las redes publicadas; pueden contener errores y se corrigen en `../backend/clar/datos/pensum_2022.json` y `pensum_2025.json`.
+- Cursos en curso (CURSANDO): se marcan en la red o en la recomendación; cuentan como aprobados con 61 y solo se aceptan si sus prerrequisitos ya están aprobados (un curso en curso no habilita a otro del mismo semestre).
+- Promedio simple y ponderado de las notas numéricas, número de cursos aprobados y promedio meta (nota necesaria en los cursos en curso).
+- Ruta crítica (obligatorios sin holgura) y «¿y si repruebo?» (semestres de atraso por curso en curso).
+- Revisión de lo cargado: líneas no reconocidas, códigos desconocidos y duplicados.
+- Tarjeta para compartir (PNG 4:5 y 9:16): porcentaje y nombre fijos; créditos, promedio, cursos aprobados y cierre opcionales; QR al sitio y firma del autor. Botones para WhatsApp, historia de Instagram, Facebook y descarga; desde la web, adjuntar la imagen solo es posible con el menú de compartir del teléfono.
+- Mis datos en otro dispositivo: exportar e importar un JSON o un enlace con el perfil en el fragmento `#`.
+- Publicado en https://piletazogt.vercel.app (Vercel Hobby, despliegue automático desde GitHub `akamariano/piletazo`), con Vercel Web Analytics y verificado en Google Search Console.
 - Pendiente de confirmar con Control Académico: si los Idiomas Técnicos sustituyen la constancia de nivel 12 de CALUSAC en el CLAR; si los créditos extracurriculares cuentan para requisitos por créditos.
 
 ## Brand Commitments

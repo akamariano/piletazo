@@ -27,19 +27,41 @@ Piletazo nació como un **proyecto personal**: lo hice para calcular y verificar
 
 ## Qué hace
 
+### Tu situación
+
 | Función | Descripción |
 |---|---|
 | Carga de cursos | Pegas la tabla de *Cursos aprobados* del portal, o subes la red curricular guardada como `.html` o un `.txt`. |
-| Créditos en ambos pensums | Suma en el pensum anterior (cierre 250) y en CLAR 2022 (cierre 300 CLAR), con la equivalencia curso por curso. |
-| Proyección | Muestra a cuántos créditos llegarías si apruebas todos los obligatorios pendientes y cuántos optativos te faltarían. |
-| Cambios del traslado | Muestra los cursos que pierdes o ganas por los nuevos prerrequisitos y los demás cambios de prerrequisitos. |
+| Revisión de lo cargado | Avisa de líneas que no se reconocieron, códigos que no existen en ninguna red y cursos repetidos, con un enlace para reportarlo. |
+| Tres tipos de estudiante | Pensum anterior trasladado al CLAR 2022, CLAR 2022 desde el inicio o CLAR 2025 desde el inicio. |
+| Créditos | Pensum anterior (cierre 250) y CLAR 2022 o 2025 (cierre 300 CLAR). En el traslado, equivalencia curso por curso. |
+| Promedio y cursos aprobados | Promedio simple y ponderado por créditos de las notas numéricas, y el número de cursos aprobados. |
+| Proyección | A cuántos créditos llegarías si apruebas todos los obligatorios pendientes y cuántos optativos te faltarían. |
 | Áreas con requisito | Social Humanística (10 créditos antes; 8 de 10 CLAR ahora) e Idioma Técnico. |
 | Modalidad de graduación | **EPS** suma el 7999 Seminario de Investigación E.P.S. como obligatorio. **Tesis** solo lleva el 0799 Seminario de Investigación. |
-| Recomendación | Propone cursos para el próximo semestre con carga máxima ajustable (30 CLAR por defecto). Prioriza los obligatorios que abren más camino, luego lo que falte de áreas y después optativos del área de Sistemas. |
+| Cambios del traslado | Solo para trasladados: cursos que pierdes o ganas por los nuevos prerrequisitos y demás cambios. |
+
+### Planear lo que sigue
+
+| Función | Descripción |
+|---|---|
+| Cursos que estás llevando | Los marcas como **CURSANDO** tocándolos en la red curricular o con el botón *Lo estoy cursando*. Cuentan como aprobados con 61 en todo el cálculo. Solo se aceptan si ya aprobaste sus prerrequisitos; si no, la app dice qué curso es y qué te falta. |
+| Recomendación | Cursos para el próximo semestre con carga máxima ajustable (30 CLAR por defecto). Primero los de la ruta crítica y los que abren más camino, luego lo que falte de áreas y después optativos del área de Sistemas. |
+| Ruta crítica | Marca con **CRÍTICO** los obligatorios sin holgura: si atrasas uno, atrasas tu cierre. Indica el mínimo de semestres por cadenas de prerrequisitos. |
 | Rutas posibles | Simula semestre a semestre hasta cerrar, con prácticas finales de 6 meses o 1 año y 0, 1 o 2 cursos por escuela de vacaciones (junio y diciembre). Respeta el máximo de 4 horas de clase magistral por escuela: 2 h por curso; 4 h para Matemática Básica 2 e Intermedia 1. |
-| Red curricular | Muestra la red del pensum, con distintivo **OB** en los cursos obligatorios y el estado de cada uno (aprobado, disponible o bloqueado). |
-| Reporte | Se descarga en **PDF**, generado por el backend, o se imprime desde el navegador. |
+| ¿Y si repruebo? | Para cada curso que estás llevando, cuántos semestres se atrasaría tu cierre si lo repruebas. |
+| Promedio meta | Escribes el promedio que quieres y te dice qué nota necesitas en tus cursos en curso, o si ya no es posible este semestre. |
+| Red curricular | Toda la red, con distintivo **OB** en obligatorios y el estado de cada curso: aprobado, disponible, bloqueado o cursando. |
+
+### Compartir y guardar
+
+| Función | Descripción |
+|---|---|
+| Reporte | PDF generado por el backend o reporte para imprimir. Incluye créditos, promedio, recomendación, ruta, áreas y, en el traslado, equivalencias. |
+| Tarjeta para compartir | Imagen con tu porcentaje de la carrera y tu nombre; eliges con casillas si muestra créditos, promedio, cursos aprobados y semestre de cierre. Lleva un QR a Piletazo y la firma del desarrollador. Botones para WhatsApp, historia de Instagram (formato 1080×1920), Facebook y descarga. |
+| Ejemplo | *Probar con un ejemplo* carga un estudiante que terminó 5.º semestre y está cursando 6.º, en el pensum que elijas. No guarda nada. |
 | Perfil | Guarda tu nombre, carné y cursos en tu navegador, solo si lo aceptas. |
+| Mis datos en otro dispositivo | Exportar e importar el perfil en un archivo, o copiar un enlace que lo lleva en la parte después del `#` (el navegador no la envía al servidor). |
 | Contacto | Formulario con asunto automático *Calculadora CLAR*. Se abre en Gmail o en tu app de correo. |
 
 ## Cómo funciona
@@ -51,24 +73,37 @@ CalculoClar/
 │   │   ├── datos/          redes curriculares en JSON (pensum anterior, CLAR 2022 y CLAR 2025)
 │   │   ├── pensums.py      carga de las redes y modalidad de graduación
 │   │   ├── entrada.py      lectura del texto del portal y del HTML de la red
-│   │   ├── analisis.py     créditos, equivalencias, prerrequisitos y áreas
+│   │   ├── analisis.py     créditos, equivalencias, prerrequisitos, áreas, promedio y promedio meta
+│   │   ├── cursando.py     cursos en curso: validación de prerrequisitos y nota 61
+│   │   ├── critica.py      ruta crítica
 │   │   ├── recomendacion.py  próximo semestre
 │   │   ├── rutas.py        simulación hasta el cierre
 │   │   ├── reporte_pdf.py  reporte PDF (ReportLab)
-│   │   └── api.py          endpoints y servidor de la página compilada
-│   └── tests/          pruebas con pytest
+│   │   ├── tarjeta.py      tarjeta para compartir con QR (Pillow y qrcode)
+│   │   └── api.py          endpoints, robots, sitemap, 404 y servidor de la página compilada
+│   └── tests/          pruebas con pytest (con datos de ejemplo anónimos)
+├── api/index.py        punto de entrada de la API en Vercel
 ├── clar-calculadora/   interfaz en Angular (solo presentación, consume la API)
 ├── Logo/               logo en todas sus versiones y el script que lo genera
 ├── 2021/               imágenes del pensum anterior (la página guardada del portal no se publica)
 ├── CLAR_2022/          imagen de la red CLAR 2022 publicada (fuente de datos)
-└── clar2025/           imagen de la red CLAR 2025 publicada (fuente de datos)
+├── clar2025/           imagen de la red CLAR 2025 publicada (fuente de datos)
+├── vercel.json         configuración de despliegue
+└── publicar.sh         crea el repositorio público y sube los cambios con revisiones de seguridad
 ```
 
-**Flujo:**
+**API** (todas las peticiones llevan el `plan`, `2022` o `2025`, y la `modalidad`, `eps` o `tesis`):
 
-1. La página envía el texto o el HTML a `POST /api/cursos/leer` y recibe la lista de cursos aprobados.
-2. Con esa lista, la modalidad, la carga máxima y la duración de prácticas, llama a `POST /api/calculo`. Recibe el análisis completo, la recomendación y las tres rutas (0, 1 y 2 cursos por vacaciones).
-3. `POST /api/reporte` devuelve el PDF.
+| Endpoint | Qué hace |
+|---|---|
+| `POST /api/cursos/leer` | Lee el texto del portal o el HTML de la red y devuelve los cursos aprobados y los avisos de revisión. |
+| `POST /api/calculo` | Análisis completo, recomendación, ruta crítica, las tres rutas (0, 1 y 2 cursos por vacaciones), «¿y si repruebo?» y los cursos en curso válidos y rechazados. |
+| `POST /api/cursando/validar` | Revisa si puedes marcar un curso como CURSANDO. |
+| `POST /api/promedio/meta` | Nota necesaria en los cursos en curso para llegar a un promedio meta. |
+| `POST /api/reporte` | Reporte en PDF. |
+| `POST /api/tarjeta` | Tarjeta PNG para compartir (`formato`: `post` o `historia`; `incluir`: datos opcionales). |
+| `GET /api/ejemplo` | Estudiante de ejemplo de 5.º semestre con los cursos de 6.º en curso. |
+| `GET /robots.txt`, `GET /sitemap.xml` | Archivos para buscadores, con el dominio público. |
 
 La documentación interactiva de la API queda en `/docs` cuando el servidor está corriendo.
 
@@ -96,7 +131,7 @@ npm install
 npm start          # http://localhost:4200 (el proxy envía /api al puerto 8010)
 ```
 
-Pruebas:
+Pruebas (46 del backend y 14 de la interfaz):
 
 ```bash
 cd backend && .venv/bin/python -m pytest          # lógica y API
@@ -120,12 +155,15 @@ Variables opcionales:
 
 ## Publicar gratis en Vercel
 
-El proyecto está listo para el plan **Hobby** de Vercel, que es gratis para proyectos personales sin fines comerciales:
+Piletazo está publicado en **[piletazogt.vercel.app](https://piletazogt.vercel.app)**, en el plan **Hobby** de Vercel, que es gratis para proyectos personales sin fines comerciales. El proyecto de Vercel está conectado al repositorio: cada `git push` a `main` publica una versión nueva.
 
 - **Página:** Angular se compila y se sirve como archivos estáticos desde la red de Vercel, con `404.html` como página de error.
 - **API:** FastAPI corre como **función de Python** (`api/index.py`) en el mismo dominio, así que la página llama a `/api/...` sin configurar nada más.
 - **Buscadores:** `robots.txt` y `sitemap.xml` también los responde la función.
 - **Configuración:** está en `vercel.json`, `requirements.txt` (raíz) y `.vercelignore`.
+- **Estadísticas:** Vercel Web Analytics (`@vercel/analytics`) cuenta visitas sin cookies; se ven en la pestaña *Analytics* del proyecto.
+
+Para publicarlo en otra cuenta:
 
 ### Opción A: desde GitHub (recomendada)
 
@@ -152,7 +190,7 @@ Para el uso de una herramienta como esta no deberían ser un problema: ancho de 
 
 ## Aparecer en Google
 
-La app ya incluye lo necesario para que Google la encuentre con búsquedas como *ingeniería USAC*, *sistemas USAC*, *red de pensum USAC* o *pensum CLAR 2022*:
+La app ya incluye lo necesario para que Google la encuentre con búsquedas como *ingeniería USAC*, *sistemas USAC*, *red de pensum USAC*, *pensum CLAR 2022* o *pensum CLAR 2025*:
 
 - **Archivos para buscadores:**
   - `GET /robots.txt` permite indexar la página y bloquea `/api/` y `/docs`.
@@ -167,7 +205,9 @@ La app ya incluye lo necesario para que Google la encuentre con búsquedas como 
 - **Contenido inicial en el HTML:** los buscadores leen el propósito de la app aunque no ejecuten JavaScript.
 - **Página 404 propia** (`404.html`): una ola se lleva la página y muestra *«Error: ruta no encontrada o recurso no disponible»*. Responde con el código 404 real; la API responde 404 en JSON.
 
-### Pasos al publicar
+El sitio ya está verificado en Google Search Console y tiene el sitemap enviado.
+
+### Pasos al publicar en otro dominio
 
 1. **Publica el sitio** en un dominio público ([Vercel](#publicar-gratis-en-vercel), Render, Railway u otro) y define estas variables:
    ```bash
@@ -191,7 +231,7 @@ Google decide si muestra el sitio y en qué posición; puede tardar días o sema
   - Empezó en TypeScript dentro de Angular y luego se trasladó a un backend en Python con FastAPI.
   - Las pruebas usan un historial de ejemplo basado en un caso real, sin notas ni datos personales.
 - **Interfaz:**
-  - Hecha en Angular 22 con componentes standalone y signals.
+  - Hecha en Angular 22 con componentes standalone y signals; la ola de entrada y los indicadores de carga con olas son CSS y SVG.
   - Tema oscuro tipo consola de desarrollador, con profundidad y la paleta azul, celeste y aqua de la marca.
   - La guía de diseño está en `clar-calculadora/DESIGN.md`.
 - **Logo:**
