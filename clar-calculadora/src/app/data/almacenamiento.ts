@@ -12,6 +12,7 @@ export interface DatosGuardados {
   vacaciones?: 0 | 1 | 2;
   modalidad?: 'eps' | 'tesis';
   origen?: 'traslado' | 'clar2022';
+  cursando?: string[];
 }
 
 const CLAVE_DATOS = 'clar-calculadora:datos';

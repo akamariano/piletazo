@@ -220,7 +220,8 @@
             <h1>{{ ejemplo() ? 'Estudiante de ejemplo' : nombre().trim() ? nombre().trim() : 'Tu situación' }}</h1>
             <p>
               @if (carne().trim() && !ejemplo()) { Carné {{ carne().trim() }} · }
-              {{ a.aprobados.length }} cursos aprobados
+              {{ a.aprobados.length - cursando().length }} cursos aprobados
+              @if (cursando().length) { · <span class="texto-cursando">{{ cursando().length }} cursando</span> }
             </p>
           </div>
           <div class="controles-superiores">
@@ -401,7 +402,12 @@
                         </span>
                         <small>{{ c.razones.join(' · ') }}</small>
                       </span>
-                      <span class="num fila-cred">{{ c.red.curso.creditos }}</span>
+                      <span class="fila-final">
+                        <span class="num fila-cred">{{ c.red.curso.creditos }}</span>
+                        <button type="button" class="boton-mini" (click)="alternarCursando(c.red.curso.codigo, c.red.curso.nombre)">
+                          Lo estoy cursando
+                        </button>
+                      </span>
                     </li>
                   }
                 </ul>
@@ -638,19 +644,49 @@
               <span class="ok"><i class="muestra aprobado"></i>Aprobado</span>
               <span class="info"><i class="muestra disponible"></i>Puedes asignarlo</span>
               <span class="tenue"><i class="muestra bloqueado"></i>Bloqueado</span>
+              <span class="cursando-leyenda"><i class="muestra cursando"></i>Cursando</span>
               <span><span class="ob" aria-hidden="true">OB</span>Obligatorio</span>
               @if (vista() === '2022') {
                 <span class="aviso"><app-icono nombre="alerta" />Afectado por el cambio</span>
               }
             </p>
           </header>
+          <div class="panel-cursando">
+            <p>
+              <b>¿Qué cursos llevas este semestre?</b> Haz clic en ellos para marcarlos como <span class="etiqueta-cursando">CURSANDO</span>.
+              Se cuentan como aprobados con la nota mínima de 61 en el cálculo y en las rutas. Solo puedes marcar cursos cuyos prerrequisitos ya aprobaste.
+            </p>
+            @if (cursando().length) {
+              <p class="resumen-cursando">
+                <span><b class="num">{{ cursando().length }}</b> {{ cursando().length === 1 ? 'curso' : 'cursos' }} · <b class="num">{{ creditosCursando() }}</b> CLAR</span>
+                <button type="button" class="enlace" (click)="quitarCursando()">Quitar todos</button>
+              </p>
+            }
+          </div>
+          @if (errorCursando()) {
+            <p class="error" role="alert">
+              <app-icono nombre="alerta" />
+              <span>{{ errorCursando() }}</span>
+              <button type="button" class="cerrar-error" (click)="errorCursando.set('')" aria-label="Cerrar aviso"><app-icono nombre="cerrar" /></button>
+            </p>
+          }
           <p class="ayuda">Pasa el cursor o enfoca un curso para ver sus prerrequisitos.</p>
           <div class="red">
             @for (e of etapas(); track e.numero) {
               <div class="semestre">
                 <h3><span class="num">{{ e.numero }}</span>{{ e.nombre }}</h3>
                 @for (r of e.cursos; track r.curso.codigo) {
-                  <div class="curso" [class]="'curso ' + r.estado" [attr.title]="tituloCurso(r)" tabindex="0">
+                  <div
+                    [class]="'curso ' + (conjuntoCursando().has(r.curso.codigo) ? 'cursando' : r.estado)"
+                    [class.validando]="validando() === r.curso.codigo"
+                    [attr.title]="tituloCurso(r)"
+                    tabindex="0"
+                    [attr.role]="r.estado === 'aprobado' && !conjuntoCursando().has(r.curso.codigo) ? null : 'button'"
+                    [attr.aria-pressed]="r.estado === 'aprobado' && !conjuntoCursando().has(r.curso.codigo) ? null : conjuntoCursando().has(r.curso.codigo)"
+                    (click)="r.estado !== 'aprobado' || conjuntoCursando().has(r.curso.codigo) ? alternarCursando(r.curso.codigo, r.curso.nombre) : null"
+                    (keydown.enter)="alternarCursando(r.curso.codigo, r.curso.nombre)"
+                    (keydown.space)="$event.preventDefault(); alternarCursando(r.curso.codigo, r.curso.nombre)"
+                  >
                     <span class="codigo">{{ r.curso.codigo }}</span>
                     <span class="curso-nombre">{{ r.curso.nombre }}</span>
                     <span class="curso-meta">
@@ -659,6 +695,9 @@
                     </span>
                     @if (r.pierdeDisponibilidad) {
                       <span class="marca-aviso" aria-label="Afectado por el cambio"><app-icono nombre="alerta" /></span>
+                    }
+                    @if (conjuntoCursando().has(r.curso.codigo)) {
+                      <span class="placa-cursando">CURSANDO</span>
                     }
                     @if (r.faltantes.length && r.estado === 'bloqueado') {
                       <span class="curso-detalle">Falta: {{ r.faltantes.join(', ') }}</span>
@@ -690,6 +729,7 @@
                     <td>
                       {{ e.nombre }}
                       @if (e.creditos2022 === null) {<span class="estado baja">No está en la red CLAR</span>}
+                      @if (e.observacion === 'Cursando') {<span class="etiqueta-cursando">CURSANDO · 61</span>}
                     </td>
                     <td class="der num">{{ e.creditos2021 }}</td>
                     <td class="der num">{{ e.creditos2022 ?? '—' }}</td>

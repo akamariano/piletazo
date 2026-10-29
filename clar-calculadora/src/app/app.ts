@@ -17,6 +17,7 @@ import {
   Modalidad,
   Origen,
   RespuestaCalculo,
+  ValidacionCursando,
 } from './data/modelos';
 import { Icono } from './icono';
 import { CargandoOla } from './cargando-ola';
@@ -66,6 +67,11 @@ export class App {
   protected readonly vacaciones = signal<CursosPorVacaciones>(0);
   protected readonly modalidad = signal<Modalidad>('eps');
   protected readonly origen = signal<Origen>('traslado');
+  /** Cursos que el estudiante lleva este semestre: cuentan como aprobados con 61. */
+  protected readonly cursando = signal<string[]>([]);
+  protected readonly errorCursando = signal('');
+  protected readonly validando = signal('');
+  private cursandoAntesDelEjemplo: string[] = [];
 
   protected readonly modo = signal<'pegar' | 'archivo'>('pegar');
   protected readonly texto = signal('');
@@ -97,6 +103,7 @@ export class App {
       method: 'POST',
       body: {
         aprobados,
+        cursando: this.cursando(),
         modalidad: this.modalidad(),
         cargaMaxima: this.cargaMaxima(),
         practicas: this.practicas(),
@@ -128,6 +135,13 @@ export class App {
   );
 
   protected readonly analisis = computed(() => this.respuesta()?.analisis ?? null);
+
+  protected readonly conjuntoCursando = computed(() => new Set(this.cursando()));
+  protected readonly creditosCursando = computed(() => {
+    const red = this.analisis()?.pensum2022.red ?? [];
+    const cursando = this.conjuntoCursando();
+    return red.filter((r) => cursando.has(r.curso.codigo)).reduce((s, r) => s + r.curso.creditos, 0);
+  });
 
   protected readonly progreso = computed(() => {
     const a = this.analisis();
@@ -199,6 +213,7 @@ export class App {
       this.vacaciones.set(datos.vacaciones ?? 0);
       this.modalidad.set(datos.modalidad ?? 'eps');
       this.origen.set(datos.origen ?? 'traslado');
+      this.cursando.set(datos.cursando ?? []);
     }
 
     effect(() => {
@@ -212,6 +227,7 @@ export class App {
         vacaciones: this.vacaciones(),
         modalidad: this.modalidad(),
         origen: this.origen(),
+        cursando: this.cursando(),
       };
       if (this.consentimiento() === 'si' && !this.ejemplo()) guardarDatos(datos);
     });
@@ -221,6 +237,15 @@ export class App {
       if (this.analisis() && !this.editandoEntrada()) setTimeout(() => this.observarSecciones());
     });
     inject(DestroyRef).onDestroy(() => this.observador?.disconnect());
+
+    // Si un curso en curso deja de ser válido (p. ej. al cambiar los aprobados), se quita y se avisa.
+    effect(() => {
+      const invalidos = this.respuesta()?.cursando?.invalidos ?? [];
+      if (invalidos.length === 0) return;
+      const fuera = new Set(invalidos.map((i) => i.codigo));
+      this.cursando.update((lista) => lista.filter((c) => !fuera.has(c)));
+      this.errorCursando.set(invalidos.map((i) => i.mensaje).join(' '));
+    });
   }
 
   protected async calcularDesdeTexto(): Promise<void> {
@@ -251,7 +276,11 @@ export class App {
       const { aprobados } = await firstValueFrom(
         this.http.get<{ aprobados: CursoAprobado[] }>('/api/ejemplo', { params: { origen: this.origen(), semestres: 5 } }),
       );
-      if (!this.ejemplo()) this.cursosAntesDelEjemplo = this.aprobados();
+      if (!this.ejemplo()) {
+        this.cursosAntesDelEjemplo = this.aprobados();
+        this.cursandoAntesDelEjemplo = this.cursando();
+      }
+      this.cursando.set([]);
       this.ejemplo.set(true);
       this.aprobados.set(aprobados);
       this.editandoEntrada.set(false);
@@ -266,7 +295,44 @@ export class App {
   protected salirDelEjemplo(): void {
     this.ejemplo.set(false);
     this.aprobados.set(this.cursosAntesDelEjemplo);
+    this.cursando.set(this.cursandoAntesDelEjemplo);
     this.cursosAntesDelEjemplo = [];
+    this.cursandoAntesDelEjemplo = [];
+  }
+
+  /** Marca o desmarca un curso como CURSANDO; antes de marcarlo, la API revisa los prerrequisitos. */
+  protected async alternarCursando(codigo: string, nombre: string): Promise<void> {
+    if (this.conjuntoCursando().has(codigo)) {
+      this.cursando.update((lista) => lista.filter((c) => c !== codigo));
+      this.errorCursando.set('');
+      return;
+    }
+    if (this.aprobados().some((a) => a.codigo === codigo) || this.validando()) return;
+    this.validando.set(codigo);
+    try {
+      const v = await firstValueFrom(
+        this.http.post<ValidacionCursando>('/api/cursando/validar', {
+          aprobados: this.aprobados(),
+          codigo,
+          modalidad: this.modalidad(),
+        }),
+      );
+      if (v.valido) {
+        this.cursando.update((lista) => [...lista, codigo]);
+        this.errorCursando.set('');
+      } else {
+        this.errorCursando.set(v.mensaje);
+      }
+    } catch {
+      this.errorCursando.set(`No se pudo revisar ${codigo} ${nombre}. Intenta de nuevo en un momento.`);
+    } finally {
+      this.validando.set('');
+    }
+  }
+
+  protected quitarCursando(): void {
+    this.cursando.set([]);
+    this.errorCursando.set('');
   }
 
   protected responderPermiso(valor: 'si' | 'no'): void {
@@ -277,6 +343,8 @@ export class App {
   protected olvidar(): void {
     olvidarTodo();
     this.ejemplo.set(false);
+    this.cursando.set([]);
+    this.errorCursando.set('');
     this.cursosAntesDelEjemplo = [];
     this.consentimiento.set(null);
     this.nombre.set('');
@@ -316,6 +384,7 @@ export class App {
           cargaMaxima: this.cargaMaxima(),
           practicas: this.practicas(),
           vacaciones: this.vacaciones(),
+          cursando: this.cursando(),
           origen: this.origen(),
           nombre: this.nombre().trim(),
           carne: this.carne().trim(),
@@ -429,7 +498,10 @@ export class App {
   private establecer(cursos: CursoAprobado[]): void {
     this.ejemplo.set(false);
     this.cursosAntesDelEjemplo = [];
+    this.cursandoAntesDelEjemplo = [];
     this.error.set('');
+    const nuevos = new Set(cursos.map((c) => c.codigo));
+    this.cursando.update((lista) => lista.filter((c) => !nuevos.has(c)));
     this.aprobados.set(cursos);
     this.editandoEntrada.set(false);
   }

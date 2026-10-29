@@ -67,6 +67,7 @@ def generar_pdf(
     practicas: int,
     vacaciones: int,
     hoy: Optional[date] = None,
+    cursando: Optional[List[str]] = None,
 ) -> bytes:
     hoy = hoy or date.today()
     salida = BytesIO()
@@ -108,6 +109,10 @@ def generar_pdf(
     etiqueta = "sin equivalencia en la red CLAR" if traslado else "de cursos fuera de la red CLAR"
     partes.append(Spacer(0, 4))
     partes.append(Paragraph(f"Créditos {etiqueta}: {analisis.creditos_sin_equivalencia}.", TEXTO))
+    if cursando:
+        nombres = {e.codigo: e.nombre for e in analisis.equivalencias}
+        lista = ", ".join(f"{c} {nombres.get(c, '')}".strip() for c in cursando)
+        partes.append(Paragraph(f"<b>Cursando este semestre</b> (incluidos con la nota mínima de 61): {_esc(lista)}.", TEXTO))
 
     # Recomendación
     filas = [["Código", "Curso", "Motivo", "CLAR"]]

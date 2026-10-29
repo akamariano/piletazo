@@ -16,6 +16,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
 from .analisis import analizar
+from .cursando import con_cursando, validar
 from .entrada import CursoAprobado, estudiante_de_ejemplo, parsear_html, parsear_texto
 from .pensums import catalogo
 from .recomendacion import recomendar
@@ -54,10 +55,18 @@ class Aprobado(Esquema):
 
 class Calculo(Esquema):
     aprobados: List[Aprobado] = Field(max_length=300)
+    # Códigos de los cursos que se están llevando; cuentan como aprobados con nota 61.
+    cursando: List[str] = Field([], max_length=15)
     modalidad: Literal["eps", "tesis"] = "eps"
     carga_maxima: int = Field(30, ge=0, le=45)
     practicas: Literal[1, 2] = 1
     hoy: Optional[date] = None
+
+
+class ValidarCursando(Esquema):
+    aprobados: List[Aprobado] = Field(max_length=300)
+    codigo: str = Field(pattern=r"^\d{4}$")
+    modalidad: Literal["eps", "tesis"] = "eps"
 
 
 class Reporte(Calculo):
@@ -89,9 +98,23 @@ def ejemplo(origen: Literal["traslado", "clar2022"] = "clar2022", semestres: int
     return {"aprobados": a_json(estudiante_de_ejemplo("2022" if origen == "clar2022" else "2021", semestres))}
 
 
+@app.post("/api/cursando/validar")
+def validar_cursando(datos: ValidarCursando) -> dict:
+    """Comprueba si el estudiante cumple los prerrequisitos para marcar un curso como cursando."""
+    return a_json(validar([CursoAprobado(**a.model_dump()) for a in datos.aprobados], datos.codigo, datos.modalidad))
+
+
+def _aprobados_con_cursando(datos: Calculo):
+    base = [CursoAprobado(**a.model_dump()) for a in datos.aprobados]
+    for codigo in datos.cursando:
+        if not codigo.isdigit() or len(codigo) != 4:
+            raise HTTPException(422, f"Código de curso inválido: {codigo}")
+    return con_cursando(base, datos.cursando, datos.modalidad)
+
+
 @app.post("/api/calculo")
 def calcular(calculo: Calculo) -> dict:
-    aprobados = [CursoAprobado(**a.model_dump()) for a in calculo.aprobados]
+    aprobados, cursando_validos, cursando_invalidos = _aprobados_con_cursando(calculo)
     if not aprobados:
         raise HTTPException(400, "No hay cursos aprobados.")
     analisis = analizar(aprobados, calculo.modalidad)
@@ -115,13 +138,14 @@ def calcular(calculo: Calculo) -> dict:
             "recomendacion": recomendar(analisis.pensum2022, calculo.carga_maxima),
             "escenarios": escenarios,
             "catalogo": catalogo(),
+            "cursando": {"validos": cursando_validos, "invalidos": cursando_invalidos},
         }
     )
 
 
 @app.post("/api/reporte")
 def reporte(datos: Reporte) -> Response:
-    aprobados = [CursoAprobado(**a.model_dump()) for a in datos.aprobados]
+    aprobados, cursando_validos, _ = _aprobados_con_cursando(datos)
     if not aprobados:
         raise HTTPException(400, "No hay cursos aprobados.")
     analisis = analizar(aprobados, datos.modalidad)
@@ -143,6 +167,7 @@ def reporte(datos: Reporte) -> Response:
         practicas=datos.practicas,
         vacaciones=datos.vacaciones,
         hoy=datos.hoy,
+        cursando=cursando_validos,
     )
     archivo = "piletazo-" + (datos.carne.strip() or "reporte") + ".pdf"
     archivo = "".join(c for c in archivo if c.isalnum() or c in "-_.")

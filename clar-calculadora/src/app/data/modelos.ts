@@ -139,8 +139,17 @@ export interface Ruta {
   bloqueo: string | null;
 }
 
+export interface ValidacionCursando {
+  codigo: string;
+  nombre: string;
+  valido: boolean;
+  faltantes: string[];
+  mensaje: string;
+}
+
 export interface RespuestaCalculo {
   analisis: Analisis;
+  cursando: { validos: string[]; invalidos: ValidacionCursando[] };
   recomendacion: Recomendacion;
   escenarios: { vacaciones: CursosPorVacaciones; ruta: Ruta }[];
   catalogo: Record<string, string>;

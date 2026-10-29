@@ -41,6 +41,52 @@ describe('App', () => {
   });
 });
 
+describe('Cursando', () => {
+  type ConCursando = {
+    alternarCursando: (codigo: string, nombre: string) => Promise<void>;
+    cursando: () => string[];
+    errorCursando: () => string;
+  };
+
+  beforeEach(async () => {
+    localStorage.clear();
+    await TestBed.configureTestingModule({
+      imports: [App],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    }).compileComponents();
+  });
+
+  it('rechaza un curso sin prerrequisitos y dice cuál es', async () => {
+    const app = TestBed.createComponent(App).componentInstance as unknown as ConCursando;
+    const http = TestBed.inject(HttpTestingController);
+    const marcado = app.alternarCursando('0283', 'Análisis y Diseño de Sistemas 1');
+    const peticion = http.expectOne('/api/cursando/validar');
+    expect(peticion.request.body.codigo).toBe('0283');
+    peticion.flush({
+      codigo: '0283',
+      nombre: 'Análisis y Diseño de Sistemas 1',
+      valido: false,
+      faltantes: ['0774 Sistemas de Bases de Datos 1'],
+      mensaje: 'No tienes los prerrequisitos para este curso: 0283 Análisis y Diseño de Sistemas 1. Te falta: 0774 Sistemas de Bases de Datos 1.',
+    });
+    await marcado;
+    expect(app.cursando()).toEqual([]);
+    expect(app.errorCursando()).toContain('No tienes los prerrequisitos para este curso: 0283 Análisis y Diseño de Sistemas 1');
+  });
+
+  it('marca y desmarca un curso válido', async () => {
+    const app = TestBed.createComponent(App).componentInstance as unknown as ConCursando;
+    const http = TestBed.inject(HttpTestingController);
+    const marcado = app.alternarCursando('0773', 'Manejo e Implementación de Archivos');
+    http.expectOne('/api/cursando/validar').flush({ codigo: '0773', nombre: 'Manejo e Implementación de Archivos', valido: true, faltantes: [], mensaje: '' });
+    await marcado;
+    expect(app.cursando()).toEqual(['0773']);
+    await app.alternarCursando('0773', 'Manejo e Implementación de Archivos');
+    expect(app.cursando()).toEqual([]);
+    http.expectNone('/api/cursando/validar');
+  });
+});
+
 describe('Logo', () => {
   it('dibuja la versión simple y la completa', () => {
     const fixture = TestBed.createComponent(Logo);

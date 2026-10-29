@@ -2506,3 +2506,139 @@ tr.sin-equivalencia td {
     justify-self: center;
   }
 }
+
+/* ---------- Cursando ---------- */
+:host {
+  --naranja: #fb923c;
+  --naranja-fondo: rgb(251 146 60 / 0.14);
+}
+
+.curso[role='button'] {
+  cursor: pointer;
+}
+
+.curso.cursando {
+  border: 2px solid var(--naranja);
+  background:
+    repeating-linear-gradient(135deg, rgb(251 146 60 / 0.1) 0 8px, transparent 8px 16px),
+    var(--brillo),
+    #2a1b10;
+  color: #fff7ed;
+  box-shadow: 0 0 0 1px rgb(251 146 60 / 0.15), var(--sombra-elevada);
+}
+
+.curso.cursando .codigo {
+  color: var(--naranja);
+}
+
+.curso.cursando .ob {
+  color: #ffedd5;
+  background: linear-gradient(180deg, #7c3a12, #5c2b0d);
+  border-color: rgb(251 146 60 / 0.6);
+}
+
+.curso.validando {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.placa-cursando,
+.etiqueta-cursando {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #1c0d02;
+  background: linear-gradient(135deg, #fdba74, var(--naranja));
+  border-radius: 4px;
+  padding: 1px 6px;
+  white-space: nowrap;
+}
+
+.placa-cursando {
+  grid-column: 1 / -1;
+  justify-self: start;
+  margin-top: 2px;
+}
+
+.etiqueta-cursando {
+  margin-left: 6px;
+}
+
+.texto-cursando {
+  color: var(--naranja);
+  font-weight: 600;
+}
+
+.muestra.cursando {
+  background: var(--naranja-fondo);
+  border: 2px solid var(--naranja);
+}
+
+.panel-cursando {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 18px;
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border: 1px dashed rgb(251 146 60 / 0.5);
+  border-radius: var(--radio);
+  background: var(--naranja-fondo);
+  font-size: 13px;
+  color: var(--texto-2);
+}
+
+.panel-cursando p {
+  margin: 0;
+  max-width: 80ch;
+}
+
+.panel-cursando b {
+  color: var(--texto);
+}
+
+.resumen-cursando {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+.resumen-cursando .num {
+  color: var(--naranja);
+}
+
+.error .cerrar-error {
+  margin-left: auto;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 2px;
+  display: inline-flex;
+}
+
+.fila-final {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.boton-mini {
+  border: 1px solid rgb(251 146 60 / 0.5);
+  background: transparent;
+  color: var(--naranja);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 11.5px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.boton-mini:hover {
+  background: var(--naranja-fondo);
+}
