@@ -7,3 +7,15 @@ clar-calculadora/.angular
 clar-calculadora/.impeccable
 .impeccable
 2021/FIUSAC_files_Mariano
+
+# Datos personales y material de trabajo: nunca se suben a Vercel
+creditos*Mariano*.txt
+*notas*.txt
+2021/FIUSAC.html
+clar-calculadora/src/fixtures
+**/.impeccable/review
+**/.impeccable/mocks
+**/.impeccable/ref
+**/.impeccable/build
+.env*
+.vercel

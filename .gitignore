@@ -27,3 +27,5 @@ clar-calculadora/src/fixtures/
 **/.impeccable/mocks/
 **/.impeccable/ref/
 **/.impeccable/build/
+.vercel
+.env*
