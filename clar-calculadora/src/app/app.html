@@ -1053,22 +1053,43 @@
       <p class="error">No se pudo generar la tarjeta. Intenta de nuevo.</p>
     }
   </div>
-  @if (nombre().trim() && !ejemplo()) {
-    <label class="interruptor">
-      <input type="checkbox" role="switch" [checked]="tarjetaConNombre()" (change)="tarjetaConNombre.set($any($event.target).checked); generarTarjeta()" />
-      <span class="pista" aria-hidden="true"></span>
-      Mostrar mi nombre en la tarjeta
-    </label>
-  }
-  <p class="ayuda">Incluye un QR a Piletazo para que tus compañeros calculen el suyo. No muestra tu carné ni tus notas.</p>
-  <div class="fila-acciones">
-    @if (puedeCompartirArchivo()) {
-      <button type="button" class="boton primario" (click)="compartirTarjeta()" [disabled]="!tarjetaUrl()"><app-icono nombre="externo" />Compartir</button>
-    }
-    <a class="boton" [class.primario]="!puedeCompartirArchivo()" [href]="tarjetaUrl() || null" download="piletazo-mi-avance.png" [class.inactivo]="!tarjetaUrl()">
+  <fieldset class="opciones-tarjeta">
+    <legend>¿Qué quieres mostrar?</legend>
+    <p class="fijo">
+      Siempre se muestra tu porcentaje de la carrera{{ nombreTarjeta() ? ' y tu nombre (' + nombreTarjeta() + ')' : '' }}.
+    </p>
+    <div class="casillas">
+      @for (d of datosTarjeta; track d.clave) {
+        <label class="casilla">
+          <input
+            type="checkbox"
+            [checked]="incluirTarjeta().includes(d.clave)"
+            [disabled]="generandoTarjeta()"
+            (change)="alternarDatoTarjeta(d.clave, $any($event.target).checked)"
+          />
+          <span>{{ d.etiqueta }}</span>
+        </label>
+      }
+    </div>
+  </fieldset>
+  <p class="ayuda">Lleva un QR a Piletazo para que tus compañeros calculen el suyo. Nunca muestra tu carné ni tus notas.</p>
+  <div class="redes">
+    <button type="button" class="boton red-whatsapp" (click)="compartirEn('whatsapp')" [disabled]="!tarjetaUrl()">
+      <app-icono nombre="mensaje" />WhatsApp
+    </button>
+    <button type="button" class="boton red-instagram" (click)="compartirEn('instagram')" [disabled]="!tarjetaUrl()">
+      <app-icono nombre="camara" />Historia de Instagram
+    </button>
+    <button type="button" class="boton red-facebook" (click)="compartirEn('facebook')" [disabled]="!tarjetaUrl()">
+      <app-icono nombre="compartir" />Facebook
+    </button>
+    <button type="button" class="boton" (click)="descargarTarjeta()" [disabled]="!tarjetaUrl()">
       <app-icono nombre="descargar" />Descargar imagen
-    </a>
+    </button>
   </div>
+  @if (avisoCompartir()) {
+    <p class="aviso-compartir" role="status">{{ avisoCompartir() }}</p>
+  }
 </dialog>
 
 <!-- Reporte para imprimir / guardar como PDF -->

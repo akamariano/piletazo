@@ -84,6 +84,11 @@ class Meta(Esquema):
     meta: float = Field(ge=61, le=100)
 
 
+class Tarjeta(Reporte):
+    incluir: List[Literal["creditos", "promedio", "aprobados", "cierre"]] = ["creditos", "promedio", "aprobados", "cierre"]
+    formato: Literal["post", "historia"] = "post"
+
+
 @app.get("/api/salud")
 def salud() -> dict:
     return {"estado": "ok"}
@@ -252,7 +257,7 @@ def sitio(request: Request) -> str:
 
 
 @app.post("/api/tarjeta")
-def tarjeta(datos: Reporte, request: Request) -> Response:
+def tarjeta(datos: Tarjeta, request: Request) -> Response:
     """Imagen para compartir el avance, con QR al sitio y la firma del desarrollador."""
     aprobados, _, _ = _aprobados_con_cursando(datos)
     if not aprobados:
@@ -266,7 +271,15 @@ def tarjeta(datos: Reporte, request: Request) -> Response:
         modalidad=datos.modalidad,
         hoy=datos.hoy,
     )
-    png = generar_tarjeta(analisis, ruta.cierre, sitio(request) + "/", nombre=datos.nombre.strip(), origen=datos.origen)
+    png = generar_tarjeta(
+        analisis,
+        ruta.cierre,
+        sitio(request) + "/",
+        nombre=datos.nombre.strip(),
+        origen=datos.origen,
+        incluir=datos.incluir,
+        formato=datos.formato,
+    )
     return Response(png, media_type="image/png", headers={"Content-Disposition": 'inline; filename="piletazo-mi-avance.png"'})
 
 

@@ -165,6 +165,63 @@ describe('Funciones de apoyo', () => {
   });
 });
 
+describe('Tarjeta para compartir', () => {
+  type ConTarjeta = {
+    alternarDatoTarjeta: (clave: string, marcado: boolean) => void;
+    compartirEn: (red: 'whatsapp' | 'instagram' | 'facebook') => Promise<void>;
+    generarTarjeta: () => Promise<void>;
+    avisoCompartir: () => string;
+    aprobados: { set: (v: unknown[]) => void };
+  };
+
+  beforeEach(async () => {
+    localStorage.clear();
+    await TestBed.configureTestingModule({
+      imports: [App],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    }).compileComponents();
+  });
+
+  it('envía solo los datos marcados', async () => {
+    const app = TestBed.createComponent(App).componentInstance as unknown as ConTarjeta;
+    const http = TestBed.inject(HttpTestingController);
+    app.alternarDatoTarjeta('promedio', false);
+    const peticion = http.expectOne('/api/tarjeta');
+    expect(peticion.request.body.incluir).toEqual(['creditos', 'aprobados', 'cierre']);
+    expect(peticion.request.body.formato).toBe('post');
+  });
+
+  it('sin menú de compartir, abre WhatsApp con el texto y descarga la imagen', async () => {
+    const app = TestBed.createComponent(App).componentInstance as unknown as ConTarjeta;
+    const http = TestBed.inject(HttpTestingController);
+    const abiertas: string[] = [];
+    const original = window.open;
+    window.open = ((url: string) => (abiertas.push(url), null)) as typeof window.open;
+    const generar = app.generarTarjeta();
+    http.expectOne('/api/tarjeta').flush(new Blob(['png'], { type: 'image/png' }));
+    await generar;
+    await app.compartirEn('whatsapp');
+    window.open = original;
+    expect(abiertas[0]).toContain('https://wa.me/?text=');
+    expect(decodeURIComponent(abiertas[0])).toContain('Calcula el tuyo en');
+    expect(app.avisoCompartir()).toContain('adjúntala en el chat');
+  });
+
+  it('para Instagram pide el formato de historia', async () => {
+    const app = TestBed.createComponent(App).componentInstance as unknown as ConTarjeta;
+    const http = TestBed.inject(HttpTestingController);
+    const generar = app.generarTarjeta();
+    http.expectOne('/api/tarjeta').flush(new Blob(['png'], { type: 'image/png' }));
+    await generar;
+    const compartir = app.compartirEn('instagram');
+    const historia = http.expectOne('/api/tarjeta');
+    expect(historia.request.body.formato).toBe('historia');
+    historia.flush(new Blob(['png'], { type: 'image/png' }));
+    await compartir;
+    expect(app.avisoCompartir()).toContain('Instagram no permite publicar desde la web');
+  });
+});
+
 describe('Logo', () => {
   it('dibuja la versión simple y la completa', () => {
     const fixture = TestBed.createComponent(Logo);

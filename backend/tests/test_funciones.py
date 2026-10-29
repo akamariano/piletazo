@@ -108,3 +108,16 @@ def test_revision_de_lo_pegado():
     assert avisos.lineas_no_reconocidas == ["9876 linea rota sin datos"]
     r = cliente.post("/api/cursos/leer", json={"texto": texto}).json()
     assert r["avisos"]["duplicados"] == ["0101"]
+
+
+def test_tarjeta_formatos_y_datos_opcionales():
+    e = cliente.get("/api/ejemplo").json()
+    base = {"aprobados": e["aprobados"], "cursando": e["cursando"], "nombre": "Ana", "hoy": "2026-10-28"}
+    historia = cliente.post("/api/tarjeta", json={**base, "formato": "historia"})
+    assert Image.open(BytesIO(historia.content)).size == (1080, 1920)
+    sin_datos = cliente.post("/api/tarjeta", json={**base, "incluir": []})
+    con_datos = cliente.post("/api/tarjeta", json={**base})
+    assert sin_datos.status_code == con_datos.status_code == 200
+    assert sin_datos.content != con_datos.content
+    assert cliente.post("/api/tarjeta", json={**base, "incluir": ["notas"]}).status_code == 422
+    assert cliente.post("/api/tarjeta", json={**base, "formato": "cuadrado"}).status_code == 422

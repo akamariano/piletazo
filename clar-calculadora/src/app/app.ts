@@ -155,7 +155,16 @@ export class App {
   protected readonly meta = signal<number | null>(null);
   protected readonly resultadoMeta = signal<PromedioMeta | null>(null);
   protected readonly tarjetaUrl = signal('');
-  protected readonly tarjetaConNombre = signal(false);
+  /** Datos opcionales de la tarjeta; el porcentaje y el nombre van siempre. */
+  protected readonly datosTarjeta = [
+    { clave: 'creditos', etiqueta: 'Créditos' },
+    { clave: 'promedio', etiqueta: 'Promedio' },
+    { clave: 'aprobados', etiqueta: 'Cursos aprobados' },
+    { clave: 'cierre', etiqueta: 'Cierro pensum' },
+  ] as const;
+  protected readonly incluirTarjeta = signal<string[]>(['creditos', 'promedio', 'aprobados', 'cierre']);
+  protected readonly avisoCompartir = signal('');
+  private historiaBlob: Blob | null = null;
   protected readonly generandoTarjeta = signal(false);
   protected readonly puedeCompartirArchivo = signal(false);
   protected readonly avisoPerfil = signal('');
@@ -399,28 +408,50 @@ export class App {
 
   // ---------- Tarjeta para compartir ----------
 
+  protected readonly nombreTarjeta = computed(() => (this.ejemplo() ? 'Estudiante de ejemplo' : this.nombre().trim()));
+  protected readonly porcentajeCarrera = computed(() => {
+    const p = this.analisis()?.pensum2022;
+    return p && p.cierre ? Math.min(100, Math.round((p.creditos * 100) / p.cierre)) : 0;
+  });
+  private readonly textoCompartir = computed(
+    () =>
+      `Voy por el ${this.porcentajeCarrera()} % de mi carrera en Ingeniería en Ciencias y Sistemas USAC 🌊 ` +
+      `Calcula el tuyo en ${typeof location !== 'undefined' ? location.origin : ''}`,
+  );
+
   protected async abrirTarjeta(dialogo: HTMLDialogElement): Promise<void> {
-    this.tarjetaConNombre.set(!!this.nombre().trim() && !this.ejemplo());
+    this.avisoCompartir.set('');
     dialogo.showModal();
     await this.generarTarjeta();
   }
 
+  protected alternarDatoTarjeta(clave: string, marcado: boolean): void {
+    this.incluirTarjeta.update((lista) => (marcado ? [...new Set([...lista, clave])] : lista.filter((c) => c !== clave)));
+    this.generarTarjeta();
+  }
+
+  private pedirTarjeta(formato: 'post' | 'historia'): Promise<Blob> {
+    return firstValueFrom(
+      this.http.post('/api/tarjeta', {
+        aprobados: this.aprobados(),
+        cursando: this.cursando(),
+        modalidad: this.modalidad(),
+        cargaMaxima: this.cargaMaxima(),
+        practicas: this.practicas(),
+        vacaciones: this.vacaciones(),
+        origen: this.origen(),
+        nombre: this.nombreTarjeta(),
+        incluir: this.incluirTarjeta(),
+        formato,
+      }, { responseType: 'blob' }),
+    );
+  }
+
   protected async generarTarjeta(): Promise<void> {
     this.generandoTarjeta.set(true);
+    this.historiaBlob = null;
     try {
-      const nombre = this.ejemplo() ? 'Estudiante de ejemplo' : this.tarjetaConNombre() ? this.nombre().trim() : '';
-      const png = await firstValueFrom(
-        this.http.post('/api/tarjeta', {
-          aprobados: this.aprobados(),
-          cursando: this.cursando(),
-          modalidad: this.modalidad(),
-          cargaMaxima: this.cargaMaxima(),
-          practicas: this.practicas(),
-          vacaciones: this.vacaciones(),
-          origen: this.origen(),
-          nombre,
-        }, { responseType: 'blob' }),
-      );
+      const png = await this.pedirTarjeta('post');
       if (this.tarjetaUrl()) URL.revokeObjectURL(this.tarjetaUrl());
       this.tarjetaBlob = png;
       this.tarjetaUrl.set(URL.createObjectURL(png));
@@ -433,12 +464,58 @@ export class App {
     }
   }
 
-  protected async compartirTarjeta(): Promise<void> {
-    if (!this.tarjetaBlob) return;
-    const archivo = new File([this.tarjetaBlob], 'piletazo-mi-avance.png', { type: 'image/png' });
+  /**
+   * En el celular se usa el menú de compartir del sistema, que sí adjunta la imagen.
+   * En la computadora, WhatsApp y Facebook solo aceptan texto o enlaces desde la web, e Instagram
+   * no permite publicar desde la web: se abre lo que se puede y se descarga la imagen para adjuntarla.
+   */
+  protected async compartirEn(red: 'whatsapp' | 'instagram' | 'facebook'): Promise<void> {
+    this.avisoCompartir.set('');
+    const sitio = location.origin;
+    const nativo = this.puedeCompartirArchivo();
+    // La ventana se abre antes de cualquier espera para que el navegador no la bloquee.
+    if (!nativo && red === 'whatsapp') {
+      window.open('https://wa.me/?text=' + encodeURIComponent(this.textoCompartir()), '_blank', 'noopener');
+    } else if (!nativo && red === 'facebook') {
+      window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(sitio + '/'), '_blank', 'noopener');
+    }
     try {
-      await navigator.share({ files: [archivo], title: 'Mi avance en Piletazo', text: 'Calcula el tuyo en ' + location.origin });
-    } catch {}
+      let blob = this.tarjetaBlob;
+      if (red === 'instagram') {
+        this.historiaBlob ??= await this.pedirTarjeta('historia');
+        blob = this.historiaBlob;
+      }
+      if (!blob) return;
+      const nombreArchivo = red === 'instagram' ? 'piletazo-historia.png' : 'piletazo-mi-avance.png';
+      const archivo = new File([blob], nombreArchivo, { type: 'image/png' });
+      if (nativo && navigator.canShare?.({ files: [archivo] })) {
+        await navigator.share({ files: [archivo], text: this.textoCompartir() });
+        return;
+      }
+      this.descargar(blob, nombreArchivo);
+      this.avisoCompartir.set(
+        red === 'whatsapp'
+          ? 'Se abrió WhatsApp con el mensaje y se descargó tu imagen: adjúntala en el chat.'
+          : red === 'facebook'
+            ? 'Se abrió Facebook con el enlace a Piletazo y se descargó tu imagen para que la subas en tu publicación.'
+            : 'Instagram no permite publicar desde la web. Se descargó tu historia (1080×1920): pásala a tu celular y súbela en Instagram → Tu historia.',
+      );
+    } catch {
+      this.avisoCompartir.set('No se pudo preparar la imagen. Intenta de nuevo.');
+    }
+  }
+
+  protected descargarTarjeta(): void {
+    if (this.tarjetaBlob) this.descargar(this.tarjetaBlob, 'piletazo-mi-avance.png');
+  }
+
+  private descargar(blob: Blob, nombre: string): void {
+    const url = URL.createObjectURL(blob);
+    const enlace = document.createElement('a');
+    enlace.href = url;
+    enlace.download = nombre;
+    enlace.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
   protected cerrarTarjeta(dialogo: HTMLDialogElement): void {
