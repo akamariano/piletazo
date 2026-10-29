@@ -2642,3 +2642,92 @@ tr.sin-equivalencia td {
 .boton-mini:hover {
   background: var(--naranja-fondo);
 }
+
+/* ---------- Cursando en la recomendación ---------- */
+.instruccion-cursando {
+  display: flex;
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border: 1px dashed rgb(251 146 60 / 0.5);
+  border-radius: var(--radio);
+  background: var(--naranja-fondo);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--texto-2);
+}
+
+.instruccion-cursando > app-icono {
+  margin-top: 4px;
+  color: var(--naranja);
+  flex-shrink: 0;
+}
+
+.instruccion-cursando b {
+  color: var(--texto);
+}
+
+.instruccion-cursando a {
+  color: var(--naranja);
+  font-weight: 600;
+}
+
+.muestra-boton {
+  display: inline-block;
+  cursor: default;
+  line-height: 1.4;
+}
+
+.boton-mini:disabled {
+  opacity: 0.55;
+  cursor: progress;
+}
+
+.boton-mini.activo {
+  background: linear-gradient(135deg, #fdba74, var(--naranja));
+  border-color: #fdba74;
+  color: #1c0d02;
+  font-weight: 700;
+  box-shadow: 0 4px 10px -4px rgb(251 146 60 / 0.7);
+}
+
+.boton-mini.activo:hover {
+  background: linear-gradient(135deg, #fed7aa, #fdba74);
+}
+
+.bloque-cursando {
+  margin-bottom: 6px;
+  border: 1px solid rgb(251 146 60 / 0.35);
+  border-radius: var(--radio);
+  padding: 6px 12px 0;
+  background: rgb(251 146 60 / 0.05);
+}
+
+.bloque-cursando .lista-filas {
+  border-top: 0;
+}
+
+.bloque-cursando .lista-filas li:last-child {
+  border-bottom: 0;
+}
+
+.bloque-titulo {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 6px 0 4px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--naranja);
+}
+
+.bloque-titulo .num {
+  color: var(--texto);
+}
+
+.bloque-titulo.siguiente {
+  margin-top: 14px;
+  color: var(--tenue);
+}

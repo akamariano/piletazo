@@ -137,6 +137,12 @@ export class App {
   protected readonly analisis = computed(() => this.respuesta()?.analisis ?? null);
 
   protected readonly conjuntoCursando = computed(() => new Set(this.cursando()));
+  /** Cursos marcados como CURSANDO, en el orden de la red CLAR 2022. */
+  protected readonly cursosCursando = computed(() => {
+    const cursando = this.conjuntoCursando();
+    return (this.analisis()?.pensum2022.red ?? []).filter((r) => cursando.has(r.curso.codigo));
+  });
+
   protected readonly creditosCursando = computed(() => {
     const red = this.analisis()?.pensum2022.red ?? [];
     const cursando = this.conjuntoCursando();

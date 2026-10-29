@@ -394,6 +394,52 @@
               <p class="ayuda">
                 Según el pensum CLAR 2022, entre los cursos que ya puedes asignarte. Primero los obligatorios que abren más camino.
               </p>
+              <p class="instruccion-cursando">
+                <app-icono nombre="calendario" />
+                <span>
+                  <b>¿Ya estás cursando alguno de estos cursos?</b> Selecciona el botón naranja
+                  <span class="boton-mini muestra-boton" aria-hidden="true">Lo estoy cursando</span>
+                  o márcalo tocándolo en la <a href="#red" (click)="seccionActiva.set('red')">red curricular</a>.
+                  Se cuenta como aprobado con 61 y la recomendación pasa al semestre siguiente.
+                </span>
+              </p>
+
+              @if (cursosCursando().length) {
+                <div class="bloque-cursando">
+                  <p class="bloque-titulo">
+                    <span>Estás cursando</span>
+                    <span><b class="num">{{ cursosCursando().length }}</b> {{ cursosCursando().length === 1 ? 'curso' : 'cursos' }} · <b class="num">{{ creditosCursando() }}</b> CLAR</span>
+                  </p>
+                  <ul class="lista-filas">
+                    @for (r2 of cursosCursando(); track r2.curso.codigo) {
+                      <li>
+                        <span class="codigo">{{ r2.curso.codigo }}</span>
+                        <span class="fila-texto">
+                          <span>
+                            {{ r2.curso.nombre }}
+                            @if (r2.curso.obligatorio) {<span class="ob" title="Curso obligatorio">OB<span class="solo-lector"> obligatorio</span></span>}
+                          </span>
+                          <small>Cuenta como aprobado con 61</small>
+                        </span>
+                        <span class="fila-final">
+                          <span class="num fila-cred">{{ r2.curso.creditos }}</span>
+                          <button
+                            type="button"
+                            class="boton-mini activo"
+                            aria-pressed="true"
+                            [attr.aria-label]="'Quitar ' + r2.curso.codigo + ' de cursando'"
+                            (click)="alternarCursando(r2.curso.codigo, r2.curso.nombre)"
+                          >
+                            ✓ Cursando
+                          </button>
+                        </span>
+                      </li>
+                    }
+                  </ul>
+                </div>
+                <p class="bloque-titulo siguiente">Para el próximo semestre</p>
+              }
+
               @if (r.cursos.length) {
                 <ul class="lista-filas">
                   @for (c of r.cursos; track c.red.curso.codigo) {
@@ -408,8 +454,14 @@
                       </span>
                       <span class="fila-final">
                         <span class="num fila-cred">{{ c.red.curso.creditos }}</span>
-                        <button type="button" class="boton-mini" (click)="alternarCursando(c.red.curso.codigo, c.red.curso.nombre)">
-                          Lo estoy cursando
+                        <button
+                          type="button"
+                          class="boton-mini"
+                          aria-pressed="false"
+                          [disabled]="!!validando()"
+                          (click)="alternarCursando(c.red.curso.codigo, c.red.curso.nombre)"
+                        >
+                          {{ validando() === c.red.curso.codigo ? 'Revisando…' : 'Lo estoy cursando' }}
                         </button>
                       </span>
                     </li>
