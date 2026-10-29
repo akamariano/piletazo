@@ -57,6 +57,21 @@ def validar(aprobados: List[CursoAprobado], codigo: str, modalidad: Modalidad = 
     return Validacion(codigo, curso.nombre, True)
 
 
+def cursando_de_ejemplo(
+    aprobados: List[CursoAprobado], semestre: int, maximo: int = 30, modalidad: Modalidad = "eps"
+) -> List[str]:
+    """Obligatorios del semestre indicado que el estudiante puede estar llevando, sin pasar `maximo` CLAR."""
+    elegidos: List[str] = []
+    creditos = 0
+    for curso in pensum("2022", modalidad).cursos:
+        if curso.semestre != semestre or not curso.obligatorio or creditos + curso.creditos > maximo:
+            continue
+        if validar(aprobados, curso.codigo, modalidad).valido:
+            elegidos.append(curso.codigo)
+            creditos += curso.creditos
+    return elegidos
+
+
 def con_cursando(
     aprobados: List[CursoAprobado], cursando: List[str], modalidad: Modalidad = "eps"
 ) -> Tuple[List[CursoAprobado], List[str], List[Validacion]]:

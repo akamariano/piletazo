@@ -61,3 +61,18 @@ def test_api_calculo_y_validacion():
     pdf = cliente.post("/api/reporte", json={"aprobados": aprobados, "cursando": ["0773"], "hoy": "2026-10-28"})
     assert pdf.status_code == 200 and pdf.content.startswith(b"%PDF")
     assert cliente.post("/api/calculo", json={"aprobados": aprobados, "cursando": ["abc"]}).status_code == 422
+
+
+def test_el_ejemplo_trae_cursos_en_curso_validos_del_siguiente_semestre():
+    for origen in ("clar2022", "traslado"):
+        datos = cliente.get("/api/ejemplo", params={"origen": origen}).json()
+        assert datos["cursando"], origen
+        r = cliente.post(
+            "/api/calculo", json={"aprobados": datos["aprobados"], "cursando": datos["cursando"], "hoy": "2026-10-28"}
+        ).json()
+        assert r["cursando"]["validos"] == datos["cursando"]
+        assert r["cursando"]["invalidos"] == []
+        creditos = {c["curso"]["codigo"]: c["curso"]["creditos"] for c in r["analisis"]["pensum2022"]["red"]}
+        assert sum(creditos[c] for c in datos["cursando"]) <= 30
+    clar = cliente.get("/api/ejemplo").json()["cursando"]
+    assert {"0773", "0778", "0781", "0601"} <= set(clar)

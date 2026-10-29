@@ -182,7 +182,7 @@
         <div class="probar">
           <div>
             <strong>¿Solo quieres ver cómo funciona?</strong>
-            <span>Carga un estudiante de {{ origen() === 'clar2022' ? 'CLAR 2022' : 'pensum anterior trasladado al CLAR' }} que acaba de terminar 5.º semestre.</span>
+            <span>Carga un estudiante de {{ origen() === 'clar2022' ? 'CLAR 2022' : 'pensum anterior trasladado al CLAR' }} que terminó 5.º semestre y está cursando 6.º.</span>
           </div>
           <button type="button" class="boton" (click)="probarEjemplo()" [disabled]="leyendo()">
             <app-icono nombre="pipeline" />Probar con un ejemplo
@@ -205,7 +205,8 @@
               <strong>Estás viendo un ejemplo</strong>
               <p>
                 Estudiante de {{ origen() === 'clar2022' ? 'CLAR 2022' : 'pensum anterior trasladado al CLAR 2022' }} que acaba de terminar 5.º semestre:
-                todos los obligatorios del 1.º al 5.º, Idioma Técnico 1 y 2 y Deportes 1. No se guarda nada.
+                todos los obligatorios del 1.º al 5.º, Idioma Técnico 1 y 2 y Deportes 1. Este semestre lleva los obligatorios de 6.º,
+                marcados como <span class="etiqueta-cursando">CURSANDO</span> en la red. Toca otros cursos para probar. No se guarda nada.
               </p>
             </div>
             <div class="aviso-acciones">
@@ -329,7 +330,10 @@
             } @else {
               <div>
                 <dt>Cursos aprobados</dt>
-                <dd><span class="num">{{ a.aprobados.length }}</span><small>cursos</small></dd>
+                <dd>
+                  <span class="num">{{ a.aprobados.length - cursando().length }}</span><small>cursos</small>
+                  @if (cursando().length) {<small class="texto-cursando">+{{ cursando().length }} cursando</small>}
+                </dd>
               </div>
               <div>
                 <dt>Obligatorios por aprobar</dt>

@@ -34,6 +34,17 @@ describe('App', () => {
     expect(peticion.request.params.get('semestres')).toBe('5');
   });
 
+  it('marca como CURSANDO los cursos que trae el ejemplo', async () => {
+    const fixture = TestBed.createComponent(App);
+    await fixture.whenStable();
+    const app = fixture.componentInstance as unknown as { probarEjemplo: () => Promise<void>; cursando: () => string[] };
+    const http = TestBed.inject(HttpTestingController);
+    const carga = app.probarEjemplo();
+    http.expectOne((r) => r.url === '/api/ejemplo').flush({ aprobados: [{ codigo: '0101', nombre: 'Área Matemática Básica 1', creditos: 9 }], cursando: ['0773', '0778'] });
+    await carga;
+    expect(app.cursando()).toEqual(['0773', '0778']);
+  });
+
   it('describe los prerrequisitos por créditos y alternativas', () => {
     const app = TestBed.createComponent(App).componentInstance as unknown as { describir: (p: string) => string };
     expect(app.describir('200CR')).toBe('200 créditos');

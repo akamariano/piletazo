@@ -16,7 +16,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
 from .analisis import analizar
-from .cursando import con_cursando, validar
+from .cursando import con_cursando, cursando_de_ejemplo, validar
 from .entrada import CursoAprobado, estudiante_de_ejemplo, parsear_html, parsear_texto
 from .pensums import catalogo
 from .recomendacion import recomendar
@@ -94,8 +94,10 @@ def leer_cursos(lectura: Lectura) -> dict:
 
 @app.get("/api/ejemplo")
 def ejemplo(origen: Literal["traslado", "clar2022"] = "clar2022", semestres: int = Query(5, ge=1, le=10)) -> dict:
-    """Cursos de un estudiante de ejemplo que acaba de terminar el semestre indicado."""
-    return {"aprobados": a_json(estudiante_de_ejemplo("2022" if origen == "clar2022" else "2021", semestres))}
+    """Estudiante de ejemplo que terminó el semestre indicado y está llevando el siguiente."""
+    aprobados = estudiante_de_ejemplo("2022" if origen == "clar2022" else "2021", semestres)
+    cursando = cursando_de_ejemplo(aprobados, semestres + 1) if semestres < 10 else []
+    return {"aprobados": a_json(aprobados), "cursando": cursando, "semestre": semestres}
 
 
 @app.post("/api/cursando/validar")

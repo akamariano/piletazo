@@ -273,14 +273,17 @@ export class App {
     this.leyendo.set(true);
     this.error.set('');
     try {
-      const { aprobados } = await firstValueFrom(
-        this.http.get<{ aprobados: CursoAprobado[] }>('/api/ejemplo', { params: { origen: this.origen(), semestres: 5 } }),
+      const { aprobados, cursando } = await firstValueFrom(
+        this.http.get<{ aprobados: CursoAprobado[]; cursando: string[] }>('/api/ejemplo', {
+          params: { origen: this.origen(), semestres: 5 },
+        }),
       );
       if (!this.ejemplo()) {
         this.cursosAntesDelEjemplo = this.aprobados();
         this.cursandoAntesDelEjemplo = this.cursando();
       }
-      this.cursando.set([]);
+      this.cursando.set(cursando ?? []);
+      this.errorCursando.set('');
       this.ejemplo.set(true);
       this.aprobados.set(aprobados);
       this.editandoEntrada.set(false);
