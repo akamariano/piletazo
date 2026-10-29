@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import Dict, List, Set
 
 from .analisis import CursoRed, ProgresoPensum
+from .critica import ruta_critica
 
 NOMBRE_AREA = {
     "metodologia": "Metodología de Sistemas",
@@ -37,6 +38,7 @@ def recomendar(progreso: ProgresoPensum, maximo: float) -> Recomendacion:
     """
     pendientes = [r for r in progreso.red if r.estado != "aprobado"]
     dependientes = _contar_dependientes(pendientes)
+    criticos = set(ruta_critica(progreso).codigos)
 
     falta_por_area: Set[str] = set()
     for area in progreso.areas:
@@ -51,6 +53,8 @@ def recomendar(progreso: ProgresoPensum, maximo: float) -> Recomendacion:
         razones: List[str] = []
         if r.curso.obligatorio:
             razones.append(f"Obligatorio de {r.curso.semestre}.º semestre")
+        if r.curso.codigo in criticos:
+            razones.append("Ruta crítica: si lo atrasas, atrasas tu cierre")
         if desbloquea > 0:
             razones.append(f"Abre camino a {desbloquea} {'curso' if desbloquea == 1 else 'cursos'}")
         if r.curso.codigo in falta_por_area:
@@ -68,7 +72,7 @@ def recomendar(progreso: ProgresoPensum, maximo: float) -> Recomendacion:
     def prioridad(c: CursoRecomendado):
         curso = c.red.curso
         grupo = 0 if curso.obligatorio else 1 if curso.codigo in falta_por_area else 2 if curso.area else 3
-        return (grupo, -c.desbloquea, curso.semestre)
+        return (grupo, curso.codigo not in criticos, -c.desbloquea, curso.semestre)
 
     candidatos.sort(key=prioridad)
 

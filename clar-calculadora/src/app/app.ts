@@ -1,5 +1,5 @@
 import { HttpClient, httpResource } from '@angular/common/http';
-import { Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, signal, untracked } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import {
   Consentimiento,
@@ -15,7 +15,9 @@ import {
   CursosPorVacaciones,
   DuracionPracticas,
   Modalidad,
+  Avisos,
   Origen,
+  PromedioMeta,
   RespuestaCalculo,
   ValidacionCursando,
 } from './data/modelos';
@@ -107,6 +109,7 @@ export class App {
         modalidad: this.modalidad(),
         cargaMaxima: this.cargaMaxima(),
         practicas: this.practicas(),
+        vacaciones: this.vacaciones(),
       },
     };
   });
@@ -137,6 +140,26 @@ export class App {
   protected readonly analisis = computed(() => this.respuesta()?.analisis ?? null);
 
   protected readonly conjuntoCursando = computed(() => new Set(this.cursando()));
+  protected readonly criticos = computed(() => new Set(this.respuesta()?.rutaCritica?.codigos ?? []));
+  /** ¿Y si repruebo? por código de curso en curso. */
+  protected readonly reprobarPorCodigo = computed(
+    () => new Map((this.respuesta()?.reprobar ?? []).map((r) => [r.codigo, r] as const)),
+  );
+
+  // ---------- Revisión de lo cargado, promedio meta, tarjeta y perfil ----------
+  protected readonly avisos = signal<Avisos | null>(null);
+  protected readonly hayAvisos = computed(() => {
+    const a = this.avisos();
+    return !!a && a.lineasNoReconocidas.length + a.codigosDesconocidos.length + a.duplicados.length > 0;
+  });
+  protected readonly meta = signal<number | null>(null);
+  protected readonly resultadoMeta = signal<PromedioMeta | null>(null);
+  protected readonly tarjetaUrl = signal('');
+  protected readonly tarjetaConNombre = signal(false);
+  protected readonly generandoTarjeta = signal(false);
+  protected readonly puedeCompartirArchivo = signal(false);
+  protected readonly avisoPerfil = signal('');
+  private tarjetaBlob: Blob | null = null;
   /** Cursos marcados como CURSANDO, en el orden de la red CLAR 2022. */
   protected readonly cursosCursando = computed(() => {
     const cursando = this.conjuntoCursando();
@@ -221,6 +244,7 @@ export class App {
       this.origen.set(datos.origen ?? 'traslado');
       this.cursando.set(datos.cursando ?? []);
     }
+    this.importarDesdeEnlace();
 
     effect(() => {
       const datos = {
@@ -243,6 +267,14 @@ export class App {
       if (this.analisis() && !this.editandoEntrada()) setTimeout(() => this.observarSecciones());
     });
     inject(DestroyRef).onDestroy(() => this.observador?.disconnect());
+
+    // El promedio meta se recalcula cuando cambian los cursos aprobados o en curso.
+    effect(() => {
+      this.aprobados();
+      this.cursando();
+      const meta = untracked(this.meta);
+      if (meta !== null) untracked(() => this.calcularMeta(String(meta)));
+    });
 
     // Si un curso en curso deja de ser válido (p. ej. al cambiar los aprobados), se quita y se avisa.
     effect(() => {
@@ -337,6 +369,166 @@ export class App {
     } finally {
       this.validando.set('');
     }
+  }
+
+  // ---------- Promedio meta ----------
+
+  protected async calcularMeta(valor: string): Promise<void> {
+    const meta = Number(valor);
+    if (!valor || !Number.isFinite(meta)) {
+      this.meta.set(null);
+      this.resultadoMeta.set(null);
+      return;
+    }
+    const acotada = Math.min(100, Math.max(61, meta));
+    this.meta.set(acotada);
+    try {
+      this.resultadoMeta.set(
+        await firstValueFrom(
+          this.http.post<PromedioMeta>('/api/promedio/meta', {
+            aprobados: this.aprobados(),
+            cursando: this.cursando(),
+            meta: acotada,
+          }),
+        ),
+      );
+    } catch {
+      this.resultadoMeta.set({ meta: acotada, notaNecesaria: null, posible: false, mensaje: 'No se pudo calcular. Intenta de nuevo.' });
+    }
+  }
+
+  // ---------- Tarjeta para compartir ----------
+
+  protected async abrirTarjeta(dialogo: HTMLDialogElement): Promise<void> {
+    this.tarjetaConNombre.set(!!this.nombre().trim() && !this.ejemplo());
+    dialogo.showModal();
+    await this.generarTarjeta();
+  }
+
+  protected async generarTarjeta(): Promise<void> {
+    this.generandoTarjeta.set(true);
+    try {
+      const nombre = this.ejemplo() ? 'Estudiante de ejemplo' : this.tarjetaConNombre() ? this.nombre().trim() : '';
+      const png = await firstValueFrom(
+        this.http.post('/api/tarjeta', {
+          aprobados: this.aprobados(),
+          cursando: this.cursando(),
+          modalidad: this.modalidad(),
+          cargaMaxima: this.cargaMaxima(),
+          practicas: this.practicas(),
+          vacaciones: this.vacaciones(),
+          origen: this.origen(),
+          nombre,
+        }, { responseType: 'blob' }),
+      );
+      if (this.tarjetaUrl()) URL.revokeObjectURL(this.tarjetaUrl());
+      this.tarjetaBlob = png;
+      this.tarjetaUrl.set(URL.createObjectURL(png));
+      const archivo = new File([png], 'piletazo-mi-avance.png', { type: 'image/png' });
+      this.puedeCompartirArchivo.set(typeof navigator.canShare === 'function' && navigator.canShare({ files: [archivo] }));
+    } catch {
+      this.tarjetaUrl.set('');
+    } finally {
+      this.generandoTarjeta.set(false);
+    }
+  }
+
+  protected async compartirTarjeta(): Promise<void> {
+    if (!this.tarjetaBlob) return;
+    const archivo = new File([this.tarjetaBlob], 'piletazo-mi-avance.png', { type: 'image/png' });
+    try {
+      await navigator.share({ files: [archivo], title: 'Mi avance en Piletazo', text: 'Calcula el tuyo en ' + location.origin });
+    } catch {}
+  }
+
+  protected cerrarTarjeta(dialogo: HTMLDialogElement): void {
+    dialogo.close();
+  }
+
+  // ---------- Llevar mis datos a otro dispositivo ----------
+
+  private perfil() {
+    return {
+      app: 'piletazo',
+      version: 1,
+      nombre: this.nombre(),
+      carne: this.carne(),
+      aprobados: this.aprobados(),
+      cursando: this.cursando(),
+      modalidad: this.modalidad(),
+      origen: this.origen(),
+      cargaMaxima: this.cargaMaxima(),
+      practicas: this.practicas(),
+      vacaciones: this.vacaciones(),
+    };
+  }
+
+  protected exportarPerfil(): void {
+    const blob = new Blob([JSON.stringify(this.perfil(), null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const enlace = document.createElement('a');
+    enlace.href = url;
+    enlace.download = 'piletazo-mis-datos.json';
+    enlace.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    this.avisoPerfil.set('Archivo descargado. Ábrelo con «Importar mis datos» en el otro dispositivo.');
+  }
+
+  protected async importarArchivo(evento: Event): Promise<void> {
+    const archivo = (evento.target as HTMLInputElement).files?.[0];
+    if (!archivo) return;
+    try {
+      this.aplicarPerfil(JSON.parse(await archivo.text()));
+      this.avisoPerfil.set('Datos importados.');
+    } catch {
+      this.avisoPerfil.set('Ese archivo no es un perfil de Piletazo.');
+    }
+    (evento.target as HTMLInputElement).value = '';
+  }
+
+  /** El perfil va en el fragmento (#) del enlace: el navegador nunca lo envía al servidor. */
+  protected async copiarEnlacePerfil(): Promise<void> {
+    const bytes = new TextEncoder().encode(JSON.stringify(this.perfil()));
+    let binario = '';
+    bytes.forEach((b) => (binario += String.fromCharCode(b)));
+    const codigo = btoa(binario).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    const enlace = `${location.origin}/#perfil=${codigo}`;
+    try {
+      await navigator.clipboard.writeText(enlace);
+      this.avisoPerfil.set('Enlace copiado. Contiene tus datos: compártelo solo contigo.');
+    } catch {
+      this.avisoPerfil.set('No se pudo copiar el enlace.');
+    }
+  }
+
+  private importarDesdeEnlace(): void {
+    const hash = typeof location !== 'undefined' ? location.hash : '';
+    if (!hash.startsWith('#perfil=')) return;
+    try {
+      const base64 = hash.slice(8).replace(/-/g, '+').replace(/_/g, '/');
+      const binario = atob(base64 + '='.repeat((4 - (base64.length % 4)) % 4));
+      const bytes = Uint8Array.from(binario, (c) => c.charCodeAt(0));
+      this.aplicarPerfil(JSON.parse(new TextDecoder().decode(bytes)));
+      this.avisoPerfil.set('Datos importados desde el enlace.');
+    } catch {
+      this.avisoPerfil.set('El enlace no contiene un perfil válido.');
+    }
+    history.replaceState(null, '', location.pathname);
+  }
+
+  private aplicarPerfil(p: Record<string, unknown>): void {
+    if (p['app'] !== 'piletazo' || !Array.isArray(p['aprobados'])) throw new Error('perfil inválido');
+    this.ejemplo.set(false);
+    this.nombre.set(String(p['nombre'] ?? ''));
+    this.carne.set(String(p['carne'] ?? ''));
+    this.aprobados.set(p['aprobados'] as CursoAprobado[]);
+    this.cursando.set(Array.isArray(p['cursando']) ? (p['cursando'] as string[]) : []);
+    if (p['modalidad'] === 'eps' || p['modalidad'] === 'tesis') this.modalidad.set(p['modalidad']);
+    if (p['origen'] === 'traslado' || p['origen'] === 'clar2022') this.origen.set(p['origen']);
+    if (typeof p['cargaMaxima'] === 'number') this.cargaMaxima.set(p['cargaMaxima']);
+    if (p['practicas'] === 1 || p['practicas'] === 2) this.practicas.set(p['practicas']);
+    if (p['vacaciones'] === 0 || p['vacaciones'] === 1 || p['vacaciones'] === 2) this.vacaciones.set(p['vacaciones']);
+    this.editandoEntrada.set(false);
   }
 
   protected quitarCursando(): void {
@@ -489,9 +681,10 @@ export class App {
     this.leyendo.set(true);
     this.error.set('');
     try {
-      const { aprobados } = await firstValueFrom(
-        this.http.post<{ aprobados: CursoAprobado[] }>('/api/cursos/leer', cuerpo),
+      const { aprobados, avisos } = await firstValueFrom(
+        this.http.post<{ aprobados: CursoAprobado[]; avisos?: Avisos }>('/api/cursos/leer', cuerpo),
       );
+      this.avisos.set(avisos ?? null);
       if (aprobados.length === 0) {
         this.error.set(sinCursos);
         return;

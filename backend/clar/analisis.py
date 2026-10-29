@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import re
 from dataclasses import dataclass, field
 from typing import Dict, Iterable, List, Literal, Optional, Set
@@ -242,3 +243,35 @@ def _incluye(lista: Iterable[str], prerrequisito: str) -> bool:
     """'0039' y '0039|0031' se consideran el mismo prerrequisito."""
     opciones = set(prerrequisito.split("|"))
     return any(opciones & set(p.split("|")) for p in lista)
+
+
+@dataclass
+class PromedioMeta:
+    meta: float
+    nota_necesaria: Optional[float]
+    posible: bool
+    mensaje: str
+
+
+def nota_para_meta(aprobados: List[CursoAprobado], cursando: int, meta: float) -> PromedioMeta:
+    """Promedio que se necesita en los cursos en curso para que el promedio simple llegue a `meta`."""
+    r = rendimiento(aprobados)
+    suma = (r.promedio or 0) * r.cursos_con_nota
+    if cursando <= 0:
+        return PromedioMeta(meta, None, False, "Marca los cursos que estás cursando para calcular la nota que necesitas.")
+    necesaria = (meta * (r.cursos_con_nota + cursando) - suma) / cursando
+    maximo = (suma + 100 * cursando) / (r.cursos_con_nota + cursando)
+    plural = "curso" if cursando == 1 else "cursos"
+    if necesaria > 100:
+        return PromedioMeta(
+            meta, round(necesaria, 2), False,
+            f"No es posible este semestre: necesitarías {necesaria:.2f}. Con 100 en tus {cursando} {plural} llegarías a {maximo:.2f}.",
+        )
+    if necesaria <= 61:
+        return PromedioMeta(
+            meta, 61.0, True, f"Con aprobar con 61 tus {cursando} {plural} en curso ya alcanzas un promedio de {meta:.2f}.",
+        )
+    necesaria = math.ceil(necesaria * 100) / 100
+    return PromedioMeta(
+        meta, necesaria, True, f"Necesitas un promedio de {necesaria:.2f} en tus {cursando} {plural} en curso para llegar a {meta:.2f}.",
+    )

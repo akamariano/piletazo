@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from html.parser import HTMLParser
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
-from .pensums import pensum
+from .pensums import catalogo, pensum
 
 # Línea típica copiada de "Cursos aprobados" del portal:
 # 0101    AREA MATEMATICA BASICA 1    7    2021-05    69.00
@@ -30,12 +30,30 @@ def normalizar_codigo(codigo: str) -> str:
     return codigo.strip().zfill(4)
 
 
+@dataclass
+class Avisos:
+    """Lo que no se pudo usar del texto o archivo cargado, para que el estudiante lo revise."""
+
+    lineas_no_reconocidas: List[str] = field(default_factory=list)
+    codigos_desconocidos: List[str] = field(default_factory=list)
+    duplicados: List[str] = field(default_factory=list)
+
+
 def parsear_texto(texto: str) -> List[CursoAprobado]:
+    return leer_texto(texto)[0]
+
+
+def leer_texto(texto: str) -> Tuple[List[CursoAprobado], Avisos]:
+    """Lee el texto copiado del portal y devuelve también lo que no se reconoció."""
     anterior = pensum("2021").por_codigo
+    conocidos = catalogo()
+    avisos = Avisos()
     cursos: List[CursoAprobado] = []
     for linea in texto.splitlines():
         m = LINEA_CURSO.match(linea)
         if m:
+            if normalizar_codigo(m[1]) not in conocidos:
+                avisos.codigos_desconocidos.append(f"{normalizar_codigo(m[1])} {m[2].strip()}")
             cursos.append(
                 CursoAprobado(
                     codigo=normalizar_codigo(m[1]),
@@ -53,7 +71,16 @@ def parsear_texto(texto: str) -> List[CursoAprobado]:
             curso = anterior.get(normalizar_codigo(c[1]))
             if curso:
                 cursos.append(CursoAprobado(curso.codigo, curso.nombre, curso.creditos))
-    return _deduplicar(cursos)
+                continue
+        # Una línea con números que no se pudo leer probablemente era un curso mal copiado.
+        if re.search(r"\d{3}", linea) and linea.strip():
+            avisos.lineas_no_reconocidas.append(linea.strip()[:120])
+    vistos: set = set()
+    for c in cursos:
+        if c.codigo in vistos and c.codigo not in avisos.duplicados:
+            avisos.duplicados.append(c.codigo)
+        vistos.add(c.codigo)
+    return _deduplicar(cursos), avisos
 
 
 class _LectorRed(HTMLParser):
@@ -106,6 +133,10 @@ class _LectorRed(HTMLParser):
 
 
 def parsear_html(html: str) -> List[CursoAprobado]:
+    return leer_html(html)[0]
+
+
+def leer_html(html: str) -> Tuple[List[CursoAprobado], Avisos]:
     lector = _LectorRed()
     lector.feed(html)
     anterior = pensum("2021").por_codigo
@@ -115,8 +146,8 @@ def parsear_html(html: str) -> List[CursoAprobado]:
             for c in lector.aprobados
             if c in anterior
         ]
-        return _deduplicar(cursos)
-    return parsear_texto("\n".join("    ".join(fila) for fila in lector.filas))
+        return _deduplicar(cursos), Avisos()
+    return leer_texto("\n".join("    ".join(fila) for fila in lector.filas))
 
 
 def _deduplicar(cursos: List[CursoAprobado]) -> List[CursoAprobado]:

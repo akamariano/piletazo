@@ -156,8 +156,38 @@ export interface ValidacionCursando {
   mensaje: string;
 }
 
+/** Lo que no se pudo usar del texto o archivo cargado. */
+export interface Avisos {
+  lineasNoReconocidas: string[];
+  codigosDesconocidos: string[];
+  duplicados: string[];
+}
+
+/** Obligatorios pendientes sin holgura: si se atrasan, se atrasa el cierre. */
+export interface RutaCritica {
+  codigos: string[];
+  semestresMinimos: number;
+}
+
+/** Cierre de pensum si se reprueba un curso que se está cursando. */
+export interface Reprobar {
+  codigo: string;
+  cierre: string | null;
+  semestres: number;
+  semestresExtra: number;
+}
+
+export interface PromedioMeta {
+  meta: number;
+  notaNecesaria: number | null;
+  posible: boolean;
+  mensaje: string;
+}
+
 export interface RespuestaCalculo {
   analisis: Analisis;
+  rutaCritica: RutaCritica;
+  reprobar: Reprobar[];
   cursando: { validos: string[]; invalidos: ValidacionCursando[] };
   recomendacion: Recomendacion;
   escenarios: { vacaciones: CursosPorVacaciones; ruta: Ruta }[];

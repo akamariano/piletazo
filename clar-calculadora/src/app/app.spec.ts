@@ -98,6 +98,73 @@ describe('Cursando', () => {
   });
 });
 
+describe('Funciones de apoyo', () => {
+  beforeEach(async () => {
+    localStorage.clear();
+    history.replaceState(null, '', '/');
+    await TestBed.configureTestingModule({
+      imports: [App],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    }).compileComponents();
+  });
+
+  it('lleva el perfil a otro dispositivo con un enlace (#perfil=)', async () => {
+    type ConPerfil = {
+      nombre: { set: (v: string) => void; (): string };
+      aprobados: { set: (v: unknown[]) => void; (): { codigo: string }[] };
+      cursando: { set: (v: string[]) => void; (): string[] };
+      copiarEnlacePerfil: () => Promise<void>;
+    };
+    let copiado = '';
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText: async (t: string) => void (copiado = t) }, configurable: true });
+
+    const origen = TestBed.createComponent(App).componentInstance as unknown as ConPerfil;
+    origen.nombre.set('Ana Pérez');
+    origen.aprobados.set([{ codigo: '0101', nombre: 'Área Matemática Básica 1', creditos: 9 }]);
+    origen.cursando.set(['0103']);
+    await origen.copiarEnlacePerfil();
+    expect(copiado).toContain('/#perfil=');
+
+    history.replaceState(null, '', '/' + copiado.slice(copiado.indexOf('#')));
+    const destino = TestBed.createComponent(App).componentInstance as unknown as ConPerfil;
+    expect(destino.nombre()).toBe('Ana Pérez');
+    expect(destino.aprobados().map((a) => a.codigo)).toEqual(['0101']);
+    expect(destino.cursando()).toEqual(['0103']);
+    expect(location.hash).toBe('');
+  });
+
+  it('pide a la API la nota necesaria para el promedio meta', async () => {
+    const app = TestBed.createComponent(App).componentInstance as unknown as {
+      calcularMeta: (v: string) => Promise<void>;
+      resultadoMeta: () => { mensaje: string } | null;
+    };
+    const http = TestBed.inject(HttpTestingController);
+    const calculo = app.calcularMeta('120');
+    const peticion = http.expectOne('/api/promedio/meta');
+    expect(peticion.request.body.meta).toBe(100); // se acota a 61–100
+    peticion.flush({ meta: 100, notaNecesaria: null, posible: false, mensaje: 'No es posible este semestre' });
+    await calculo;
+    expect(app.resultadoMeta()!.mensaje).toContain('No es posible');
+  });
+
+  it('guarda la revisión de lo cargado', async () => {
+    const app = TestBed.createComponent(App).componentInstance as unknown as {
+      texto: { set: (v: string) => void };
+      calcularDesdeTexto: () => Promise<void>;
+      hayAvisos: () => boolean;
+    };
+    const http = TestBed.inject(HttpTestingController);
+    app.texto.set('0101 AREA MATEMATICA BASICA 1 7 2021-05 69.00');
+    const leer = app.calcularDesdeTexto();
+    http.expectOne('/api/cursos/leer').flush({
+      aprobados: [{ codigo: '0101', nombre: 'Área Matemática Básica 1', creditos: 7 }],
+      avisos: { lineasNoReconocidas: [], codigosDesconocidos: [], duplicados: ['0101'] },
+    });
+    await leer;
+    expect(app.hayAvisos()).toBe(true);
+  });
+});
+
 describe('Logo', () => {
   it('dibuja la versión simple y la completa', () => {
     const fixture = TestBed.createComponent(Logo);

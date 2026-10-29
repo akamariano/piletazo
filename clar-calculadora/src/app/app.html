@@ -55,11 +55,29 @@
     </section>
 
     @if (analisis() || consentimiento()) {
+    @if (analisis()) {
+      <section class="mis-datos" aria-labelledby="mis-datos-titulo">
+        <h2 id="mis-datos-titulo" class="rotulo">Mis datos</h2>
+        <div class="mis-datos-botones">
+          <button type="button" class="boton" (click)="exportarPerfil()"><app-icono nombre="descargar" />Exportar</button>
+          <label class="boton">
+            <input type="file" accept=".json,application/json" (change)="importarArchivo($event)" />
+            <app-icono nombre="subir" />Importar
+          </label>
+          <button type="button" class="boton" (click)="copiarEnlacePerfil()"><app-icono nombre="externo" />Enlace a otro dispositivo</button>
+        </div>
+        @if (avisoPerfil()) {
+          <p class="aviso-perfil" role="status">{{ avisoPerfil() }}</p>
+        }
+      </section>
+    }
+
     <div class="rail-acciones">
       @if (analisis()) {
         <button class="boton primario" (click)="descargarPdf()" [disabled]="descargando()">
           <app-icono nombre="descargar" />{{ descargando() ? 'Generando PDF…' : 'Descargar PDF' }}
         </button>
+        <button class="boton" (click)="abrirTarjeta(dialogoTarjeta)"><app-icono nombre="externo" />Compartir mi avance</button>
         <button class="boton" (click)="imprimir()"><app-icono nombre="impresora" />Imprimir reporte</button>
         <button class="boton" (click)="editandoEntrada.set(!editandoEntrada())">
           <app-icono nombre="editar" />{{ editandoEntrada() ? 'Cerrar edición' : 'Cambiar cursos' }}
@@ -216,6 +234,42 @@
           </section>
         }
 
+        @if (hayAvisos()) {
+          <section class="aviso-revision" role="status">
+            <app-icono nombre="alerta" />
+            <div>
+              <strong>Revisa lo que cargaste</strong>
+              <ul>
+                @if (avisos()!.lineasNoReconocidas.length) {
+                  <li>
+                    {{ avisos()!.lineasNoReconocidas.length }}
+                    {{ avisos()!.lineasNoReconocidas.length === 1 ? 'línea no se reconoció' : 'líneas no se reconocieron' }}
+                    y no se tomaron en cuenta:
+                    @for (l of avisos()!.lineasNoReconocidas.slice(0, 4); track $index) {<code>{{ l }}</code>}
+                  </li>
+                }
+                @if (avisos()!.codigosDesconocidos.length) {
+                  <li>
+                    No están en ninguna red curricular (se cuentan solo en el pensum anterior):
+                    @for (c of avisos()!.codigosDesconocidos; track c) {<code>{{ c }}</code>}
+                  </li>
+                }
+                @if (avisos()!.duplicados.length) {
+                  <li>
+                    Cursos repetidos (se contaron una sola vez):
+                    @for (c of avisos()!.duplicados; track c) {<code>{{ c }}</code>}
+                  </li>
+                }
+              </ul>
+              <p>
+                Si es un error de Piletazo,
+                <a href="mailto:marianoracnoguera@gmail.com?subject=Calculadora%20CLAR%20-%20Curso%20no%20reconocido">repórtalo</a>.
+              </p>
+            </div>
+            <button type="button" class="cerrar-error" (click)="avisos.set(null)" aria-label="Cerrar revisión"><app-icono nombre="cerrar" /></button>
+          </section>
+        }
+
         <header class="barra-superior">
           <div>
             <h1>{{ ejemplo() ? 'Estudiante de ejemplo' : nombre().trim() ? nombre().trim() : 'Tu situación' }}</h1>
@@ -227,6 +281,9 @@
             </p>
           </div>
           <div class="controles-superiores">
+          <button class="boton boton-compartir" (click)="abrirTarjeta(dialogoTarjeta)">
+            <app-icono nombre="externo" />Compartir mi avance
+          </button>
           <button class="boton primario boton-pdf" (click)="descargarPdf()" [disabled]="descargando()">
             <app-icono nombre="descargar" />{{ descargando() ? 'Generando…' : 'Exportar PDF' }}
           </button>
@@ -375,6 +432,30 @@
               <dd><span class="num">{{ p.obligatoriosPendientes.length }}</span><small>cursos</small></dd>
             </div>
           </dl>
+
+          <div class="promedio-meta">
+            <label>
+              <span>Promedio meta</span>
+              <input
+                type="number"
+                min="61"
+                max="100"
+                step="0.5"
+                placeholder="75"
+                [value]="meta() ?? ''"
+                (change)="calcularMeta($any($event.target).value)"
+                aria-label="Promedio meta"
+              />
+            </label>
+            <p [class.no-posible]="resultadoMeta() && !resultadoMeta()!.posible">
+              @if (resultadoMeta(); as m) {
+                {{ m.mensaje }}
+              } @else {
+                Escribe el promedio que quieres alcanzar y te digo qué nota necesitas en los cursos que estás
+                <span class="texto-cursando">cursando</span>.
+              }
+            </p>
+          </div>
         </section>
 
         <section id="pipeline" class="panel">
@@ -445,7 +526,17 @@
                             {{ r2.curso.nombre }}
                             @if (r2.curso.obligatorio) {<span class="ob" title="Curso obligatorio">OB<span class="solo-lector"> obligatorio</span></span>}
                           </span>
-                          <small>Cuenta como aprobado con 61</small>
+                          <small>
+                            Cuenta como aprobado con 61
+                            @if (reprobarPorCodigo().get(r2.curso.codigo); as x) {
+                              ·
+                              @if (x.semestresExtra > 0) {
+                                <span class="texto-atrasa">si lo repruebas, cierras {{ x.semestresExtra }} {{ x.semestresExtra === 1 ? 'semestre' : 'semestres' }} después</span>
+                              } @else {
+                                si lo repruebas, no cambia tu cierre
+                              }
+                            }
+                          </small>
                         </span>
                         <span class="fila-final">
                           <span class="num fila-cred">{{ r2.curso.creditos }}</span>
@@ -645,6 +736,40 @@
                 </li>
               }
             </ol>
+            @if (respuesta()?.rutaCritica; as rc) {
+              @if (rc.codigos.length) {
+                <p class="resumen-critico">
+                  <span class="placa-critica">CRÍTICO</span>
+                  <span>
+                    Por cadenas de prerrequisitos necesitas al menos <b class="num">{{ rc.semestresMinimos }}</b>
+                    {{ rc.semestresMinimos === 1 ? 'semestre' : 'semestres' }} más. Estos {{ rc.codigos.length }} obligatorios no tienen holgura:
+                    si atrasas uno, atrasas tu cierre. Están marcados en la red curricular.
+                  </span>
+                </p>
+              }
+            }
+            @if (respuesta()?.reprobar?.length) {
+              <div class="si-repruebo">
+                <h3>¿Y si repruebo?</h3>
+                <p class="ayuda">Con la ruta elegida, así cambiaría tu cierre si repruebas un curso que estás cursando.</p>
+                <ul>
+                  @for (x of respuesta()!.reprobar; track x.codigo) {
+                    <li [class.atrasa]="x.semestresExtra > 0">
+                      <span class="codigo">{{ x.codigo }}</span>
+                      <span>{{ respuesta()!.catalogo[x.codigo] }}</span>
+                      <span class="efecto">
+                        @if (x.semestresExtra > 0) {
+                          +{{ x.semestresExtra }} {{ x.semestresExtra === 1 ? 'semestre' : 'semestres' }} · {{ x.cierre }}
+                        } @else {
+                          No cambia tu cierre
+                        }
+                      </span>
+                    </li>
+                  }
+                </ul>
+              </div>
+            }
+
             <p class="proximamente">
               <app-icono nombre="arrastrar" />
               <span><b>Próximamente:</b> podrás arrastrar y soltar cursos para armar a mano tu plan en cada semestre y escuela de vacaciones restante.</span>
@@ -727,6 +852,9 @@
               <span class="info"><i class="muestra disponible"></i>Puedes asignarlo</span>
               <span class="tenue"><i class="muestra bloqueado"></i>Bloqueado</span>
               <span class="cursando-leyenda"><i class="muestra cursando"></i>Cursando</span>
+              @if (vista() === '2022' || origen() === 'clar2022') {
+                <span><span class="placa-critica" aria-hidden="true">CRÍTICO</span>Ruta crítica</span>
+              }
               <span><span class="ob" aria-hidden="true">OB</span>Obligatorio</span>
               @if (vista() === '2022') {
                 <span class="aviso"><app-icono nombre="alerta" />Afectado por el cambio</span>
@@ -780,6 +908,8 @@
                     }
                     @if (conjuntoCursando().has(r.curso.codigo)) {
                       <span class="placa-cursando">CURSANDO</span>
+                    } @else if (r.estado !== 'aprobado' && criticos().has(r.curso.codigo) && (vista() === '2022' || origen() === 'clar2022')) {
+                      <span class="placa-critica" title="Si lo atrasas, atrasas tu cierre">CRÍTICO</span>
                     }
                     @if (r.faltantes.length && r.estado === 'bloqueado') {
                       <span class="curso-detalle">Falta: {{ r.faltantes.join(', ') }}</span>
@@ -908,6 +1038,38 @@
     </footer>
   </main>
 </div>
+
+<dialog #dialogoTarjeta class="dialogo-tarjeta" aria-labelledby="tarjeta-titulo">
+  <header>
+    <h2 id="tarjeta-titulo">Compartir mi avance</h2>
+    <button type="button" class="cerrar-error" (click)="cerrarTarjeta(dialogoTarjeta)" aria-label="Cerrar"><app-icono nombre="cerrar" /></button>
+  </header>
+  <div class="tarjeta-vista">
+    @if (generandoTarjeta()) {
+      <app-cargando-ola texto="Generando tu tarjeta…" />
+    } @else if (tarjetaUrl()) {
+      <img [src]="tarjetaUrl()" alt="Tarjeta con tu avance en Piletazo" />
+    } @else {
+      <p class="error">No se pudo generar la tarjeta. Intenta de nuevo.</p>
+    }
+  </div>
+  @if (nombre().trim() && !ejemplo()) {
+    <label class="interruptor">
+      <input type="checkbox" role="switch" [checked]="tarjetaConNombre()" (change)="tarjetaConNombre.set($any($event.target).checked); generarTarjeta()" />
+      <span class="pista" aria-hidden="true"></span>
+      Mostrar mi nombre en la tarjeta
+    </label>
+  }
+  <p class="ayuda">Incluye un QR a Piletazo para que tus compañeros calculen el suyo. No muestra tu carné ni tus notas.</p>
+  <div class="fila-acciones">
+    @if (puedeCompartirArchivo()) {
+      <button type="button" class="boton primario" (click)="compartirTarjeta()" [disabled]="!tarjetaUrl()"><app-icono nombre="externo" />Compartir</button>
+    }
+    <a class="boton" [class.primario]="!puedeCompartirArchivo()" [href]="tarjetaUrl() || null" download="piletazo-mi-avance.png" [class.inactivo]="!tarjetaUrl()">
+      <app-icono nombre="descargar" />Descargar imagen
+    </a>
+  </div>
+</dialog>
 
 <!-- Reporte para imprimir / guardar como PDF -->
 @if (analisis(); as a) {

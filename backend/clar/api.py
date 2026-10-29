@@ -15,12 +15,14 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
-from .analisis import analizar
+from .analisis import analizar, nota_para_meta
+from .critica import ruta_critica
 from .cursando import con_cursando, cursando_de_ejemplo, validar
-from .entrada import CursoAprobado, estudiante_de_ejemplo, parsear_html, parsear_texto
+from .entrada import CursoAprobado, estudiante_de_ejemplo, leer_html, leer_texto
 from .pensums import catalogo
 from .recomendacion import recomendar
 from .reporte_pdf import generar_pdf
+from .tarjeta import generar_tarjeta
 from .rutas import planificar_ruta
 
 MAXIMO_TEXTO = 3_000_000  # una red curricular guardada pesa ~450 KB
@@ -60,6 +62,7 @@ class Calculo(Esquema):
     modalidad: Literal["eps", "tesis"] = "eps"
     carga_maxima: int = Field(30, ge=0, le=45)
     practicas: Literal[1, 2] = 1
+    vacaciones: Literal[0, 1, 2] = 0
     hoy: Optional[date] = None
 
 
@@ -73,7 +76,12 @@ class Reporte(Calculo):
     nombre: str = Field("", max_length=120)
     carne: str = Field("", max_length=20)
     origen: Literal["traslado", "clar2022"] = "traslado"
-    vacaciones: Literal[0, 1, 2] = 0
+
+
+class Meta(Esquema):
+    aprobados: List[Aprobado] = Field(max_length=300)
+    cursando: List[str] = Field([], max_length=15)
+    meta: float = Field(ge=61, le=100)
 
 
 @app.get("/api/salud")
@@ -84,12 +92,19 @@ def salud() -> dict:
 @app.post("/api/cursos/leer")
 def leer_cursos(lectura: Lectura) -> dict:
     if lectura.html:
-        cursos = parsear_html(lectura.html)
+        cursos, avisos = leer_html(lectura.html)
     elif lectura.texto:
-        cursos = parsear_texto(lectura.texto)
+        cursos, avisos = leer_texto(lectura.texto)
     else:
         raise HTTPException(400, "Envía el texto copiado o la página guardada.")
-    return {"aprobados": a_json(cursos)}
+    return {"aprobados": a_json(cursos), "avisos": a_json(avisos)}
+
+
+@app.post("/api/promedio/meta")
+def promedio_meta(datos: Meta) -> dict:
+    """Nota que se necesita en los cursos en curso para llegar al promedio meta."""
+    aprobados = [CursoAprobado(**a.model_dump()) for a in datos.aprobados]
+    return a_json(nota_para_meta(aprobados, len(set(datos.cursando)), datos.meta))
 
 
 @app.get("/api/ejemplo")
@@ -134,9 +149,32 @@ def calcular(calculo: Calculo) -> dict:
         }
         for vacaciones in (0, 1, 2)
     ]
+    # ¿Y si repruebo? Cierre de pensum si se reprueba cada curso que se está cursando.
+    base = escenarios[calculo.vacaciones]["ruta"]
+    reprobar = []
+    for codigo in cursando_validos:
+        ruta = planificar_ruta(
+            [a for a in aprobados if a.codigo != codigo],
+            carga_maxima=calculo.carga_maxima,
+            practicas=calculo.practicas,
+            vacaciones=calculo.vacaciones,
+            modalidad=calculo.modalidad,
+            hoy=calculo.hoy,
+        )
+        reprobar.append(
+            {
+                "codigo": codigo,
+                "cierre": ruta.cierre,
+                "semestres": ruta.semestres,
+                "semestres_extra": ruta.semestres - base.semestres,
+            }
+        )
+
     return a_json(
         {
             "analisis": analisis,
+            "ruta_critica": ruta_critica(analisis.pensum2022),
+            "reprobar": reprobar,
             "recomendacion": recomendar(analisis.pensum2022, calculo.carga_maxima),
             "escenarios": escenarios,
             "catalogo": catalogo(),
@@ -211,6 +249,25 @@ def sitio(request: Request) -> str:
     if request.headers.get("x-forwarded-proto") == "https":
         base = base.replace("http://", "https://", 1)
     return base
+
+
+@app.post("/api/tarjeta")
+def tarjeta(datos: Reporte, request: Request) -> Response:
+    """Imagen para compartir el avance, con QR al sitio y la firma del desarrollador."""
+    aprobados, _, _ = _aprobados_con_cursando(datos)
+    if not aprobados:
+        raise HTTPException(400, "No hay cursos aprobados.")
+    analisis = analizar(aprobados, datos.modalidad)
+    ruta = planificar_ruta(
+        aprobados,
+        carga_maxima=datos.carga_maxima,
+        practicas=datos.practicas,
+        vacaciones=datos.vacaciones,
+        modalidad=datos.modalidad,
+        hoy=datos.hoy,
+    )
+    png = generar_tarjeta(analisis, ruta.cierre, sitio(request) + "/", nombre=datos.nombre.strip(), origen=datos.origen)
+    return Response(png, media_type="image/png", headers={"Content-Disposition": 'inline; filename="piletazo-mi-avance.png"'})
 
 
 @app.get("/robots.txt", include_in_schema=False)

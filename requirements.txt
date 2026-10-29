@@ -1,2 +1,4 @@
 fastapi>=0.115,<1
 reportlab>=4,<5
+pillow>=10,<12
+qrcode>=7,<9

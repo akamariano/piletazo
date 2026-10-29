@@ -2770,3 +2770,295 @@ tr.sin-equivalencia td {
     border-bottom: 0;
   }
 }
+
+/* ---------- Ruta crítica ---------- */
+.placa-critica {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #fff1f2;
+  background: linear-gradient(135deg, #fb7185, #e11d48);
+  border-radius: 4px;
+  padding: 1px 6px;
+  white-space: nowrap;
+}
+
+.curso .placa-critica {
+  grid-column: 1 / -1;
+  justify-self: start;
+  margin-top: 2px;
+}
+
+.leyenda .placa-critica {
+  margin-right: 6px;
+}
+
+.resumen-critico {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 16px 0 0;
+  padding: 10px 14px;
+  border: 1px solid rgb(251 113 133 / 0.35);
+  border-radius: var(--radio);
+  background: rgb(251 113 133 / 0.07);
+  font-size: 13px;
+  color: var(--texto-2);
+}
+
+.resumen-critico .placa-critica {
+  margin-top: 2px;
+}
+
+.resumen-critico b {
+  color: var(--texto);
+}
+
+/* ---------- ¿Y si repruebo? ---------- */
+.si-repruebo {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border: 1px solid rgb(251 146 60 / 0.35);
+  border-radius: var(--radio);
+  background: rgb(251 146 60 / 0.05);
+}
+
+.si-repruebo h3 {
+  margin: 0 0 2px;
+  font-size: 14px;
+  color: var(--naranja);
+}
+
+.si-repruebo ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+  font-size: 13px;
+}
+
+.si-repruebo li {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: baseline;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--costura);
+}
+
+.si-repruebo li:last-child {
+  border-bottom: 0;
+}
+
+.si-repruebo .efecto {
+  color: var(--tenue);
+  white-space: nowrap;
+}
+
+.si-repruebo li.atrasa .efecto,
+.texto-atrasa {
+  color: #fb7185;
+  font-weight: 600;
+}
+
+/* ---------- Promedio meta ---------- */
+.promedio-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  margin: 18px -20px -18px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--costura);
+  background: rgb(94 234 212 / 0.04);
+}
+
+.promedio-meta label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--texto-2);
+  font-weight: 500;
+}
+
+.promedio-meta input {
+  width: 84px;
+  font-family: var(--mono);
+  text-align: right;
+}
+
+.promedio-meta p {
+  margin: 0;
+  flex: 1;
+  min-width: 220px;
+  font-size: 13px;
+  color: var(--texto-2);
+}
+
+.promedio-meta p.no-posible {
+  color: #fb7185;
+}
+
+/* ---------- Revisión de lo cargado ---------- */
+.aviso-revision {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: start;
+  padding: 14px 16px;
+  border: 1px solid rgb(227 179 65 / 0.5);
+  border-radius: var(--radio);
+  background: var(--ambar-fondo);
+  font-size: 13px;
+  color: var(--texto-2);
+}
+
+.aviso-revision > app-icono {
+  color: var(--ambar);
+  font-size: 18px;
+  margin-top: 1px;
+}
+
+.aviso-revision strong {
+  color: var(--texto);
+}
+
+.aviso-revision ul {
+  margin: 6px 0;
+  padding-left: 18px;
+}
+
+.aviso-revision code {
+  margin: 0 4px;
+}
+
+.aviso-revision p {
+  margin: 0;
+}
+
+/* ---------- Mis datos ---------- */
+.mis-datos {
+  border-top: 1px solid var(--costura);
+  padding-top: 16px;
+}
+
+.mis-datos-botones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.mis-datos-botones .boton {
+  font-size: 12.5px;
+  padding: 6px 8px;
+  position: relative;
+}
+
+.mis-datos-botones .boton:last-child {
+  grid-column: 1 / -1;
+}
+
+.mis-datos-botones input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.aviso-perfil {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--cian);
+}
+
+/* ---------- Tarjeta para compartir ---------- */
+.boton-compartir {
+  align-self: flex-end;
+}
+
+.dialogo-tarjeta {
+  width: min(440px, calc(100vw - 32px));
+  padding: 16px 18px 18px;
+  border: 1px solid var(--costura-fuerte);
+  border-radius: 12px;
+  background: var(--panel);
+  color: var(--texto);
+  box-shadow: var(--sombra-elevada);
+}
+
+.dialogo-tarjeta::backdrop {
+  background: rgb(1 4 9 / 0.7);
+  backdrop-filter: blur(3px);
+}
+
+.dialogo-tarjeta header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.dialogo-tarjeta h2 {
+  font-size: 16px;
+}
+
+.tarjeta-vista {
+  display: grid;
+  place-items: center;
+  min-height: 300px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  background: var(--suelo);
+  overflow: hidden;
+}
+
+.tarjeta-vista img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.dialogo-tarjeta .interruptor {
+  margin-bottom: 8px;
+}
+
+@media (max-width: 860px) {
+  .mis-datos {
+    order: 2;
+    padding: 12px 16px 0;
+  }
+  .aviso-revision {
+    grid-template-columns: auto 1fr;
+  }
+}
+
+/* Botón de cerrar (avisos y diálogo) */
+.cerrar-error {
+  border: 0;
+  background: none;
+  color: var(--tenue);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: inline-flex;
+  font-size: 16px;
+}
+
+.cerrar-error:hover {
+  color: var(--texto);
+  background: var(--elevado);
+}
+
+@media (max-width: 520px) {
+  .si-repruebo li {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+  .si-repruebo .efecto {
+    grid-column: 2;
+    white-space: normal;
+  }
+}
